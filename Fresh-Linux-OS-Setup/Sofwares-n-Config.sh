@@ -58,7 +58,7 @@
       autoconnect=true
 
       [ipv4]
-      address1=192.168.100.46/24
+      address1=192.168.100.46/24,192.168.100.10
       dns=192.168.100.10;8.8.8.8;
       method=manual
       never-default=true
