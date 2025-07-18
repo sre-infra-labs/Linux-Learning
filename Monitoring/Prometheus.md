@@ -1,4 +1,5 @@
 # Using Prometheus to Monitor Linux and Kubernetes
+### [Github Repo](https://github.com/daveprowse/prom-live)
 
 ![Lab Setup](prometheus-lab-setup.png)
 
@@ -64,6 +65,20 @@ sudo -u prometheus /usr/bin/prometheus --config.file=/etc/prometheus/prometheus.
 
 ```
 
+## Common locations. Mostly found in /lib/systemd/system/prometheus.service
+```
+# configuration file directory
+/etc/prometheus/
+
+# database location
+/var/lib/prometheus/
+
+# web configuration
+/usr/share/prometheus/web/
+
+
+```
+
 ## Error/Fix: listen tcp 0.0.0.0:9090: bind: address already in use
 ```
 # Find which process is using port 9090
@@ -71,5 +86,18 @@ sudo lsof -i :9090
 
 # Change Port (if 9090 is used by other service)
 ```
+
+# Basic Querying (PromQL)
+```
+
+    up{instance="localhost:9091",job="prometheus"}
+
+    process_resident_memory_bytes[3h]
+```
+
+# Dashboarding
+
+
+
 
 
