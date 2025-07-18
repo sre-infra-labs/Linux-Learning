@@ -19,11 +19,12 @@
 
 # Variables
 PROM_GITHUB_URL="https://github.com/prometheus/prometheus/releases"
-printf "\n\033[43;31mVisit %s, and note the available version you want to install. \033[0m\n" "$PROM_GITHUB_URL"
+printf "\nVisit \033[43;31m %s \033[0m, and note the available version you want to install. \n" "$PROM_GITHUB_URL"
 printf "\n"
 read -p "Enter Prometheus version to install (x.y.z)?  " PROM_VERSION_INPUT
 
 PROMPORT="9091"
+DOMAIN="localhost"
 PROMVERSION="v$PROM_VERSION_INPUT"
 PROM_AMD64="prometheus-$PROM_VERSION_INPUT.linux-amd64"
 PROM_ARM64="prometheus-$PROM_VERSION_INPUT.linux-arm64"
@@ -57,9 +58,13 @@ sudo mkdir -p "$CERT_DIR"
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout "$CERT_DIR/prometheus.key" \
   -out "$CERT_DIR/prometheus.crt" \
-  -subj "/CN=localhost"
+  -subj "/CN=$DOMAIN"
 
 # 2. Set permissions
+    ## Create system user and directories
+groupadd --system prometheus
+useradd -s /sbin/nologin --system -g prometheus prometheus
+
 sudo chown -R prometheus:prometheus "$CERT_DIR"
 sudo chmod 600 "$CERT_DIR"/*
 
@@ -73,9 +78,7 @@ EOF
 # 4. Install Prometheus binary
 mkdir temp
 cd temp || return
-## Create system user and directories
-groupadd --system prometheus
-useradd -s /sbin/nologin --system -g prometheus prometheus
+
 mkdir -p /var/lib/prometheus/metrics2
 mkdir -p {/etc/prometheus,/usr/share/prometheus/web}
 ## Download, extract, and copy Prometheus files
@@ -110,7 +113,7 @@ chown -R prometheus:prometheus /etc/prometheus
 
 
 # Build Prometheus service
-cat << "EOF" > "/lib/systemd/system/prometheus.service"
+cat << EOF > "/lib/systemd/system/prometheus.service"
 [Unit]
 Description=Monitoring system and time series database (Prometheus)
 Documentation=https://prometheus.io/docs/introduction/overview/ man:prometheus(1)
@@ -123,17 +126,20 @@ User=prometheus
 Group=prometheus
 ExecStart=/usr/bin/prometheus \
 --config.file /etc/prometheus/prometheus.yml \
---storage.tsdb.path /var/lib/prometheus/metrics2
---web.listen-address="0.0.0.0:$PROMPORT"
---web.config.file=$WEB_CONFIG
+--storage.tsdb.path /var/lib/prometheus/metrics2 \
+--web.listen-address=0.0.0.0:$PROMPORT
 
-ExecReload=/bin/kill -HUP $MAINPID
+ExecReload=/bin/kill -HUP \$MAINPID
 TimeoutStopSec=20s
 SendSIGKILL=no
 
 [Install]
 WantedBy=multi-user.target
 EOF
+
+# Update port in config value as well
+sed -i "s/\(targets: \[.*localhost:\)\([0-9]\+\)/\1$PROMPORT/" /etc/prometheus/prometheus.yml
+
 
 # Start Prometheus service and re-issue ownership to database location
 systemctl daemon-reload
@@ -179,4 +185,4 @@ else
 fi
 
 # 7. Done
-echo "[SUCCESS] Prometheus is running at https://localhost:$PROMPORT/"
+echo "[SUCCESS] Prometheus is running at https://$DOMAIN:$PROMPORT/"

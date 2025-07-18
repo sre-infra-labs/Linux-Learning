@@ -51,6 +51,10 @@ chmod +x prometheus-install-v3.4.1.sh
 # install
 sudo ./prometheus-install-v3.4.1.sh
 
+# check service status
+prometheus --version
+sudo systemctl status prometheus
+
 Note: To run Prometheus manually, do the following:
 1. Stop the Prometheus service: 'sudo systemctl stop prometheus'
 
@@ -66,5 +70,8 @@ sudo lsof -i :9090
 
 # Change Port (if 9090 is used by other service)
 
+
+--web.listen-address="0.0.0.0:$PROMPORT"
+--web.config.file=$WEB_CONFIG
 ```
 
