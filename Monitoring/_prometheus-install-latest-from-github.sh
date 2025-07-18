@@ -23,11 +23,14 @@ printf "\n\033[43;31mVisit %s, and note the available version you want to instal
 printf "\n"
 read -p "Enter Prometheus version to install (x.y.z)?  " PROM_VERSION_INPUT
 
-PROMPORT="443"
+PROMPORT="9091"
 PROMVERSION="v$PROM_VERSION_INPUT"
 PROM_AMD64="prometheus-$PROM_VERSION_INPUT.linux-amd64"
 PROM_ARM64="prometheus-$PROM_VERSION_INPUT.linux-arm64"
 UBUNTU_MAN_VERSION=noble
+CERT_DIR="/etc/prometheus/certs"
+WEB_CONFIG="/etc/prometheus/web.yml"
+
 
 clear -x
 
@@ -41,10 +44,33 @@ if [[ $response =~ ^[Yy]$ ]]; then
 start=$SECONDS
 printf '%.0s\n' {1..2}
 
+
+echo "[INFO] Installing Prometheus with HTTPS on port $PROMPORT..."
+
 # Install Prometheus
 echo
 printf "\n\033[7;32mSTARTING PROMETHEUS %s INSTALLATION IN 3 SECONDS! \033[0m" "$PROMVERSION"
 echo;sleep 3;echo
+
+# 1. Create cert directory
+sudo mkdir -p "$CERT_DIR"
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout "$CERT_DIR/prometheus.key" \
+  -out "$CERT_DIR/prometheus.crt" \
+  -subj "/CN=localhost"
+
+# 2. Set permissions
+sudo chown -R prometheus:prometheus "$CERT_DIR"
+sudo chmod 600 "$CERT_DIR"/*
+
+# 3. Create Prometheus web config
+sudo tee "$WEB_CONFIG" > /dev/null <<EOF
+tls_server_config:
+  cert_file: "$CERT_DIR/prometheus.crt"
+  key_file: "$CERT_DIR/prometheus.key"
+EOF
+
+# 4. Install Prometheus binary
 mkdir temp
 cd temp || return
 ## Create system user and directories
@@ -88,6 +114,7 @@ cat << "EOF" > "/lib/systemd/system/prometheus.service"
 [Unit]
 Description=Monitoring system and time series database (Prometheus)
 Documentation=https://prometheus.io/docs/introduction/overview/ man:prometheus(1)
+Wants=network-online.target
 After=time-sync.target
 
 [Service]
@@ -97,6 +124,9 @@ Group=prometheus
 ExecStart=/usr/bin/prometheus \
 --config.file /etc/prometheus/prometheus.yml \
 --storage.tsdb.path /var/lib/prometheus/metrics2
+--web.listen-address="0.0.0.0:$PROMPORT"
+--web.config.file=$WEB_CONFIG
+
 ExecReload=/bin/kill -HUP $MAINPID
 TimeoutStopSec=20s
 SendSIGKILL=no
@@ -147,3 +177,6 @@ printf '%.0s\n' {1..3}
 else
   echo "Installation cancelled."
 fi
+
+# 7. Done
+echo "[SUCCESS] Prometheus is running at https://localhost:$PROMPORT/"

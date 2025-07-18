@@ -24,6 +24,7 @@ sudo systemctl stop prometheus.service 2>/dev/null
 echo "[INFO] Disabling and removing prometheus.service..."
 sudo systemctl disable prometheus.service 2>/dev/null
 sudo rm -f /etc/systemd/system/prometheus.service
+sudo rm -f /usr/lib/systemd/system/prometheus.service
 
 # Reload systemd to forget deleted unit
 echo "[INFO] Reloading systemd daemon..."
