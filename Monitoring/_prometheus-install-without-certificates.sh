@@ -153,6 +153,12 @@ cp prometheus.1.gz /usr/share/man/man1
 wget https://manpages.ubuntu.com/manpages.gz/$UBUNTU_MAN_VERSION/man1/promtool.1.gz
 cp promtool.1.gz /usr/share/man/man1
 
+# Firewall rule
+export ALERTENGINEPORT=5000
+export PROMPORT="$PROMPORT"
+sudo ufw allow proto tcp from any to any port $PROMPORT comment "Allow Prometheus TCP port"
+sudo ufw allow proto tcp from any to any port $ALERTENGINEPORT comment "Allow Alert Engine TCP port"
+
 # Clean UP!
 cd ..
 rm -rf temp/
