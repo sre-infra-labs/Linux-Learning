@@ -93,7 +93,7 @@ After=time-sync.target
 Restart=on-failure
 User=prometheus
 Group=prometheus
-ExecStart=/usr/bin/prometheus $ARGS \
+ExecStart=/usr/bin/prometheus \
 --config.file /etc/prometheus/prometheus.yml \
 --storage.tsdb.path /var/lib/prometheus/metrics2
 ExecReload=/bin/kill -HUP $MAINPID
