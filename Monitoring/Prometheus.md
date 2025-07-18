@@ -53,7 +53,18 @@ sudo ./prometheus-install-v3.4.1.sh
 
 Note: To run Prometheus manually, do the following:
 1. Stop the Prometheus service: 'sudo systemctl stop prometheus'
-2. Run the prometheus command, for example: 'prometheus --config.file=/etc/prometheus/prometheus.yml'
+
+2. Run the prometheus command in case of debugging:
+sudo -u prometheus /usr/bin/prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/var/lib/prometheus/metrics2
+
+```
+
+# Error/Fix: listen tcp 0.0.0.0:9090: bind: address already in use
+```
+# Find which process is using port 9090
+sudo lsof -i :9090
+
+# Change Port (if 9090 is used by other service)
 
 ```
 

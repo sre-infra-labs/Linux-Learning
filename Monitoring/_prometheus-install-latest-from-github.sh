@@ -23,6 +23,7 @@ printf "\n\033[43;31mVisit %s, and note the available version you want to instal
 printf "\n"
 read -p "Enter Prometheus version to install (x.y.z)?  " PROM_VERSION_INPUT
 
+PROMPORT="443"
 PROMVERSION="v$PROM_VERSION_INPUT"
 PROM_AMD64="prometheus-$PROM_VERSION_INPUT.linux-amd64"
 PROM_ARM64="prometheus-$PROM_VERSION_INPUT.linux-arm64"
