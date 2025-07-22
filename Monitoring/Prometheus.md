@@ -98,10 +98,7 @@ sudo lsof -i :9090
 # URLs/Ports
 http://localhost:9000 - cockpit
 http://localhost:9091 - prometheus
-http://localhost:9093 - prometheus-alertmanager
+http://localhost:9091/alerts - prometheus/alerts
+http://localhost:9093 - alertmanager
 http://localhost:9100 - prometheus-node_exporter-metrics
 http://localhost:9182 - prometheus-windows-exporter-metrics
-
-
-
-
