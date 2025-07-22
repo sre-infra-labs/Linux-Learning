@@ -102,6 +102,8 @@ http://localhost:9091/alerts - prometheus/alerts
 http://localhost:9093 - alertmanager
 http://localhost:9100 - prometheus-node_exporter-metrics
 http://localhost:9182 - prometheus-windows-exporter-metrics
+http://localhost:9187/metrics - postgres-exporter
+
 
 # Add alert
 ```
