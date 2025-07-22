@@ -102,3 +102,30 @@ http://localhost:9091/alerts - prometheus/alerts
 http://localhost:9093 - alertmanager
 http://localhost:9100 - prometheus-node_exporter-metrics
 http://localhost:9182 - prometheus-windows-exporter-metrics
+
+# Add alert
+```
+cd /etc/prometheus
+
+# add rules
+sudo vim prometheus.rules.yml
+
+# modify rule_files
+sudo vim prometheus.yml
+
+sudo systemctl restart {prometheus,alertmanager}
+sudo systemctl status {prometheus,alertmanager}
+```
+
+# Instrumentation
+*Instrumentation* - is the ability to monitor and measure your product's performance.
+
+- Application
+- A promethus client library
+  - go
+  - python
+  - java
+  - c/bash
+  - rust
+
+

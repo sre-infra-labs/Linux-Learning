@@ -13,7 +13,7 @@ alerting:
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
-  # - "first_rules.yml"
+  - "prometheus.rules.yml"
   # - "second_rules.yml"
 
 # A scrape configuration containing exactly one endpoint to scrape:
@@ -30,3 +30,17 @@ scrape_configs:
        # The label name is added as a label `label_name=<label_value>` to any timeseries scraped from this config.
         labels:
           app: "prometheus"
+
+  - job_name: "node_exporter"
+    static_configs:
+      - targets:
+        - "localhost:9100"
+        - "pgpractice:9100"
+        - "pgpoc:9100"
+        - "officelaptop:9100"
+
+  - job_name: 'win-exporter'
+    static_configs:
+      - targets:
+        - 'sqlmonitor:9182'
+        - 'sqlpractice:9182'
