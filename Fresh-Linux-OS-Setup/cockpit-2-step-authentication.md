@@ -40,12 +40,16 @@ journalctl -u cockpit --no-pager --since "5 minutes ago"
 ## Install Google Authenticator App on Ubuntu Desktop & Import Tokens from GAuth
 ```
 # Install gnome-authenticator for Ubuntu Desktop
-sudo apt install gnome-authenticator
+    # imports using json file. Only for Ubuntu
+    sudo apt install gnome-authenticator
+
+    # imports using json file. Only for Mac
+    brew install --cask keepassxc
+
 
 # Download executable binary from https://github.com/scito/extract_otp_secrets/releases
 extract_otp_secrets_<release>_linux_x86_64
 wget https://github.com/scito/extract_otp_secrets/releases/download/v2.11.0/extract_otp_secrets_2.11.0_linux_x86_64
-
 
 # Make it execute
 cd ~/Downloads/gauth
@@ -55,10 +59,16 @@ chmod +x extract_otp_secrets_<release>_linux_x86_64
 cd ~/Downloads/gauth
 1_4.jpeg  2_4.jpeg  3_4.jpeg  4_4.jpeg
 
-# Extract them codes are json using ""
+# Extract the codes are json using "extract_otp_secrets"
 cd ~/Downloads/gauth
 ./extract_otp_secrets_2.11.0_linux_x86_64 \
     --json extracted_secrets.json \
+    *.jpeg
+
+# Extract the codes are csv using "extract_otp_secrets"
+cd ~/Downloads/gauth
+./extract_otp_secrets_2.11.0_linux_x86_64 \
+    --csv extracted_secrets.csv \
     *.jpeg
 
 # Method 01 (Preferred): Convert/Export the "extracted_secrets.json" into gnome-authenticator compatible JSON file

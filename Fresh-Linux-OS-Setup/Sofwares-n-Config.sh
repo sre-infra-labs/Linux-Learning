@@ -342,7 +342,14 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
   sudo apt-get install podman cockpit-podman -y
   sudo systemctl enable --now podman
 
-  sudo apt install cockpit-machines -y
+  sudo apt install -y \
+      cockpit-machines \
+      cockpit-ostree \
+      cockpit-storaged \
+      cockpit-networkmanager \
+      cockpit-files \
+      cockpit-sosreport
+
   sudo systemctl status cockpit
 
   sudo netstat -pnltu | grep 9090
