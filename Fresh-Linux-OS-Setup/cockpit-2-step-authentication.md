@@ -36,3 +36,27 @@ sudo systemctl restart cockpit
 journalctl -u cockpit --no-pager --since "5 minutes ago"
 
 ```
+
+## Install Google Authenticator App on Ubuntu Desktop
+```
+# gauth gui
+sudo apt install gnome-authenticator
+
+# Download executable binary from https://github.com/scito/extract_otp_secrets/releases
+extract_otp_secrets_<release>_linux_x86_64
+
+# Make it execute
+cd ~/Downloads/gauth
+chmod +x extract_otp_secrets_<release>_linux_x86_64
+
+# Export codes from Google Authenticator by taking screenshots, and download them in directory
+cd ~/Downloads/gauth
+1_4.jpeg  2_4.jpeg  3_4.jpeg  4_4.jpeg
+
+# Extract them codes are json
+cd ~/Downloads/gauth
+./extract_otp_secrets_2.11.0_linux_x86_64 \
+    --json extracted_secrets.json \
+    *.jpeg
+
+```
