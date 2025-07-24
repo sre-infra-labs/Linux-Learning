@@ -1192,7 +1192,7 @@
       "type": "stat"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1200,718 +1200,719 @@
         "y": 5
       },
       "id": 263,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "description": "CPU time spent busy vs idle, split by activity type",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 40,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "percent"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Busy Iowait"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#890F02",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Idle"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#052B51",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Busy System"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#EAB839",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Busy User"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#0A437C",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Busy Other"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#6D1F62",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 6
+          },
+          "id": 77,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true,
+              "width": 250
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"system\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "intervalFactor": 1,
+              "legendFormat": "Busy System",
+              "range": true,
+              "refId": "A",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            },
+            {
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"user\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Busy User",
+              "range": true,
+              "refId": "B",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            },
+            {
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"iowait\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Busy Iowait",
+              "range": true,
+              "refId": "C",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            },
+            {
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=~\".*irq\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Busy IRQs",
+              "range": true,
+              "refId": "D",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            },
+            {
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\",  mode!='idle',mode!='user',mode!='system',mode!='iowait',mode!='irq',mode!='softirq'}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Busy Other",
+              "range": true,
+              "refId": "E",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            },
+            {
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"idle\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Idle",
+              "range": true,
+              "refId": "F",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            }
+          ],
+          "title": "CPU Basic",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "description": "RAM and swap usage overview, including caches",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 40,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Swap used"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#BF1B00",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Total"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#E0F9D7",
+                      "mode": "fixed"
+                    }
+                  },
+                  {
+                    "id": "custom.fillOpacity",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.stacking",
+                    "value": {
+                      "group": false,
+                      "mode": "normal"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Cache + Buffer"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#052B51",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Free"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#7EB26D",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 6
+          },
+          "id": 78,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true,
+              "width": 350
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"}",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Total",
+              "range": true,
+              "refId": "A",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            },
+            {
+              "editorMode": "code",
+              "expr": "node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"} - (node_memory_Cached_bytes{instance=\"$node\",job=\"$job\"} + node_memory_Buffers_bytes{instance=\"$node\",job=\"$job\"} + node_memory_SReclaimable_bytes{instance=\"$node\",job=\"$job\"})",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Used",
+              "range": true,
+              "refId": "B",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            },
+            {
+              "editorMode": "code",
+              "expr": "node_memory_Cached_bytes{instance=\"$node\",job=\"$job\"} + node_memory_Buffers_bytes{instance=\"$node\",job=\"$job\"} + node_memory_SReclaimable_bytes{instance=\"$node\",job=\"$job\"}",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Cache + Buffer",
+              "range": true,
+              "refId": "C",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            },
+            {
+              "editorMode": "code",
+              "expr": "node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"}",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Free",
+              "range": true,
+              "refId": "D",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            },
+            {
+              "editorMode": "code",
+              "expr": "(node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_SwapFree_bytes{instance=\"$node\",job=\"$job\"})",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Swap used",
+              "range": true,
+              "refId": "E",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            }
+          ],
+          "title": "Memory Basic",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "description": "Per-interface network traffic (receive and transmit) in bits per second",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 40,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "bps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/.*Tx.*/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.transform",
+                    "value": "negative-Y"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 13
+          },
+          "id": 74,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "rate(node_network_receive_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])*8",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Rx {{device}}",
+              "range": true,
+              "refId": "A",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            },
+            {
+              "editorMode": "code",
+              "expr": "rate(node_network_transmit_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])*8",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Tx {{device}} ",
+              "range": true,
+              "refId": "B",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            }
+          ],
+          "title": "Network Traffic Basic",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "description": "Percentage of filesystem space used for each mounted device",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 40,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 13
+          },
+          "id": 152,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.3.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "((node_filesystem_size_bytes{instance=\"$node\", job=\"$job\", device!~\"rootfs\"} - node_filesystem_avail_bytes{instance=\"$node\", job=\"$job\", device!~\"rootfs\"}) / node_filesystem_size_bytes{instance=\"$node\", job=\"$job\", device!~\"rootfs\"}) * 100",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{mountpoint}}",
+              "range": true,
+              "refId": "A",
+              "step": 240,
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              }
+            }
+          ],
+          "title": "Disk Space Used Basic",
+          "type": "timeseries"
+        }
+      ],
       "title": "Basic CPU / Mem / Net / Disk",
       "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "description": "CPU time spent busy vs idle, split by activity type",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 40,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "percent"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "links": [],
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "percentunit"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Busy Iowait"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#890F02",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Idle"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#052B51",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Busy System"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#EAB839",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Busy User"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#0A437C",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Busy Other"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#6D1F62",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 6
-      },
-      "id": 77,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true,
-          "width": 250
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"system\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
-          "format": "time_series",
-          "hide": false,
-          "instant": false,
-          "intervalFactor": 1,
-          "legendFormat": "Busy System",
-          "range": true,
-          "refId": "A",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"user\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
-          "format": "time_series",
-          "hide": false,
-          "intervalFactor": 1,
-          "legendFormat": "Busy User",
-          "range": true,
-          "refId": "B",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"iowait\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Busy Iowait",
-          "range": true,
-          "refId": "C",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=~\".*irq\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Busy IRQs",
-          "range": true,
-          "refId": "D",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\",  mode!='idle',mode!='user',mode!='system',mode!='iowait',mode!='irq',mode!='softirq'}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Busy Other",
-          "range": true,
-          "refId": "E",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        },
-        {
-          "editorMode": "code",
-          "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"idle\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Idle",
-          "range": true,
-          "refId": "F",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        }
-      ],
-      "title": "CPU Basic",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "description": "RAM and swap usage overview, including caches",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 40,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "links": [],
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Swap used"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#BF1B00",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Total"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#E0F9D7",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "custom.fillOpacity",
-                "value": 0
-              },
-              {
-                "id": "custom.stacking",
-                "value": {
-                  "group": false,
-                  "mode": "normal"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Cache + Buffer"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#052B51",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Free"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#7EB26D",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 6
-      },
-      "id": 78,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true,
-          "width": 350
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"}",
-          "format": "time_series",
-          "hide": false,
-          "intervalFactor": 1,
-          "legendFormat": "Total",
-          "range": true,
-          "refId": "A",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        },
-        {
-          "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"} - (node_memory_Cached_bytes{instance=\"$node\",job=\"$job\"} + node_memory_Buffers_bytes{instance=\"$node\",job=\"$job\"} + node_memory_SReclaimable_bytes{instance=\"$node\",job=\"$job\"})",
-          "format": "time_series",
-          "hide": false,
-          "intervalFactor": 1,
-          "legendFormat": "Used",
-          "range": true,
-          "refId": "B",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        },
-        {
-          "editorMode": "code",
-          "expr": "node_memory_Cached_bytes{instance=\"$node\",job=\"$job\"} + node_memory_Buffers_bytes{instance=\"$node\",job=\"$job\"} + node_memory_SReclaimable_bytes{instance=\"$node\",job=\"$job\"}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Cache + Buffer",
-          "range": true,
-          "refId": "C",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        },
-        {
-          "editorMode": "code",
-          "expr": "node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Free",
-          "range": true,
-          "refId": "D",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        },
-        {
-          "editorMode": "code",
-          "expr": "(node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_SwapFree_bytes{instance=\"$node\",job=\"$job\"})",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Swap used",
-          "range": true,
-          "refId": "E",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        }
-      ],
-      "title": "Memory Basic",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "description": "Per-interface network traffic (receive and transmit) in bits per second",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 40,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bps"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/.*Tx.*/"
-            },
-            "properties": [
-              {
-                "id": "custom.transform",
-                "value": "negative-Y"
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 13
-      },
-      "id": 74,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "rate(node_network_receive_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])*8",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Rx {{device}}",
-          "range": true,
-          "refId": "A",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        },
-        {
-          "editorMode": "code",
-          "expr": "rate(node_network_transmit_bytes_total{instance=\"$node\",job=\"$job\"}[$__rate_interval])*8",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "Tx {{device}} ",
-          "range": true,
-          "refId": "B",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        }
-      ],
-      "title": "Network Traffic Basic",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "description": "Percentage of filesystem space used for each mounted device",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 40,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "links": [],
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 13
-      },
-      "id": 152,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "((node_filesystem_size_bytes{instance=\"$node\", job=\"$job\", device!~\"rootfs\"} - node_filesystem_avail_bytes{instance=\"$node\", job=\"$job\", device!~\"rootfs\"}) / node_filesystem_size_bytes{instance=\"$node\", job=\"$job\", device!~\"rootfs\"}) * 100",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{mountpoint}}",
-          "range": true,
-          "refId": "A",
-          "step": 240,
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        }
-      ],
-      "title": "Disk Space Used Basic",
-      "type": "timeseries"
     },
     {
       "collapsed": true,
@@ -1919,7 +1920,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 6
       },
       "id": 265,
       "panels": [
@@ -1974,7 +1975,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -2157,7 +2159,7 @@
               "sort": "desc"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "editorMode": "code",
@@ -2343,7 +2345,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -2677,7 +2680,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "editorMode": "code",
@@ -2867,7 +2870,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -2892,7 +2896,7 @@
             "h": 12,
             "w": 12,
             "x": 0,
-            "y": 303
+            "y": 253
           },
           "id": 84,
           "options": {
@@ -2912,7 +2916,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "editorMode": "code",
@@ -2996,7 +3000,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -3021,7 +3026,7 @@
             "h": 12,
             "w": 12,
             "x": 12,
-            "y": 303
+            "y": 253
           },
           "id": 338,
           "options": {
@@ -3041,7 +3046,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "editorMode": "code",
@@ -3151,7 +3156,7 @@
             "h": 12,
             "w": 12,
             "x": 0,
-            "y": 315
+            "y": 265
           },
           "id": 229,
           "options": {
@@ -3278,7 +3283,7 @@
             "h": 12,
             "w": 12,
             "x": 12,
-            "y": 315
+            "y": 265
           },
           "id": 42,
           "options": {
@@ -3397,7 +3402,7 @@
             "h": 12,
             "w": 12,
             "x": 0,
-            "y": 327
+            "y": 277
           },
           "id": 43,
           "options": {
@@ -3532,7 +3537,7 @@
             "h": 12,
             "w": 12,
             "x": 12,
-            "y": 327
+            "y": 277
           },
           "id": 156,
           "options": {
@@ -3635,7 +3640,7 @@
             "h": 12,
             "w": 12,
             "x": 0,
-            "y": 339
+            "y": 289
           },
           "id": 127,
           "options": {
@@ -3764,7 +3769,7 @@
             "h": 12,
             "w": 12,
             "x": 12,
-            "y": 339
+            "y": 289
           },
           "id": 322,
           "options": {
@@ -3889,7 +3894,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 7
       },
       "id": 266,
       "panels": [
@@ -3976,7 +3981,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 602
+            "y": 1152
           },
           "id": 135,
           "options": {
@@ -4094,7 +4099,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 602
+            "y": 1152
           },
           "id": 130,
           "options": {
@@ -4240,7 +4245,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 802
+            "y": 1352
           },
           "id": 131,
           "options": {
@@ -4357,7 +4362,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 802
+            "y": 1352
           },
           "id": 138,
           "options": {
@@ -4536,7 +4541,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 812
+            "y": 1362
           },
           "id": 136,
           "options": {
@@ -4654,7 +4659,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 812
+            "y": 1362
           },
           "id": 191,
           "options": {
@@ -4804,7 +4809,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 822
+            "y": 1372
           },
           "id": 160,
           "options": {
@@ -4969,7 +4974,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 822
+            "y": 1372
           },
           "id": 70,
           "options": {
@@ -5103,7 +5108,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 832
+            "y": 1382
           },
           "id": 129,
           "options": {
@@ -5236,7 +5241,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 832
+            "y": 1382
           },
           "id": 137,
           "options": {
@@ -5629,7 +5634,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 842
+            "y": 1392
           },
           "id": 128,
           "options": {
@@ -5762,7 +5767,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 842
+            "y": 1392
           },
           "id": 140,
           "options": {
@@ -5855,7 +5860,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 8
       },
       "id": 267,
       "panels": [
@@ -5934,7 +5939,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 603
+            "y": 1153
           },
           "id": 176,
           "options": {
@@ -6063,7 +6068,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 603
+            "y": 1153
           },
           "id": 22,
           "options": {
@@ -6217,7 +6222,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 783
+            "y": 1333
           },
           "id": 175,
           "options": {
@@ -6368,7 +6373,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 783
+            "y": 1333
           },
           "id": 307,
           "options": {
@@ -6419,7 +6424,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 9
       },
       "id": 293,
       "panels": [
@@ -6485,7 +6490,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 604
+            "y": 1154
           },
           "id": 260,
           "options": {
@@ -6621,7 +6626,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 604
+            "y": 1154
           },
           "id": 291,
           "options": {
@@ -6724,7 +6729,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 754
+            "y": 1304
           },
           "id": 168,
           "options": {
@@ -6874,7 +6879,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 754
+            "y": 1304
           },
           "id": 333,
           "options": {
@@ -6992,7 +6997,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 764
+            "y": 1314
           },
           "id": 334,
           "options": {
@@ -7114,7 +7119,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 764
+            "y": 1314
           },
           "id": 335,
           "options": {
@@ -7212,7 +7217,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 10
       },
       "id": 312,
       "panels": [
@@ -7283,7 +7288,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 605
+            "y": 1155
           },
           "id": 62,
           "options": {
@@ -7485,7 +7490,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 605
+            "y": 1155
           },
           "id": 315,
           "options": {
@@ -7589,7 +7594,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 635
+            "y": 1185
           },
           "id": 148,
           "options": {
@@ -7709,7 +7714,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 635
+            "y": 1185
           },
           "id": 305,
           "options": {
@@ -7876,7 +7881,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 645
+            "y": 1195
           },
           "id": 313,
           "options": {
@@ -8025,7 +8030,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 645
+            "y": 1195
           },
           "id": 314,
           "options": {
@@ -8091,7 +8096,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 11
       },
       "id": 269,
       "panels": [
@@ -8158,7 +8163,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 686
+            "y": 1236
           },
           "id": 8,
           "options": {
@@ -8306,7 +8311,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 686
+            "y": 1236
           },
           "id": 7,
           "options": {
@@ -8518,7 +8523,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 696
+            "y": 1246
           },
           "id": 321,
           "options": {
@@ -8654,7 +8659,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 696
+            "y": 1246
           },
           "id": 306,
           "options": {
@@ -8758,7 +8763,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 706
+            "y": 1256
           },
           "id": 259,
           "options": {
@@ -8892,7 +8897,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 706
+            "y": 1256
           },
           "id": 151,
           "options": {
@@ -8957,7 +8962,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 12
       },
       "id": 304,
       "panels": [
@@ -9044,7 +9049,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 607
+            "y": 1157
           },
           "id": 158,
           "options": {
@@ -9224,7 +9229,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 607
+            "y": 1157
           },
           "id": 300,
           "options": {
@@ -9332,7 +9337,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 617
+            "y": 1167
           },
           "id": 302,
           "options": {
@@ -9437,7 +9442,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 617
+            "y": 1167
           },
           "id": 325,
           "options": {
@@ -9504,7 +9509,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 13
       },
       "id": 296,
       "panels": [
@@ -9646,7 +9651,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 4098
+            "y": 4648
           },
           "id": 298,
           "options": {
@@ -9810,7 +9815,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 4098
+            "y": 4648
           },
           "id": 331,
           "options": {
@@ -9914,7 +9919,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 4108
+            "y": 4658
           },
           "id": 297,
           "options": {
@@ -10018,7 +10023,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 4108
+            "y": 4658
           },
           "id": 332,
           "options": {
@@ -10069,7 +10074,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 28
+        "y": 14
       },
       "id": 270,
       "panels": [
@@ -10163,7 +10168,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 29
+            "y": 579
           },
           "id": 9,
           "options": {
@@ -10305,7 +10310,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 29
+            "y": 579
           },
           "id": 33,
           "options": {
@@ -10451,7 +10456,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 259
+            "y": 809
           },
           "id": 37,
           "options": {
@@ -10586,7 +10591,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 259
+            "y": 809
           },
           "id": 35,
           "options": {
@@ -10716,7 +10721,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 269
+            "y": 819
           },
           "id": 133,
           "options": {
@@ -10847,7 +10852,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 269
+            "y": 819
           },
           "id": 36,
           "options": {
@@ -10994,7 +10999,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 279
+            "y": 829
           },
           "id": 301,
           "options": {
@@ -11141,7 +11146,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 279
+            "y": 829
           },
           "id": 326,
           "options": {
@@ -11260,7 +11265,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 289
+            "y": 839
           },
           "id": 34,
           "options": {
@@ -11310,7 +11315,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 29
+        "y": 15
       },
       "id": 271,
       "panels": [
@@ -11365,7 +11370,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -11427,7 +11433,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "editorMode": "code",
@@ -11512,7 +11518,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -11544,7 +11551,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "editorMode": "code",
@@ -11617,7 +11624,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -11629,7 +11637,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 240
+            "y": 40
           },
           "id": 44,
           "options": {
@@ -11649,7 +11657,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "editorMode": "code",
@@ -11735,7 +11743,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -11747,7 +11756,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 240
+            "y": 40
           },
           "id": 219,
           "options": {
@@ -11767,7 +11776,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "11.3.1",
           "targets": [
             {
               "editorMode": "code",
@@ -11798,7 +11807,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 16
       },
       "id": 272,
       "panels": [
@@ -11877,7 +11886,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 31
+            "y": 581
           },
           "id": 60,
           "options": {
@@ -12009,7 +12018,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 31
+            "y": 581
           },
           "id": 142,
           "options": {
@@ -12139,7 +12148,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 121
+            "y": 671
           },
           "id": 143,
           "options": {
@@ -12269,7 +12278,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 121
+            "y": 671
           },
           "id": 141,
           "options": {
@@ -12399,7 +12408,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 131
+            "y": 681
           },
           "id": 146,
           "options": {
@@ -12515,7 +12524,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 131
+            "y": 681
           },
           "id": 327,
           "options": {
@@ -12631,7 +12640,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 141
+            "y": 691
           },
           "id": 145,
           "options": {
@@ -12748,7 +12757,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 141
+            "y": 691
           },
           "id": 144,
           "options": {
@@ -12878,7 +12887,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 151
+            "y": 701
           },
           "id": 232,
           "options": {
@@ -12981,7 +12990,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 151
+            "y": 701
           },
           "id": 231,
           "options": {
@@ -13085,7 +13094,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 161
+            "y": 711
           },
           "id": 230,
           "options": {
@@ -13218,7 +13227,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 161
+            "y": 711
           },
           "id": 61,
           "options": {
@@ -13334,7 +13343,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 171
+            "y": 721
           },
           "id": 309,
           "options": {
@@ -13420,7 +13429,7 @@
             "h": 10,
             "w": 6,
             "x": 12,
-            "y": 171
+            "y": 721
           },
           "id": 280,
           "options": {
@@ -13498,7 +13507,7 @@
             "h": 10,
             "w": 6,
             "x": 18,
-            "y": 171
+            "y": 721
           },
           "id": 288,
           "options": {
@@ -13555,7 +13564,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 17
       },
       "id": 273,
       "panels": [
@@ -13622,7 +13631,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 32
+            "y": 582
           },
           "id": 63,
           "options": {
@@ -13772,7 +13781,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 32
+            "y": 582
           },
           "id": 124,
           "options": {
@@ -13892,7 +13901,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 122
+            "y": 672
           },
           "id": 126,
           "options": {
@@ -13997,7 +14006,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 122
+            "y": 672
           },
           "id": 125,
           "options": {
@@ -14117,7 +14126,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 132
+            "y": 682
           },
           "id": 336,
           "options": {
@@ -14237,7 +14246,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 132
+            "y": 682
           },
           "id": 220,
           "options": {
@@ -14382,7 +14391,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 142
+            "y": 692
           },
           "id": 290,
           "options": {
@@ -14505,7 +14514,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 142
+            "y": 692
           },
           "id": 310,
           "options": {
@@ -14629,7 +14638,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 152
+            "y": 702
           },
           "id": 330,
           "options": {
@@ -14697,7 +14706,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 18
       },
       "id": 274,
       "panels": [
@@ -14776,7 +14785,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 33
+            "y": 583
           },
           "id": 221,
           "options": {
@@ -14918,7 +14927,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 33
+            "y": 583
           },
           "id": 299,
           "options": {
@@ -15049,7 +15058,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 63
+            "y": 613
           },
           "id": 55,
           "options": {
@@ -15184,7 +15193,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 63
+            "y": 613
           },
           "id": 115,
           "options": {
@@ -15303,7 +15312,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 73
+            "y": 623
           },
           "id": 104,
           "options": {
@@ -15517,7 +15526,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 73
+            "y": 623
           },
           "id": 109,
           "options": {
@@ -15690,7 +15699,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 83
+            "y": 633
           },
           "id": 50,
           "options": {
@@ -15809,7 +15818,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 83
+            "y": 633
           },
           "id": 91,
           "options": {
@@ -15976,7 +15985,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 93
+            "y": 643
           },
           "id": 85,
           "options": {
@@ -16096,7 +16105,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 93
+            "y": 643
           },
           "id": 337,
           "options": {
@@ -16217,7 +16226,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 103
+            "y": 653
           },
           "id": 82,
           "options": {
@@ -16337,7 +16346,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 103
+            "y": 653
           },
           "id": 320,
           "options": {
@@ -16452,7 +16461,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 19
       },
       "id": 279,
       "panels": [
@@ -16522,7 +16531,7 @@
             "h": 10,
             "w": 12,
             "x": 0,
-            "y": 34
+            "y": 584
           },
           "id": 40,
           "options": {
@@ -16626,7 +16635,7 @@
             "h": 10,
             "w": 12,
             "x": 12,
-            "y": 34
+            "y": 584
           },
           "id": 308,
           "options": {
@@ -16784,7 +16793,7 @@
             "h": 10,
             "w": 10,
             "x": 0,
-            "y": 44
+            "y": 594
           },
           "id": 149,
           "options": {
@@ -16957,7 +16966,7 @@
             "h": 10,
             "w": 10,
             "x": 10,
-            "y": 44
+            "y": 594
           },
           "id": 64,
           "options": {
@@ -17048,7 +17057,7 @@
             "h": 10,
             "w": 4,
             "x": 20,
-            "y": 44
+            "y": 594
           },
           "id": 157,
           "options": {
@@ -17127,6 +17136,7 @@
     "list": [
       {
         "current": {},
+        "hide": 2,
         "includeAll": false,
         "label": "Datasource",
         "name": "DS_PROMETHEUS",
@@ -17143,6 +17153,7 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "",
+        "hide": 2,
         "includeAll": false,
         "label": "Job",
         "name": "job",
@@ -17217,13 +17228,13 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Node Exporter Full",
   "uid": "rYdddlPWk",
-  "version": 1,
+  "version": 5,
   "weekStart": ""
 }
