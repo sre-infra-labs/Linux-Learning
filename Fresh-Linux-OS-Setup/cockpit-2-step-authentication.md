@@ -44,6 +44,8 @@ sudo apt install gnome-authenticator
 
 # Download executable binary from https://github.com/scito/extract_otp_secrets/releases
 extract_otp_secrets_<release>_linux_x86_64
+wget https://github.com/scito/extract_otp_secrets/releases/download/v2.11.0/extract_otp_secrets_2.11.0_linux_x86_64
+
 
 # Make it execute
 cd ~/Downloads/gauth
