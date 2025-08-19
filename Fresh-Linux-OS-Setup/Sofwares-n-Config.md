@@ -1,17 +1,23 @@
+# Linux Software Installation
+
 # Install OS with inet1/inet2 adapter
+![inet1-configuration-rhel](inet1-configuration-rhel.png)
 
 # For Ansible create, following users
+```
   sudo -i -u root
 
   adduser ansible
   addgroup sudo-nopw
   echo '%sudo-nopw ALL=(ALL:ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/sudo-nopw > /dev/null
   usermod -aG sudo-nopw ansible
+```
 
 # Create Bridged Network for KVM machines
   # https://www.xmodulo.com/configure-linux-bridge-network-manager-ubuntu.html
 
 # Configure static Ipv4 for inet1 adapter
+```
   # Find ethernets
   ip link show
 
@@ -78,8 +84,10 @@
     sudo nmcli con up enp1s0
     ip addr show enp1s0
     ip route show
+```
 
 # Enable bridge interface for dhcp
+```
   # On Rhel
   sudo nmcli device up enp7s0
   sudo nmcli con mod enp7s0 ipv4.method auto
@@ -87,9 +95,10 @@
   # On Ubuntu
   sudo netplan set ethernets.enp7s0.dhcp4=true
   sudo netplan apply
-
+```
 
 # Fix /etc/resolv.conf on Redhat OS
+```
   # sudo vim /etc/resolv.conf
     search lab.com
     nameserver 192.168.100.10
@@ -97,8 +106,11 @@
     nameserver 8.8.8.8
   # mark /etc/resolv.conf not for change after reboot
     # sudo chattr +i /etc/resolv.conf
+```
+
 
 # Openssh-Server
+```
   # On ubuntu
     sudo apt install -y openssh-client openssh-server
     sudo systemctl enable ssh
@@ -107,15 +119,20 @@
 
   # On Rhel
     sudo systemctl status sshd
+```
 
 
 # Update & upgrade
+```
   sudo apt update -y && sudo apt upgrade -y
+```
 
 # Install pip
+```
   pip3 show psutil
   sudo apt install python3-pip -y
   sudo pip3 install psutil --break-system-packages
+```
 
 # guake > terminal tool
   > Set "transparency"
@@ -127,11 +144,13 @@
 
 # How to Install MATE Desktop on Ubuntu 22.04
   # https://itsfoss.com/install-mate-desktop-ubuntu/
+```
   sudo apt update && sudo apt upgrade -y
   sudo apt install ubuntu-mate-desktop
 
   Choose "lightdm".
   Choose "mate" from Login Screen.
+```
 
 # Install configuration editor
   sudo apt install dconf-editor -y
@@ -151,13 +170,16 @@
   ssh-copy-id saanvi@msi
 
 # NOTE: Start a GUI software on remote SSH session
+```
   ssh -X msi
   export DISPLAY=:0
   firefox
 
   ssh msi "DISPLAY=:0 nohup firefox"
+```
 
 # Configure /etc/hosts using SQLServerLab > Other-Scripts > etc_hosts_ubuntu.txt
+```
   192.168.1.2 officelaptop
   192.168.1.3 msi
   192.168.1.4 ryzen9
@@ -168,7 +190,7 @@
   192.168.1.18 pgprod
   192.168.1.20 aghost-1a
   192.168.1.21 aghost-1b
-  
+
   officelaptop - 38:87:d5:c5:f7:65 - 192.168.1.2
   msi - 38:87:d5:c5:f7:65 - 192.168.1.3
   ryzen9 wifi - b4:0e:de:6f:b5:76 - 192.168.1.4
@@ -190,11 +212,13 @@
   sqldr-a - 52:54:00:d8:5d:d6 - 
   sqlprod-b - 52:54:00:66:3d:cf - 
   sqldr-b - 52:54:00:fc:30:0b - 
+```
 
 # Sofware Manager
   > sudo apt install gnome-software
 
 # Create shortcuts in Home Directory
+```
 find ~ -maxdepth 1 -type l
 
   > ln -s /stale-storage/Personal/
@@ -202,8 +226,10 @@ find ~ -maxdepth 1 -type l
   > ln -s /stale-storage/Recreation-Zone/
   > ln -s /stale-storage/Softwares/
   > ln -s /stale-storage/share/
+```
 
 # Create shortcuts in subdirectories on homedirectory
+```
 mkdir 'Study-Videos'
 cd 'Study-Videos'
 find . -maxdepth 1 -type l
@@ -224,7 +250,7 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
     ln -s "/stale-storage/Study-Zone/SQL Server/SQLSkills.com-Recording"
     ln -s "/stale-storage/Study-Zone/Data Structures & Algorithms/FreeCodeCamp - Algorithms and Data Structures Tutorial - Full Course for Beginners - 5.5 Hrs.mp4"
     ln -s "/stale-storage/Study-Zone/Virtualization/Hands-on with Podman Containers on Linux"
-
+```
 
 # Google Chrome
   > Setup all profiles
@@ -255,11 +281,14 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
   > git config --global user.email "ajay.dwivedi2007@gmail.com"
 
 # Python
+```
   > sudo apt install python-is-python3 -y
   > python --version
   > python3 --version
+```
 
 # Anaconda with Jupyter Notebook
+```
   > Remove jupyter notebook & jupyter nbclassic
     conda remove nbclassic
     conda remove notebook
@@ -267,6 +296,7 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
   conda install -c conda-forge jupyterlab
   > Launch jupyterlab
   jupyter lab
+```
 
 
 # Slack
@@ -286,6 +316,7 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
   > Reboot after install
 
 # Shared Folders (samba) when using "Ubuntu-Mate-Desktop"
+```
   > https://linuxhint.com/share-folder-on-local-network-with-ubuntu/
   > sudo apt install samba smbclient caja-share
   > sudo systemctl status smbd
@@ -298,7 +329,7 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
   > chmod +775 /vm-storage-01
   > chmod +775 /vm-storage-02
   > chmod +775 /stale-storage
-
+```
 
 # NGinx
   > https://ubuntu.com/tutorials/install-and-configure-nginx#1-overview
@@ -308,13 +339,17 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
     sudo nginx -t
 
 # OBS Studio
+```
   > sudo add-apt-repository ppa:obsproject/obs-studio
   > sudo apt install obs-studio
+```
 
 # Blender
+```
   sudo add-apt-repository ppa:thomas-schiex/blender
   sudo apt-get update
   sudo apt-get install blender
+```
 
 # balenaEtcher
   > https://github.com/balena-io/etcher/releases
@@ -332,6 +367,7 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
   > sudo apt-get install cpu-x
 
 # Cockpit
+```
   sudo apt-get install cockpit -y
   sudo systemctl enable --now cockpit.socket
   sudo usermod -aG sudo $USER
@@ -353,7 +389,7 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
   sudo systemctl status cockpit
 
   sudo netstat -pnltu | grep 9090
-
+```
 
 # Apache Open Office
 # Other common softwares
@@ -367,7 +403,7 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
 # Postgres & PgAdmin
   > https://medium.com/@malymohsem/say-goodbye-to-downtime-upgrade-postgresql-14-to-16-effortlessly-with-pg-upgrade-42ef4dbf8524
   > https://www.postgresql.org/download/linux/ubuntu/
-
+```
   sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
   wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
   sudo apt-get update
@@ -393,10 +429,11 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
   echo 'export PATH="$PATH:/usr/lib/postgresql/16/bin"' >> ~/.bashrc
   echo 'export PGDATA="/var/lib/postgresql/16/main"' >> ~/.bashrc
   source ~/.bashrc
-
+```
 
 
   > Restore sample dbs
+```
     /PostgreSQL/14/bin> pg_restore -h localhost -d dvdrental /stale-storage/Softwares/PostgreSQL/PostgreSQL-Sample-Dbs/dvdrental.tar
 
     > Create role before restore of forumdb
@@ -470,6 +507,7 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
     # https://www.youtube.com/watch?v=YFQTSkqXf3I
 
 # Create softlinks for Study Videos
+```
 cd ~
 
 ln -s "/stale-storage/GitHub"
@@ -489,6 +527,7 @@ ln -s "/stale-storage/Study-Zone/Python/Udemy - Django Core A Reference Guide to
 ln -s "/stale-storage/Study-Zone/Python/Rest API with Django Framework"
 ln -s "/stale-storage/Study-Zone/Python/Intermediate Python Programming Course.mp4"
 ln -s "/stale-storage/Study-Zone/Virtualization/Docker and Kubernetes The Complete Guide"
+```
 
 # Install yt-dlp for Video Downloader
 https://github.com/yt-dlp/yt-dlp/wiki/Installation

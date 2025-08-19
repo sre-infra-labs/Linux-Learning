@@ -29,6 +29,10 @@ Origins = https://cockpit.ajaydwivedi.com
 ProtocolHeader = X-Forwarded-Proto
 ForwardedForHeader = X-Forwarded-For
 
+[Session]
+IdleTimeout=21600
+
+
 # Restart cockpit
 sudo systemctl restart cockpit
 
