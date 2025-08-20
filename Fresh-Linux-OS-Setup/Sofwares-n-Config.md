@@ -299,7 +299,7 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
 ```
 
 
-# Slack
+# Slack (https://slack.com/downloads/instructions/linux?ddl=1&build=deb)
   > office
   > sqlcommunity
   > ajaydwivedi
