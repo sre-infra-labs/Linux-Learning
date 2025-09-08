@@ -1,0 +1,50 @@
+#export EDITOR=nano
+export EDITOR=vim
+#export VISUAL="code --wait"
+export MSSQLPASSWORD='MyStrongMssqlPasswordHere'
+
+export SMTP_SERVER="smtp.gmail.com"
+export SMTP_PORT="587"
+export SMTP_USERNAME="sqlagentservice@gmail.com"
+export SMTP_PASSWORD="MyStrongSmtpAccountPasswordhere"
+export SMTP_EMAIL_TO="sqlagentservice@gmail.com"
+export SMTP_EMAIL_FROM="sqlagentservice@gmail.com"
+
+export ANSIBLE_SSH_PRIVATE_KEY_PERSONAL="$(< ~/.ssh/ansible.key)"
+export ANSIBLE_SSH_PRIVATE_KEY="$ANSIBLE_SSH_PRIVATE_KEY_PERSONAL"
+
+export REDHAT_USERNAME="myRedhatUserName"
+export REDHAT_PASSWORD='myRedhatStrongPasswordHere'
+
+export CONSUL_HTTP_TOKEN="x0x2xx40-5139-x366-x89x-12xx81xxx162"
+export CONSUL_TOKEN="$CONSUL_HTTP_TOKEN"
+export PGDATABASE=postgres
+export PGSERVICEFILE=~/.pg_service.conf
+export PGPWD='MyStrongPgPasswordHere'
+
+export PG_BACKREST_REPO1_S3_KEY_PERSONAL='SomeS3KeySecretCharacters'
+export PG_BACKREST_REPO1_S3_KEY_SECRET_PERSONAL='SomeS3KeySecretCharacters/KZ/RemainingSecretCharacters'
+export PG_BACKREST_REPO1_S3_BUCKET_REGION_PERSONAL='ap-south-1'
+export PG_BACKREST_REPO1_S3_BUCKET_NAME_PERSONAL='imajaydwivedi-pg-backups'
+export PG_BACKREST_REPO1_S3_PREFIX_PERSONAL='imajaydwivedi-pg-backups/pg-backups/'
+
+export PG_BACKREST_REPO1_S3_KEY="$PG_BACKREST_REPO1_S3_KEY_PERSONAL"
+export PG_BACKREST_REPO1_S3_KEY_SECRET="$PG_BACKREST_REPO1_S3_KEY_SECRET_PERSONAL"
+export PG_BACKREST_REPO1_S3_BUCKET_REGION="$PG_BACKREST_REPO1_S3_BUCKET_REGION_PERSONAL"
+export PG_BACKREST_REPO1_S3_BUCKET_NAME="$PG_BACKREST_REPO1_S3_BUCKET_NAME_PERSONAL"
+export PG_BACKREST_REPO1_S3_PREFIX="$PG_BACKREST_REPO1_S3_PREFIX_PERSONAL"
+
+export SLACK_BOT_TOKEN=xoxb-xxxxxxxxxxxx-xxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxT
+export SLACK_WEBHOOK_URL=https://hooks.slack.com/services/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
+export SLACK_CHANNEL_ID=C04LKQF9RGV
+export SLACK_CHANNEL_NAME=sqlmonitor-alerts
+export SLACK_TARGET='DBA'
+export SSL_CERT_FILE=$(python -m certifi)
+
+
+# Get this file from Google Drive
+# nano ~/.custom_vars
+# nano ~/.bashrc
+    # source ~/.custom_vars
+# source ~/.bashrc
+
