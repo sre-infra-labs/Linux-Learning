@@ -12,6 +12,7 @@ export SMTP_EMAIL_FROM="sqlagentservice@gmail.com"
 
 export ANSIBLE_SSH_PRIVATE_KEY_PERSONAL="$(< ~/.ssh/ansible.key)"
 export ANSIBLE_SSH_PRIVATE_KEY="$ANSIBLE_SSH_PRIVATE_KEY_PERSONAL"
+export ANSIBLE_VAULT_PASSWORD="AnsibleVaultStrongPassword"
 
 export REDHAT_USERNAME="myRedhatUserName"
 export REDHAT_PASSWORD='myRedhatStrongPasswordHere'
