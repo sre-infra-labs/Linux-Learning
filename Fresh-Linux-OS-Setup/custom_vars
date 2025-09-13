@@ -36,7 +36,7 @@ export PG_BACKREST_REPO1_S3_BUCKET_NAME="$PG_BACKREST_REPO1_S3_BUCKET_NAME_PERSO
 export PG_BACKREST_REPO1_S3_PREFIX="$PG_BACKREST_REPO1_S3_PREFIX_PERSONAL"
 
 export SLACK_BOT_TOKEN=xoxb-xxxxxxxxxxxx-xxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxT
-export SLACK_WEBHOOK_URL=https://hooks.slack.com/services/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
+export SLACK_WEBHOOK_URL=https://hooks.slack.com/services/XXXXXXXXXX/XXXXXXXXXXX/kuiXuw3vmpYI6uwCUSh5bx1K
 export SLACK_CHANNEL_ID=C04LKQF9RGV
 export SLACK_CHANNEL_NAME=sqlmonitor-alerts
 export SLACK_TARGET='DBA'
