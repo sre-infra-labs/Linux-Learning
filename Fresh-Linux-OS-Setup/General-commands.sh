@@ -4,6 +4,13 @@ echo $XDG_CURRENT_DESKTOP
 # Get default desktop manager
 cat /etc/X11/default-display-manager
 
+# Generate password hash using mkpasswd
+  # get current encryption method used for password on system
+sudo getent shadow saanvi
+  # use mkpasswd for getting hash using same method as above
+mkpasswd --method=yescrypt
+
+
 # Load average
 htop
 top
