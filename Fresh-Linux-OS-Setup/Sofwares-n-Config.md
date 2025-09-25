@@ -48,22 +48,33 @@
     sudo netplan apply
 
   # On Rhel, Edit file /etc/NetworkManager/system-connections/<link>.nmconnection
-    sudo nmcli connection modify enp1s0 \
-    ipv4.addresses "192.168.100.46/24" \
-    ipv4.gateway "192.168.100.10" \
-    ipv4.dns "192.168.100.10;8.8.8.8" \
-    ipv4.method manual
+    ## Modify Configuration for internal Network (192.168.100.0/24)
 
-    sudo nmcli connection modify enp1s0 \
-    connection.autoconnect yes \
-    ipv4.method manual \
-    ipv4.addresses 192.168.100.46/24 \
-    ipv4.dns "192.168.100.10,192.168.100.1" \
-    ipv4.never-default yes
+      # edit connection profile with ip and dns
+      sudo nmcli connection modify enp1s0 \
+        connection.autoconnect yes \
+        ipv4.method manual \
+        ipv4.addresses "192.168.100.46/24" \
+        ipv4.dns "192.168.100.10;8.8.8.8" \
+        ipv4.never-default yes
+
+      # edit connection profile to add static routes
+      sudo nmcli connection modify enp1s0 \
+        +ipv4.routes "192.168.100.0/24 0.0.0.0"
+
+      sudo nmcli connection modify enp1s0 \
+        +ipv4.routes "192.168.200.0/24 192.168.100.10"
+
+    ## Configuration for LAN Network (192.168.1.0/24)
+
+      # Edit connection profile
+      sudo nmcli connection modify enp2s0 \
+        connection.autoconnect yes \
+        ipv4.method auto
 
     or
 
-    (Internal Adapter) sudo cat /etc/NetworkManager/system-connections/enp1s0.nmconnection
+    ## Internal Network settings in /etc/NetworkManager/system-connections/<link>.nmconnection
       [connection]
       id=enp1s0
       uuid=b7f36905-d66c-461e-b8d4-60c0f81736be
@@ -77,7 +88,7 @@
       [ipv4]
       method=manual
       address1=192.168.100.46/24
-      dns=192.168.100.10;192.168.100.1;
+      dns=192.168.100.10;8.8.8.8;
       route1=192.168.100.0/24,0.0.0.0
       route2=192.168.200.0/24,192.168.100.10
       never-default=true
@@ -87,7 +98,7 @@
 
       [proxy]
 
-    and (Bridged Adapter) sudo cat /etc/NetworkManager/system-connections/enp2s0.nmconnection
+    ## LAN Network settings in /etc/NetworkManager/system-connections/<link>.nmconnection
       [connection]
       id=enp2s0
       uuid=eb9e5f7f-65ef-48aa-810d-229993650402
