@@ -54,25 +54,57 @@
     ipv4.dns "192.168.100.10;8.8.8.8" \
     ipv4.method manual
 
+    sudo nmcli connection modify enp1s0 \
+    connection.autoconnect yes \
+    ipv4.method manual \
+    ipv4.addresses 192.168.100.46/24 \
+    ipv4.dns "192.168.100.10,192.168.100.1" \
+    ipv4.never-default yes
+
     or
 
-    sudo cat /etc/NetworkManager/system-connections/enp1s0.nmconnection
+    (Internal Adapter) sudo cat /etc/NetworkManager/system-connections/enp1s0.nmconnection
       [connection]
       id=enp1s0
-      interface-name=enp1s0
+      uuid=b7f36905-d66c-461e-b8d4-60c0f81736be
       type=ethernet
+      interface-name=enp1s0
       autoconnect=true
+      autoconnect-priority=0
+
+      [ethernet]
 
       [ipv4]
-      address1=192.168.100.46/24,192.168.100.10
-      dns=192.168.100.10;8.8.8.8;
       method=manual
+      address1=192.168.100.46/24
+      dns=192.168.100.10;192.168.100.1;
+      route1=192.168.100.0/24,0.0.0.0
+      route2=192.168.200.0/24,192.168.100.10
       never-default=true
-      route1=192.168.200.0/24,192.168.100.10,100
 
       [ipv6]
-      addr-gen-mode=eui64
+      method=disabled
+
+      [proxy]
+
+    and (Bridged Adapter) sudo cat /etc/NetworkManager/system-connections/enp2s0.nmconnection
+      [connection]
+      id=enp2s0
+      uuid=eb9e5f7f-65ef-48aa-810d-229993650402
+      type=ethernet
+      interface-name=enp2s0
+      autoconnect=true
+      autoconnect-priority=0
+
+      [ethernet]
+
+      [ipv4]
       method=auto
+
+      [ipv6]
+      method=disabled
+
+      [proxy]
 
     or
 
@@ -89,11 +121,13 @@
 # Enable bridge interface for dhcp
 ```
   # On Rhel
-  sudo nmcli device up enp7s0
-  sudo nmcli con mod enp7s0 ipv4.method auto
-  sudo nmcli con up enp7s0
+  sudo nmcli device up enp1s0
+  sudo nmcli con mod enp1s0 ipv4.method auto
+  sudo nmcli con reload
+  sudo nmcli con up enp1s0
+
   # On Ubuntu
-  sudo netplan set ethernets.enp7s0.dhcp4=true
+  sudo netplan set ethernets.enp1s0.dhcp4=true
   sudo netplan apply
 ```
 
@@ -125,6 +159,11 @@
 # Update & upgrade
 ```
   sudo apt update -y && sudo apt upgrade -y
+```
+
+# Install finding utilities
+```
+sudo apt install fd-find plocate -y
 ```
 
 # Install pip
