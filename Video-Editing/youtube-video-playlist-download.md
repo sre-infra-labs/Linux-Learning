@@ -38,7 +38,7 @@ yt-dlp --cookies-from-browser brave -f "135+140/244+251/134+140/243+251/best[hei
 
 # download between x and y video numbers
 yt-dlp --cookies-from-browser brave -f "135+140/244+251/134+140/243+251/best[height<=480]/best[height<=360]/best" -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" \
-    --playlist-items 204-230 \
+    --playlist-items 351-400 \
     "https://youtube.com/playlist?list=PLbZxdQd9WcS0w2N8U1t6A5_GnEeWmRB4Y&feature=shared"
 ```
 
