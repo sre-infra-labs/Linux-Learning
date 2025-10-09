@@ -357,8 +357,16 @@ sudo dpkg -i /stale-storage/Softwares/Linux-Softwares-Installed/eaaclient_ubuntu
 sudo chmod +x /opt/wapp/bin/EAAClient
 sudo ln -s /opt/wapp/bin/EAAClient /usr/local/bin/eaaclient
 
-# Add software in Startup Applications
-eaaclient %U
+# Add software in Startup Applications.
+eaaclient --no-sandbox &
+eaaclient --no-sandbox %U
+
+sudo nano /usr/share/applications/appimagekit-eaaclient.desktop
+  Exec="/opt/wapp/bin/EAAClient" %U
+  to
+  Exec="/opt/wapp/bin/EAAClient" --no-sandbox %U
+
+sudo update-desktop-database
 
 ```
 
