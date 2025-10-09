@@ -348,6 +348,19 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
   jupyter lab
 ```
 
+# Akamai VPN Client Tool (eaaclient)
+```
+# Install from package
+sudo dpkg -i /stale-storage/Softwares/Linux-Softwares-Installed/eaaclient_ubuntu_24.04.deb
+
+# create soft link in binary path
+sudo chmod +x /opt/wapp/bin/EAAClient
+sudo ln -s /opt/wapp/bin/EAAClient /usr/local/bin/eaaclient
+
+# Add software in Startup Applications
+eaaclient %U
+
+```
 
 # Slack (https://slack.com/downloads/instructions/linux?ddl=1&build=deb)
   > office
