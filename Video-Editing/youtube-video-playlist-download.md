@@ -9,6 +9,13 @@ yt-dlp https://youtube.com/playlist?list=PL0g2ZVnQRk3iuwqJBtG5G6hPcphdHGg8W&feat
 
 yt-dlp --cookies-from-browser brave https://www.youtube.com/watch?v=dU7GwCOgvNY
 
+# Check available formats
+yt-dlp --cookies-from-browser brave -F  https://www.youtube.com/watch?v=g2JOHLHh4rI
+
+# Download with a particular format that has audio+video
+yt-dlp --cookies-from-browser brave -f 96 -P "~/Downloads" https://www.youtube.com/watch?v=g2JOHLHh4rI
+yt-dlp --cookies-from-browser brave -f 248+213 -P "~/Downloads" https://www.youtube.com/watch?v=g2JOHLHh4rI
+
 # Download YouTube playlist videos in separate directory indexed by video order in a playlist
 $ yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" "https://youtube.com/playlist?list=PL0g2ZVnQRk3iihkd7SwNb0QPQAx3Nc3UQ&feature=shared"
 
@@ -18,16 +25,7 @@ $ yt-dlp -o "%(playlist_index&{} - |)s%(title)s.%(ext)s" BaW_jenozKc "https://ww
 # Download all playlists of YouTube channel/user keeping each playlist in separate directory:
 $ yt-dlp -o "%(uploader)s/%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" "https://www.youtube.com/user/TheLinuxFoundation/playlists"
 
-# Check available formats
-yt-dlp -F "https://youtube.com/playlist?list=PLbZxdQd9WcS0w2N8U1t6A5_GnEeWmRB4Y&feature=shared"
-
 yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" "https://youtube.com/playlist?list=PLbZxdQd9WcS0w2N8U1t6A5_GnEeWmRB4Y&feature=shared"
-
-# download in 360p format
-yt-dlp -f 134+140 -o "%(title)s.%(ext)s" "https://www.youtube.com/watch?v=l2B074Hnb7E"
-
-# download in 480p format
-yt-dlp --cookies-from-browser brave -f 135+140 -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" "https://youtube.com/playlist?list=PLbZxdQd9WcS0w2N8U1t6A5_GnEeWmRB4Y&feature=shared"
 
 # download in 480p, but use 360p as fallback
 yt-dlp --cookies-from-browser brave -f "135+140/244+251/134+140/243+251/best[height<=480]/best[height<=360]/best" -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" \
@@ -60,7 +58,6 @@ yt-dlp --cookies-from-browser brave "https://event.on24.com/eventRegistration/co
 
 # Download Video Course
 yt-dlp --cookies-from-browser brave -P "~/Downloads" -o "%(playlist)s/%(playlist_index)03d - %(title)s.%(ext)s" "https://learning.oreilly.com/videos/postgresql-mistakes-and/9781633436879VE"
-
 
 ```
 
