@@ -7,14 +7,15 @@
 ```
 yt-dlp https://youtube.com/playlist?list=PL0g2ZVnQRk3iuwqJBtG5G6hPcphdHGg8W&feature=shared
 
-yt-dlp --cookies-from-browser brave https://www.youtube.com/watch?v=dU7GwCOgvNY
-
 # Check available formats
-yt-dlp --cookies-from-browser brave -F  https://www.youtube.com/watch?v=g2JOHLHh4rI
+yt-dlp --cookies-from-browser brave -F  https://youtu.be/RHwglGf_z40?si=88MNEXadvvXsCdH9
 
-# Download with a particular format that has audio+video
-yt-dlp --cookies-from-browser brave -f 96 -P "~/Downloads" https://www.youtube.com/watch?v=g2JOHLHh4rI
-yt-dlp --cookies-from-browser brave -f 248+213 -P "~/Downloads" https://www.youtube.com/watch?v=g2JOHLHh4rI
+# Download a specific format (video+audio)
+yt-dlp --cookies-from-browser brave -P "~/Downloads" -f 219 \
+    https://youtu.be/RHwglGf_z40?si=88MNEXadvvXsCdH9
+    or
+yt-dlp --cookies-from-browser brave -P "~/Downloads" -f 313+251-6 \
+    https://youtu.be/RHwglGf_z40?si=88MNEXadvvXsCdH9
 
 # Download YouTube playlist videos in separate directory indexed by video order in a playlist
 $ yt-dlp -o "%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s" "https://youtube.com/playlist?list=PL0g2ZVnQRk3iihkd7SwNb0QPQAx3Nc3UQ&feature=shared"
