@@ -237,6 +237,8 @@ sudo apt install fd-find plocate -y
   192.168.1.10 sqlmonitor
   192.168.1.11 workstation
   192.168.1.12 sqlpractice
+  192.168.1.15 ajay-mobile
+  192.168.1.16 saanvi-mobile
   192.168.1.18 pgprod
   192.168.1.20 aghost-1a
   192.168.1.21 aghost-1b
