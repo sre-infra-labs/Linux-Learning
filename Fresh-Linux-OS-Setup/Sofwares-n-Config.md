@@ -394,6 +394,7 @@ sudo update-desktop-database
   > sudo apt install samba smbclient caja-share
   > sudo systemctl status smbd
   > sudo ufw allow 'Samba'
+  > sudo usermod -aG sambashare saanvi
   > killall caja
   > caja
 
