@@ -573,6 +573,10 @@ sudo update-desktop-database
 # Install Kolibri on Ubuntu
   > https://learningequality.org/kolibri/download/
 
+sudo systemctl status kolibri
+
+
+
 #Videos to Watch
   # 20 Things You MUST DO After Installing Ubuntu (Right Now!)
     # https://www.youtube.com/watch?v=GrI5c9PXS5k
