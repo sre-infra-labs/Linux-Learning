@@ -179,6 +179,8 @@ sudo apt install fd-find plocate -y
 
 # Install pip
 ```
+  python3 --version
+  sudo apt install python-is-python3 -y
   pip3 show psutil
   sudo apt install python3-pip -y
   sudo pip3 install psutil --break-system-packages
@@ -267,7 +269,7 @@ sudo apt install fd-find plocate -y
 ```
 
 # Sofware Manager
-  > sudo apt install gnome-software
+  > sudo apt install gnome-software -Y
 
 # Create shortcuts in Home Directory
 ```
@@ -339,7 +341,7 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
   > python3 --version
 ```
 
-# Anaconda with Jupyter Notebook
+# [Anaconda with Jupyter Notebook](https://www.anaconda.com/docs/getting-started/anaconda/install#linux-installer)
 ```
   > Remove jupyter notebook & jupyter nbclassic
     conda remove nbclassic
@@ -391,7 +393,7 @@ sudo update-desktop-database
 # Shared Folders (samba) when using "Ubuntu-Mate-Desktop"
 ```
   > https://linuxhint.com/share-folder-on-local-network-with-ubuntu/
-  > sudo apt install samba smbclient caja-share
+  > sudo apt install samba smbclient caja-share -y
   > sudo systemctl status smbd
   > sudo ufw allow 'Samba'
   > sudo usermod -aG sambashare saanvi
@@ -564,7 +566,7 @@ sudo update-desktop-database
   > sudo nano /usr/share/lightdm/lightdm.conf.d/50-ubuntu-mate.conf
     
     autologin-user=saanvi
-
+      
 # Remove Password Keyrings
   > https://linuxconfig.org/how-to-disable-keyring-popup-on-ubuntu
 
