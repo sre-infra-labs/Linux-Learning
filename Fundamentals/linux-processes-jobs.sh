@@ -146,7 +146,7 @@ man 7 signals
 COMMENTS
 
 # Generate a long running command scenario
-dd if=/dev/zero of=/dev/null
+dd if=/dev/zero of=/dev/null &
 
 "Ctrl+Z" to send the command to background job
 
@@ -215,3 +215,10 @@ sudo kill 6344
 
 # kill all processes running dd command
 sudo killall dd
+
+# Get postgres user running processes
+ps -u postgres -o pid,ppid,%cpu,%mem,cmd --forest
+
+
+
+

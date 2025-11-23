@@ -59,6 +59,15 @@ find Command
     # exclude node_modules directory
     find . -type f -not -path "./node_modules/*"
 
+-> Negative an argument with "-not"
+
+    # find files owned by postgres user in /var/lib/pgsql path
+    find /var/lib/pgsql -user postgres -print
+
+    # find files NOT owned by postgres user in /var/lib/pgsql path
+    find /var/lib/pgsql -not -user postgres -print
+
+
 
 COMMENTS
 
@@ -106,3 +115,11 @@ find . -type f -empty
 
 # Find and change permissions
 find . -type f -name "*.sh" -exec chmod +x {} \;
+
+# Find conf files for postgres anywhere
+find / -type d -name "postgres*" -exec find {} -type f -name "*.conf" \; 2>/dev/null
+
+# Find conf files owned by postgres user skipping timeshift directory files
+sudo find / -type f -name "*.conf" -user postgres ! -path "*/timeshift/*" 2>/dev/null
+
+

@@ -1,3 +1,13 @@
+# Get users from /etc/passwd
+awk -F : '{ print $1 }' /etc/passwd
+
+# Get lines with length greator than 70 characters
+awk 'length($0) > 70' /etc/passwd
+
+# Get home directory of postgres user
+awk -F : '/postgres/ { print $6 }' /etc/passwd
+grep postgres /etc/passwd | cut -d : -f 6
+
 # Get disk filesystem usage
 df -h | awk 'BEGIN {print "\t"} {printf "%s\t%s\t%s\t%s\t%s\n", $6, $2, $3, $4, $5} END {print "\t"}'
 

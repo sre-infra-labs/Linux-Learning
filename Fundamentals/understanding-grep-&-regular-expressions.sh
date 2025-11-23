@@ -29,3 +29,36 @@ sudo grep -il postgres /etc/* 2>/dev/null
 
 # find postgres user along with 3 lines before and after
 grep -C3 postgres /etc/passwd
+
+
+### Using Regular Expressions
+
+# ^ beginning of the line:
+grep '^I' myfile
+
+# $ end of the line:
+grep 'anna$' myfile
+
+# \b end of word:
+grep 'lea\b' myfile will find lines starting with lea, but not with leanne
+
+# * zero or more times:
+grep 'n.*x' myfile
+
+# + one or more times (extended regex!):
+grep -E 'bi+t' myfile
+
+# ? zero or one time (extended regex!):
+grep -E 'bi?t' myfile
+
+# n{3} n occurs 3 times:
+grep 'bon\{3\}nen' myfile
+
+# string must be a word:
+grep '\banna\b' myfile
+
+# . one character:
+grep '^.$' myfile
+
+# either option:
+grep -E '(svm|vmx)' /proc/cpuinfo
