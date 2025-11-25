@@ -122,4 +122,42 @@ find / -type d -name "postgres*" -exec find {} -type f -name "*.conf" \; 2>/dev/
 # Find conf files owned by postgres user skipping timeshift directory files
 sudo find / -type f -name "*.conf" -user postgres ! -path "*/timeshift/*" 2>/dev/null
 
+# Find .mkv/.mp4 files in /stale-storage order by size
+sudo find /stale-storage -type f \( -iname "*.mkv" -o -iname "*.mp4" \) -size +500M \
+    -exec ls -lh {} + | sort -k5 -h -r
+
+# Find .mkv/.mp4 files in /stale-storage order by size and duration
+sudo find /stale-storage -type f \( -iname "*.mkv" -o -iname "*.mp4" \) -size +500M -print0 | \
+    while IFS= read -r -d '' file; do
+        size=$(ls -lh "$file" | awk '{print $5}')
+        duration=$(timeout 5 ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file" 2>/dev/null)
+        if [ -z "$duration" ]; then
+            duration_fmt="ERROR"
+        else
+            h=$(printf "%.0f" $(echo "$duration / 3600" | bc -l))
+            m=$(printf "%.0f" $(echo "($duration % 3600) / 60" | bc -l))
+            s=$(printf "%.0f" $(echo "$duration % 60" | bc -l))
+            duration_fmt=$(printf "%02d:%02d:%02d" $h $m $s)
+        fi
+        echo "$duration_fmt $size $file"
+    done | sort -k1 -h -r
+
+# Find .mkv files in /stale-storage order by size and duration
+sudo find /stale-storage -type f -name *.mkv -size +500M -print0 | \
+    while IFS= read -r -d '' file; do
+        size=$(ls -lh "$file" | awk '{print $5}')
+        duration=$(timeout 5 ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file" 2>/dev/null)
+        if [ -z "$duration" ]; then
+            duration_fmt="ERROR"
+        else
+            h=$(printf "%.0f" $(echo "$duration / 3600" | bc -l))
+            m=$(printf "%.0f" $(echo "($duration % 3600) / 60" | bc -l))
+            s=$(printf "%.0f" $(echo "$duration % 60" | bc -l))
+            duration_fmt=$(printf "%02d:%02d:%02d" $h $m $s)
+        fi
+        echo "$duration_fmt $size $file"
+    done | sort -k1 -h -r
+
+
+
 
