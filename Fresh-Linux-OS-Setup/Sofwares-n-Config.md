@@ -3,6 +3,26 @@
 # Install OS with inet1/inet2 adapter
 ![inet1-configuration-rhel](inet1-configuration-rhel.png)
 
+# Drivers
+```
+sudo apt update -y
+sudo apt upgrade -y
+
+# install a specific driver
+sudo apt install nvidia-driver-580
+or
+# install recommended driver
+sudo ubuntu-drivers install
+
+# reboot
+sudo shutdown -r
+
+# verify
+nvidia-smi
+
+
+```
+
 # For Ansible create, following users
 ```
   sudo -i -u root

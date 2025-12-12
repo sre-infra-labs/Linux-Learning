@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set default directory or accept as an argument
-VideoCourseDirectory=${1:-'/hyperactive/Mastering AI Agents for Databases'}
+VideoCourseDirectory=${1:-'/stale-storage/Study-Zone/DBMS/Distributed Systems in One Lesson'}
 
 # Description: Function to loop through *.mkv files and compress to *.mp4
 echo "Processing directory: $VideoCourseDirectory"
