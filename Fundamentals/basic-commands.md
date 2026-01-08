@@ -212,6 +212,9 @@
 - `fdisk -l` - Lists all partitions and information for all drives.
 
 - `du -sh /dir1` - Displays total disk usage of /dir1 in human-readable form.
+```
+sudo du --max-depth=1 /var | sort -nr | numfmt --field 1 --to iec --format "%-10f" | head -n 10
+```
 
 - `findmnt` - Lists all mounted filesystems and their properties.
 

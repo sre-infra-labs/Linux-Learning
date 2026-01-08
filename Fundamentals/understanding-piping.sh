@@ -95,8 +95,18 @@ cat companies.txt | sort -nk2 | head -n3 | sed 's/Streamo/Facebook/g'
 sudo ls -la /etc | awk '{ print $4 }' | sort | uniq
 
 # Figure out what is consuming space in /var/lib
+sudo du --max-depth=1 /var | sort -nr | head -n 20 | numfmt --to iec --format "%-10f"
+
+sudo du --max-depth=1 /var | sort -nr | numfmt --field 1 --to iec --format "%-10f" | head -n 10
+
 sudo du --max-depth=1 /var/lib | sort -nr | head -n 20 | awk '{ print $2 " -> " $1 }'
 
 
+sudo du --max-depth=1 /var/lib | sort -nr | head -n 20 | awk '{cmd="numfmt --to=iec-i --suffix=B "$1; cmd | getline h; close(cmd); print $2" -> "h}'
+
+sudo du --max-depth=1 /var/lib | sort -nr | head -n 20 | while read size dir; do
+  human_size=$(numfmt --to=iec-i --suffix=B "$size")
+  echo "$dir -> $human_size"
+done
+
 COMMENTS
- 
