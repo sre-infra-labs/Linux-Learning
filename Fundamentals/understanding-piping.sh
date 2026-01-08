@@ -68,5 +68,35 @@ grep -rl "foo" . | xargs sed -i 's/foo/bar/g'
 find "/hyperactive/Mastering AI Agents for Databases" -type f -name "*.mkv" | sed 's|/[^/]*$||' | sort | uniq | xargs -I {} tree -P "*.mkv" {}
 
 
+# create dummmy text file (https://linuxopsys.com/linux-pipe-command-with-examples)
+cat <<EOF > companies
+SolarZU 250M
+PostalLight 32M
+Bouhannana 351M
+RoyalOak 45M
+Almada 274M
+Streamo 142M
+Bingboom 210M
+EOF
+
+# sort content. Default first header column
+cat companies.txt | sort
+
+# get top 3 companies by value
+cat companies.txt | sort -nrk2 | head -n 3
+
+    -k2 -> key/header 2nd
+    -nr -> numerically reverse
+
+# updating output. Replace one company with another
+cat companies.txt | sort -nk2 | head -n3 | sed 's/Streamo/Facebook/g'
+
+# Dealing with advanced pipelines. Get unique owners list for /etc directory items
+sudo ls -la /etc | awk '{ print $4 }' | sort | uniq
+
+# Figure out what is consuming space in /var/lib
+sudo du --max-depth=1 /var/lib | sort -nr | head -n 20 | awk '{ print $2 " -> " $1 }'
+
+
 COMMENTS
  
