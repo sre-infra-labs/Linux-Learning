@@ -95,6 +95,96 @@ sudo lsof -i :9090
     process_resident_memory_bytes[3h]
 ```
 
+# Install node_exporter
+- Monitoring/prom-labs/lab-04/lab-04.md
+  - Monitoring/prom-labs/lab-04/node-exporter-install-v1.9.1.sh
+
+## Install node_exporter on pgpractice
+```
+ssh pgpractice
+
+cd ~/Downloads
+nano node-exporter-install-v1.9.1.sh
+chmod +x node-exporter-install-v1.9.1.sh
+
+sudo ./node-exporter-install-v1.9.1.sh
+
+
+    Note: To analyze this system from your main Prometheus server, 
+    add this system's IP address and port 9100 in prometheus.yml > scrape_configs > targets. 
+    For example: '- targets: ['<ip_address>:9100']'
+
+sudo ufw allow 9100
+```
+
+# Install mongodb_exporter on pgpractice
+- https://github.com/percona/mongodb_exporter
+- https://www.digitalocean.com/community/tutorials/how-to-monitor-mongodb-with-grafana-and-prometheus-on-ubuntu-20-04
+
+```
+
+
+```
+
+## Add pgpractice to Prometheous + Grafana
+```
+|------------$ sudo cat /etc/prometheus/prometheus.yml
+
+
+# my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - "prometheus.rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9091"]
+       # The label name is added as a label `label_name=<label_value>` to any timeseries scraped from this config.
+        labels:
+          app: "prometheus"
+
+  - job_name: "node_exporter"
+    static_configs:
+      - targets:
+        - "localhost:9100"
+        - "pgpractice:9100"
+        - "pgpoc:9100"
+        - "officelaptop:9100"
+
+  - job_name: 'win-exporter'
+    static_configs:
+      - targets:
+        - 'sqlmonitor:9182'
+        - 'sqlpractice:9182'
+
+  - job_name: postgres
+    static_configs:
+      - targets:
+        - "localhost:9187"
+```
+
+
 # URLs/Ports
 http://localhost:9000 - cockpit
 http://localhost:9091 - prometheus
