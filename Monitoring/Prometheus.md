@@ -1,4 +1,6 @@
 # Using Prometheus to Monitor Linux and Kubernetes
+- [PromQL Docs](https://prometheus.io/docs/prometheus/latest/querying/basics/)
+
 ### [Github Repo](https://github.com/daveprowse/prom-live)
 
 ![Lab Setup](prometheus-lab-setup.png)
