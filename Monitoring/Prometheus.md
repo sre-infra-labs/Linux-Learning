@@ -1,5 +1,7 @@
 # Using Prometheus to Monitor Linux and Kubernetes
 - [PromQL Docs](https://prometheus.io/docs/prometheus/latest/querying/basics/)
+- [Youtube - PromQL Tutorial: A COMPLETE Guide to Prometheus Queries](https://www.youtube.com/watch?v=RC1ivt-ZN_U)
+- [Youtube - Grafana & Prometheus Tutorial: Create a COMPLETE Dashboard](https://www.youtube.com/watch?v=Fpw4Rwpb160)
 
 ### [Github Repo](https://github.com/daveprowse/prom-live)
 
