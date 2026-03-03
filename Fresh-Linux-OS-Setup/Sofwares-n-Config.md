@@ -288,6 +288,25 @@ sudo apt install fd-find plocate -y
   sqldr-b - 52:54:00:fc:30:0b - 
 ```
 
+# Configure ssh profile
+```
+nano ~/.ssh/config
+ |           |
+ V           V
+
+Host msi
+  HostName msi
+  ForwardX11Trusted yes
+  User saanvi
+
+Host ajay-mobile
+  User u0_a432
+  Port 8022
+
+Host officelaptop
+  User ajaydwivedi
+```
+
 # Sofware Manager
   > sudo apt install gnome-software -Y
 
