@@ -100,6 +100,7 @@ sudo lsof -i :9090
 ```
 
 # Install node_exporter
+- https://github.com/prometheus/node_exporter
 - Monitoring/prom-labs/lab-04/lab-04.md
   - Monitoring/prom-labs/lab-04/node-exporter-install-v1.9.1.sh
 
@@ -128,6 +129,29 @@ sudo ufw allow 9100
 ```
 
 
+```
+
+
+# Install windows_exporter
+- https://github.com/prometheus-community/windows_exporter
+```
+Service Unit Executable
+-----------------------
+"C:\Program Files\windows_exporter\windows_exporter.exe" --config.file="F:\windows_exporter_config.yaml"
+
+# Edit config file
+notepad "F:\windows_exporter_config.yaml"
+
+collectors:
+  enabled: cpu,net,service,diskdrive,logical_disk,memory,mssql,os,physical_disk,service,system,process
+  #mssql,os,physical_disk,service,system
+collector:
+  service:
+    include: windows_exporter
+log:
+  level: warn
+web:
+  listen-address: ":9182"
 ```
 
 ## Add pgpractice to Prometheous + Grafana
