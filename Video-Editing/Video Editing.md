@@ -61,6 +61,8 @@ https://en1.savefrom.net/1-youtube-video-downloader-3vV/
 ```
 ffmpeg -i tutorial-video.mp4 -i videoplayback.mp3 -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 "Vim-tutorial-for-beginners.mp4"
 
+ffmpeg -i 'Azure Solutions Architect Expert Certification Course (AZ 305) – Pass the Exam! [i6NzKvGUsBs].mp4' -i 'Azure Solutions Architect Expert Certification Course (AZ 305) – Pass the Exam! [i6NzKvGUsBs].m4a' -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 'FreeCodeCamp - Azure Solutions Architect (AZ 305).mp4'
+
 ffmpeg -i 'Analytics for not-so-big data with DuckDB - David Ostrovsky - NDC Oslo 2025 - Video.mp4' -i 'Analytics for not-so-big data with DuckDB - David Ostrovsky - NDC Oslo 2025.mp3' -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 'Analytics for not-so-big data with DuckDB - David Ostrovsky - NDC Oslo 2025.mp4'
 ```
 

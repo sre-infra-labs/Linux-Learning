@@ -5,10 +5,17 @@
 ## [Download Youtube Playlist](https://github.com/yt-dlp/yt-dlp?tab=readme-ov-file#output-template-examples)
 
 ```
-yt-dlp https://youtube.com/playlist?list=PL0g2ZVnQRk3iuwqJBtG5G6hPcphdHGg8W&feature=shared
+yt-dlp https://www.youtube.com/watch?v=i6NzKvGUsBs
 
 # Check available formats
-yt-dlp --cookies-from-browser brave -F  https://youtu.be/RHwglGf_z40?si=88MNEXadvvXsCdH9
+yt-dlp --cookies-from-browser brave -F https://youtu.be/RHwglGf_z40?si=88MNEXadvvXsCdH9
+yt-dlp -F https://www.youtube.com/watch?v=i6NzKvGUsBs
+
+# How to choose Video + Audio format
+    # Choose VIDEO based on RESOLUTION + FPS + VBR
+    # Choose AUDIO with ACODEC = 'opus' and highest VBR
+yt-dlp -f 248+251 https://www.youtube.com/watch?v=i6NzKvGUsBs # azure
+yt-dlp -f 248+251 https://www.youtube.com/watch?v=NhDYbskXRgc # aws
 
 # Download a specific format (video+audio)
 yt-dlp --cookies-from-browser brave -P "~/Downloads" -f 219 \
