@@ -1,4 +1,59 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "11.3.1"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -19,7 +74,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 57,
+  "id": null,
   "links": [
     {
       "asDropdown": true,
@@ -46,7 +101,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -534,7 +589,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "windows_os_info{job=~\"$job\"} * on(instance) group_right(product) windows_os_hostname",
@@ -547,7 +602,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "time() - windows_system_boot_time_timestamp{job=~\"$job\"}",
@@ -560,7 +615,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "windows_cpu_logical_processor{job=~\"$job\"} - 0",
@@ -573,7 +628,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "avg by (instance) (windows_cpu_core_frequency_mhz{job=~\"$job\"})",
           "format": "table",
@@ -585,7 +640,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "100 - (avg by (instance) (irate(windows_cpu_time_total{job=~\"$job\",mode=\"idle\"}[2m])) * 100)",
           "format": "table",
@@ -597,7 +652,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "windows_memory_physical_total_bytes{job=~\"$job\"} - 0",
@@ -610,7 +665,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "100 - 100 * windows_memory_physical_free_bytes{job=~\"$job\"} / windows_memory_physical_total_bytes{job=~\"$job\"}",
@@ -623,7 +678,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "1 - (windows_logical_disk_free_bytes{job=~\"$job\",volume=~\"C:\"}/windows_logical_disk_size_bytes{job=~\"$job\",volume=~\"C:\"})",
           "format": "table",
@@ -635,7 +690,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "max by (instance) (1-windows_logical_disk_free_bytes{job=~\"$job\"}/windows_logical_disk_size_bytes{job=~\"$job\"})",
           "format": "table",
@@ -647,7 +702,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "windows_system_processes{job=~\"$job\"}",
@@ -660,7 +715,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "sum by (instance) (windows_service_state{job=~\"$job\",state=~\"running\"})",
           "format": "table",
@@ -676,7 +731,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -766,7 +821,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "100 - (avg by (instance) (irate(windows_cpu_time_total{job=~\"$job\",mode=\"idle\"}[2m])) * 100)",
           "hide": false,
@@ -782,7 +837,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1046,7 +1101,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "100.0 - 100 * windows_memory_physical_free_bytes{job=~\"$job\"} / windows_memory_physical_total_bytes{job=~\"$job\"}",
@@ -1062,7 +1117,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1154,7 +1209,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "max by (instance) (irate(windows_net_bytes_sent_total{job=~\"$job\",nic!~'isatap.*|VPN.*'}[2m]))*8",
           "format": "time_series",
@@ -1186,7 +1241,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "-max by (instance) (irate(windows_net_bytes_received_total{job=~\"$job\",nic!~'isatap.*|VPN.*'}[2m]))*8",
           "format": "time_series",
@@ -1219,7 +1274,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1311,7 +1366,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "-max by (instance) (irate(windows_logical_disk_read_bytes_total[2m]))",
           "format": "time_series",
@@ -1343,7 +1398,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "max by (instance) (irate(windows_logical_disk_write_bytes_total[2m]))",
           "format": "time_series",
@@ -1376,7 +1431,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1468,7 +1523,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "-max by (instance) (irate(windows_logical_disk_reads_total[2m]))",
           "format": "time_series",
@@ -1500,7 +1555,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "max by (instance) (irate(windows_logical_disk_writes_total[2m]))",
           "format": "time_series",
@@ -1546,7 +1601,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -1615,7 +1670,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "time() - windows_system_boot_time_timestamp{job=~\"$job\",instance=~\"$instance\"}",
@@ -1631,7 +1686,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1699,7 +1754,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "100 - (avg(irate(windows_cpu_time_total{job=~\"$job\",instance=~\"$instance\",mode=\"idle\"}[2m])))*100",
@@ -1717,7 +1772,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1784,7 +1839,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "100 - (windows_logical_disk_free_bytes{job=~\"$job\",instance=~\"$instance\"} / windows_logical_disk_size_bytes{job=~\"$job\",instance=~\"$instance\"})*100",
           "instant": false,
@@ -1799,7 +1854,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1950,7 +2005,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "sum(windows_service_state{job=~\"$job\",instance=~\"$instance\"}) by (state)",
           "format": "time_series",
@@ -1981,7 +2036,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2100,7 +2155,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "windows_system_processes{job=~\"$job\",instance=~\"$instance\"}",
@@ -2116,7 +2171,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -2185,7 +2240,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "windows_cpu_logical_processor{job=~\"$job\",instance=~\"$instance\"}",
@@ -2203,7 +2258,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2272,7 +2327,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "100 - (windows_memory_physical_free_bytes{job=~\"$job\",instance=~\"$instance\"} / windows_memory_physical_total_bytes{job=~\"$job\",instance=~\"$instance\"})*100",
@@ -2286,7 +2341,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -2355,7 +2410,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "windows_memory_physical_total_bytes{job=~\"$job\",instance=~\"$instance\"}",
@@ -2373,7 +2428,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2463,7 +2518,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "100 - avg(irate(windows_cpu_time_total{job=~\"$job\",instance=~\"$instance\",mode=\"idle\"}[5m]))*100",
           "hide": false,
@@ -2478,7 +2533,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2807,7 +2862,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "windows_memory_physical_total_bytes{job=~\"$job\",instance=~\"$instance\"}",
@@ -2841,7 +2896,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "windows_memory_physical_free_bytes{job=~\"$job\",instance=~\"$instance\"}",
@@ -2875,7 +2930,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "windows_memory_committed_bytes{job=~\"$job\",instance=~\"$instance\"}",
@@ -2905,7 +2960,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "windows_memory_commit_limit{job=~\"$job\",instance=~\"$instance\"}",
@@ -2922,7 +2977,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3047,7 +3102,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "windows_logical_disk_free_bytes{job=~\"$job\",instance=~\"$instance\"}",
           "format": "time_series",
@@ -3079,7 +3134,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "windows_logical_disk_size_bytes{job=~\"$job\",instance=~\"$instance\"}",
           "format": "time_series",
@@ -3112,7 +3167,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3205,7 +3260,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "irate(windows_net_bytes_sent_total{job=~\"$job\",instance=~\"$instance\",nic!~'isatap.*|VPN.*'}[5m])*8>0\r",
           "format": "time_series",
@@ -3237,7 +3292,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "irate(windows_net_bytes_received_total{job=~\"$job\",instance=~\"$instance\",nic!~'isatap.*|VPN.*'}[5m])*8\n",
           "format": "time_series",
@@ -3269,7 +3324,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3362,7 +3417,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "irate(windows_logical_disk_read_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m])\r",
           "format": "time_series",
@@ -3393,7 +3448,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "irate(windows_logical_disk_write_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m])\r",
           "format": "time_series",
@@ -3425,7 +3480,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3518,7 +3573,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "irate(windows_logical_disk_reads_total{job=~\"$job\",instance=~\"$instance\"}[5m])",
           "format": "time_series",
@@ -3549,7 +3604,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "irate(windows_logical_disk_writes_total{job=~\"$job\",instance=~\"$instance\"}[5m])",
           "format": "time_series",
@@ -3581,7 +3636,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3627,8 +3682,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3670,7 +3724,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "(irate(windows_net_bytes_total{job=~\"$job\",instance=~\"$instance\",nic!~'isatap.*|VPN.*'}[5m]) * 8 / windows_net_current_bandwidth_bytes{job=~\"$job\",instance=~\"$instance\",nic!~'isatap.*|VPN.*'}) * 100",
@@ -3685,7 +3739,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3731,8 +3785,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3775,7 +3828,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "irate(windows_net_packets_outbound_discarded_total{job=~\"$job\",instance=~\"$instance\", nic!~'isatap.*|VPN.*'}[5m]) + irate(windows_net_packets_outbound_errors_total{job=~\"$job\",instance=~\"$instance\"}[5m])",
@@ -3809,7 +3862,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "irate(windows_net_packets_received_discarded_total{job=~\"$job\",instance=~\"$instance\", nic!~'isatap.*|VPN.*'}[5m]) + irate(windows_net_packets_received_errors_total{job=~\"$job\",instance=~\"$instance\"}[5m])",
@@ -3844,7 +3897,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3890,8 +3943,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3934,7 +3986,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "windows_system_threads{job=~\"$job\",instance=~\"$instance\"}",
           "format": "time_series",
@@ -3967,7 +4019,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cesajnfr22wowf"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -4013,8 +4065,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4058,7 +4109,7 @@
           },
           "datasource": {
             "type": "prometheus",
-            "uid": "cesajnfr22wowf"
+            "uid": "${DS_PROMETHEUS}"
           },
           "expr": "irate(windows_system_exception_dispatches_total{job=~\"$job\",instance=~\"$instance\"}[5m])",
           "format": "time_series",
@@ -4089,7 +4140,6 @@
       "type": "timeseries"
     }
   ],
-  "preload": false,
   "refresh": "",
   "schemaVersion": 40,
   "tags": [
@@ -4099,13 +4149,10 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "text": "win-exporter",
-          "value": "win-exporter"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "cesajnfr22wowf"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(windows_os_hostname,job)",
         "includeAll": false,
@@ -4123,13 +4170,10 @@
         "type": "query"
       },
       {
-        "current": {
-          "text": "SQLMonitor",
-          "value": "SQLMonitor"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "cesajnfr22wowf"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(windows_os_hostname{job=~\"$job\"},hostname)",
         "includeAll": false,
@@ -4147,13 +4191,10 @@
         "type": "query"
       },
       {
-        "current": {
-          "text": "sqlmonitor:9182",
-          "value": "sqlmonitor:9182"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "cesajnfr22wowf"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(windows_os_hostname{job=~\"$job\", hostname=~\"$hostname\"},instance)",
         "includeAll": false,
@@ -4171,13 +4212,10 @@
         "type": "query"
       },
       {
-        "current": {
-          "text": "SQLMonitor",
-          "value": "SQLMonitor"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "cesajnfr22wowf"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(windows_os_hostname{job=~\"$job\", instance=~\"$instance\"},hostname)",
         "hide": 2,
@@ -4214,8 +4252,8 @@
     ]
   },
   "timezone": "",
-  "title": "Windows Exporter - Working 01",
-  "uid": "Kdh0OoSGz2",
-  "version": 6,
+  "title": "Windows Exporter - Detailed 02",
+  "uid": "windows_exporter_detailed_02",
+  "version": 1,
   "weekStart": ""
 }
