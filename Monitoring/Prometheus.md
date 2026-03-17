@@ -154,6 +154,11 @@ web:
   listen-address: ":9182"
 ```
 
+
+# Install sql_exporter
+- https://github.com/burningalchemist/sql_exporter
+- Instructions on https://github.com/imajaydwivedi/SQLMonitor/tree/dev/sql_exporter#create-windows-service
+
 ## Add pgpractice to Prometheous + Grafana
 ```
 |------------$ sudo cat /etc/prometheus/prometheus.yml
@@ -210,6 +215,17 @@ scrape_configs:
     static_configs:
       - targets:
         - "localhost:9187"
+
+  - job_name: mssql_exporter
+    static_configs:
+      - targets:
+        - "sqlmonitor:9399"
+        - "sqlpractice:9399"
+        - "AgHost-1A:9399"
+        - "AgHost-1B:9399"
+        - "AgHost-2A:9399"
+        - "AgHost-2B:9399"
+
 ```
 
 
