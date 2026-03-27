@@ -67,6 +67,13 @@ Note: To run Prometheus manually, do the following:
 2. Run the prometheus command in case of debugging:
 sudo -u prometheus /usr/bin/prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/var/lib/prometheus/metrics2
 
+3. Check logs
+journalctl -u prometheus -n 50
+
+4. Run prometheus manually to debug issues
+/usr/bin/prometheus --config.file=/etc/prometheus/prometheus.yml
+
+
 ```
 
 ## Common locations. Mostly found in /lib/systemd/system/prometheus.service
@@ -216,11 +223,38 @@ scrape_configs:
       - targets:
         - "localhost:9187"
 
-  - job_name: mssql_exporter
+  - job_name: mssql_exporter_common
+    scrape_interval: 30s
+    params:
+      'jobs[]': [mssql_common]
     static_configs:
       - targets:
         - "sqlmonitor:9399"
         - "sqlpractice:9399"
+        - "AgHost-1A:9399"
+        - "AgHost-1B:9399"
+        - "AgHost-2A:9399"
+        - "AgHost-2B:9399"
+
+  - job_name: mssql_exporter_longrunning
+    scrape_interval: 2m
+    params:
+      'jobs[]': [mssql_long_running]
+    static_configs:
+      - targets:
+        - "sqlmonitor:9399"
+        - "sqlpractice:9399"
+        - "AgHost-1A:9399"
+        - "AgHost-1B:9399"
+        - "AgHost-2A:9399"
+        - "AgHost-2B:9399"
+
+  - job_name: mssql_exporter_ag
+    scrape_interval: 30s
+    params:
+      'jobs[]': [mssql_ag]
+    static_configs:
+      - targets:
         - "AgHost-1A:9399"
         - "AgHost-1B:9399"
         - "AgHost-2A:9399"
