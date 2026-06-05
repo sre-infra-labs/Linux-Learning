@@ -56,7 +56,10 @@ usermod -aG sudo-nopw ansible
 ```
 
 # Create Bridged Network for KVM machines
-  # https://www.xmodulo.com/configure-linux-bridge-network-manager-ubuntu.html
+- https://www.xmodulo.com/configure-linux-bridge-network-manager-ubuntu.html
+
+# Fix Internet Issue by Setting Proper Routing
+- https://github.com/sre-infra-labs/Ansible-Learning/blob/dev/setup/Setup.md
 
 # Configure static Ipv4 for inet1 adapter
 ```
