@@ -23,14 +23,36 @@ nvidia-smi
 
 ```
 
-# For Ansible create, following users
+# Setup Ubuntu Host with Ansible
 ```
-  sudo -i -u root
+sudo -i -u root
 
-  adduser ansible
-  addgroup sudo-nopw
-  echo '%sudo-nopw ALL=(ALL:ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/sudo-nopw > /dev/null
-  usermod -aG sudo-nopw ansible
+sudo apt update && sudo apt install -y qemu-guest-agent
+sudo systemctl enable --now qemu-guest-agent
+
+
+adduser ansible
+addgroup sudo-nopw
+echo '%sudo-nopw ALL=(ALL:ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/sudo-nopw > /dev/null
+usermod -aG sudo-nopw ansible
+```
+
+# Setup RHEL Host with Ansible
+```
+sudo -i
+
+sudo dnf install -y qemu-guest-agent
+sudo systemctl enable --now qemu-guest-agent
+
+useradd -m ansible
+passwd ansible
+
+groupadd sudo-nopw
+
+echo '%sudo-nopw ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/sudo-nopw
+chmod 440 /etc/sudoers.d/sudo-nopw
+
+usermod -aG sudo-nopw ansible
 ```
 
 # Create Bridged Network for KVM machines
@@ -202,8 +224,9 @@ sudo apt install fd-find plocate -y
   python3 --version
   sudo apt install python-is-python3 -y
   pip3 show psutil
-  sudo apt install python3-pip -y
-  sudo pip3 install psutil --break-system-packages
+  sudo apt install -y python3-pip python3-devel gcc
+  sudo pip3 install psutil tldr --break-system-packages
+  
 ```
 
 # guake > terminal tool
