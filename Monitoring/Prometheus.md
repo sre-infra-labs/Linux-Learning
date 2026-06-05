@@ -273,6 +273,19 @@ http://localhost:9182 - prometheus-windows-exporter-metrics
 http://localhost:9187/metrics - postgres-exporter
 
 
+# 
+```
+global:
+  resolve_timeout: 1m
+
+  # --- ADD THESE SMTP SETTINGS ---
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'your-alerts@gmail.com'
+  smtp_auth_username: 'your-alerts@gmail.com'
+  smtp_auth_password: 'your-gmail-app-password'   # Use App Password, NOT your login password
+  smtp_require_tls: true
+```
+
 # Add alert
 ```
 cd /etc/prometheus
