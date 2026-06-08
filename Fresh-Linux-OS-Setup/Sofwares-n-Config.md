@@ -276,7 +276,7 @@ sudo apt install fd-find plocate -y
   ssh msi "DISPLAY=:0 nohup firefox"
 ```
 
-# Configure /etc/hosts using SQLServerLab > Other-Scripts > etc_hosts_ubuntu.txt
+# Configure /etc/hosts using etc_hosts_ubuntu.txt
 ```
   192.168.1.2 officelaptop
   192.168.1.3 msi
