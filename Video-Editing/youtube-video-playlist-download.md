@@ -81,3 +81,42 @@ yt-dlp -f "video-avc1-4+audio-und-mp4a-2" --cookies-from-browser brave -P "~/Dow
 
 ffmpeg -i "video_20250709_110243.mp4" -vcodec libx265 -crf 20 "flat_203.mp4"
 ```
+
+# Instructions for AI
+
+My local downloads directory is /home/saanvi/Videos/Bhajans - YouTube.
+My youtube bhajan playlist is https://www.youtube.com/watch?v=4DkNCgUXbig&list=PLFUGPe1byxevra8lZU6w9yaiLBlry8pEt.
+
+I want to download all videos from playlist to above local directory.
+
+Consider below while downloading:
+- some video might already exist in local directory. Don't download it again.
+- some video may exist with slightly different name. Try to figure out duplicate video and don't download it again.
+- download 480p or 360p when 480p is not available.
+- each video is video+audio format. compress the video using libx265 codec with crf 20.
+- present me a summary of downloads, skipped, similar, failed, etc. at the end.
+- do a cross comparision of number of videos on playlist, and locally.
+
+```
+cd "/home/saanvi/Videos/Bhajans - YouTube"
+
+# Download all videos
+python3 download-youtube-playlist.py --resolution 360 --crf 32
+
+# Download videos #10-20
+python3 download-youtube-playlist.py --video-start-no 10 --video-stop-no 20
+
+# Download single video (#5)
+python3 download-youtube-playlist.py --video-start-no 5 --video-stop-no 5
+
+# Skip compression (save time)
+python3 download-youtube-playlist.py --no-compress
+
+# Reduce to CRF 28 for smaller files
+python3 download-youtube-playlist.py --crf 28
+
+# Or use CRF 32 for even smaller
+python3 download-youtube-playlist.py --crf 32
+```
+
+
