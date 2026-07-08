@@ -35,3 +35,4 @@ Untitled*.ipynb
 Untitled*.sql
 *.pyc
 
+*/.augment/*
