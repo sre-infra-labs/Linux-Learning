@@ -101,22 +101,24 @@ Consider below while downloading:
 cd "/home/saanvi/Videos/Bhajans - YouTube"
 
 # Download all videos
-python3 download-youtube-playlist.py --resolution 360 --crf 32
+python3 /home/saanvi/GitHub/Linux-Learning/Video-Editing/download-youtube-playlist.py --resolution 360 --crf 32 --video-start-no 150 --video-stop-no 164
+
+python3 /home/saanvi/GitHub/Linux-Learning/Video-Editing/download-youtube-playlist.py --playlist https://www.youtube.com/playlist?list=PL_BnV0cOaQVqWb3OCeUB2D3bBjAP7c2EB --resolution 360 --crf 32
 
 # Download videos #10-20
-python3 download-youtube-playlist.py --video-start-no 10 --video-stop-no 20
+python3 /home/saanvi/GitHub/Linux-Learning/Video-Editing/download-youtube-playlist.py --video-start-no 10 --video-stop-no 20
 
 # Download single video (#5)
-python3 download-youtube-playlist.py --video-start-no 5 --video-stop-no 5
+python3 /home/saanvi/GitHub/Linux-Learning/Video-Editing/download-youtube-playlist.py --video-start-no 5 --video-stop-no 5
 
 # Skip compression (save time)
-python3 download-youtube-playlist.py --no-compress
+python3 /home/saanvi/GitHub/Linux-Learning/Video-Editing/download-youtube-playlist.py --no-compress
 
 # Reduce to CRF 28 for smaller files
-python3 download-youtube-playlist.py --crf 28
+python3 /home/saanvi/GitHub/Linux-Learning/Video-Editing/download-youtube-playlist.py --crf 28
 
 # Or use CRF 32 for even smaller
-python3 download-youtube-playlist.py --crf 32
+python3 /home/saanvi/GitHub/Linux-Learning/Video-Editing/download-youtube-playlist.py --crf 32
 ```
 
 
