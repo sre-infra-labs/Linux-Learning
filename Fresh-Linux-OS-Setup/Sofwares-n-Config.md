@@ -535,6 +535,11 @@ sudo update-desktop-database
 # Apache Open Office
 # Other common softwares
   > sudo apt install supertux tuxmath tuxpaint supertuxkart gimp notepadqq scratch gparted -y
+
+## Ports to open for supertuxkart
+sudo ufw allow 2759/udp
+sudo ufw allow 2757/udp
+
 # GCompris
   > Use "Software" application
 # Zoom
