@@ -71,3 +71,6 @@ sudo nmap -sn 192.168.1.0/24
 # find open/active ports for host
 sudo nmap pgprod
 
+# find all open tcp ports for host
+netstat -taupen
+

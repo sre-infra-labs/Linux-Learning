@@ -229,7 +229,12 @@ sudo apt install fd-find plocate -y
   pip3 show psutil
   sudo apt install -y python3-pip python3-devel gcc
   sudo pip3 install psutil tldr --break-system-packages
-  
+
+
+Find commands
+compgen -ac | sort -u | xargs whatis
+compgen -ac | sort -u | xargs -n 1 tldr
+
 ```
 
 # guake > terminal tool
@@ -394,6 +399,37 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
 # VS Code
 # VS Code Insiders
 # Azure Data Studio
+
+# Monitoring tools
+```
+top - default installed
+htop - graph per cpu. Separate panel for IO.
+btop - best gui for observation. Includes memory, cpu, disk, processor info, disk space  utilization, network usage, processes.
+```
+
+# File Handling tools
+```
+# File Reading
+cat - default
+bat or batcat - cat replacement. Syntax highlighting. Line numbers. Git integration.
+tac - print files in reverse
+rev - reverse characters of files
+cut - cut out fields from stdin or files.
+less - default
+more - default
+most - pagination of text file. Lots of functionality.
+head - top lines
+tail - last lines
+od - octal dump. hex dump. ascii dump.
+hexdump - hex dump. ascii dump.
+grep - search for patterns in files.
+
+# File Editing
+nano - default
+vi - default
+
+
+```
 
 # Configure Code & Code Insiders "Git username & email"
   > git config --global user.name "Ajay Kumar Dwivedi"
