@@ -267,10 +267,13 @@ compgen -ac | sort -u | xargs -n 1 tldr
     > /stale-storage/shortcuts.png
 
 
-  # configure password less ssh 
+  # configure password less ssh
     # https://www.rosehosting.com/blog/how-to-enable-ssh-on-ubuntu-for-20-04-22-04/
   ssh-keygen
   ssh-copy-id saanvi@msi
+
+  # If ssh-copy-id does not work, but ssh works, then
+  cat ~/.ssh/id_ed25519.pub | ssh centos 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys'
 
 # NOTE: Start a GUI software on remote SSH session
 ```

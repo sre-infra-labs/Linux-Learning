@@ -13,6 +13,10 @@ Managing Passwords
 -> To change passwords without interactive prompt:
     -> On Redhat, "echo password | passwd --stdin username"
     -> On Ubuntu, "echo username:password | chpasswd"
+    -> On Ubuntu, "yes password | sudo passwd username" (not recommended, as it will show password in process list)
+
+    sudo sh -c 'echo password | passwd --stdin username'
+    echo username:password | sudo chpasswd
 
 -> Password settings are written to /etc/shadow
 
