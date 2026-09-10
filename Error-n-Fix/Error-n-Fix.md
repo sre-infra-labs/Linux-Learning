@@ -18,6 +18,9 @@ sudo dnf install consul
 # create a log file on mount point to consume all space
 dd if=/dev/zero of=/path/to/mount/test.log bs=1M status=progress
 
+# create a log file of 1 gb size on mount point
+dd if=/dev/zero of=/path/to/mount/test.log bs=1M status=progress count=1000
+
 # get filesystem space usage
 df -hP
 

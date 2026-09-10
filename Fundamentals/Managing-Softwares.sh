@@ -201,6 +201,8 @@ sudo yum provides */seinfo
 sudo yum info setools-console
 
 sudo yum history
+sudo dnf history undo 13
+sudo dnf history redo 13
 
 sudo yum upgrade
 
@@ -241,4 +243,8 @@ rpm -qpl ./Downloads/virtio-win-1.9.44-1.el10.noarch.rpm
 
 # check for any installation script in package
 rpm -qp --scripts ./Downloads/virtio-win-1.9.44-1.el10.noarch.rpm
+
+# what updates are available for installed packages
+sudo dnf list updates
+sudo apt list --upgradable
 

@@ -143,6 +143,19 @@ Managing Processes with "kill"
 -> Get all signals
 man 7 signals
 
+
+
+Figuring Out What a Process is Doing
+------------------------------------------
+
+-> "strace" is used to trace system calls and signals
+    -> strace -p <PID>
+  sudo strace dig www.google.com
+
+-> "ltrace" is used to trace library calls
+    -> ltrace -p <PID>
+
+
 COMMENTS
 
 # Generate a long running command scenario
@@ -169,6 +182,22 @@ dd if=/dev/zero of=/dev/null &
 # Bring a job forward, and stop the command
 fg 2
 "Ctrl+C"
+
+# List all available signals
+kill -l
+
+# Some common signals are:
+# 1 - SIGHUP - Hangup detected on controlling terminal or death of controlling process
+# 2 - SIGINT - Interrupt from keyboard
+# 3 - SIGQUIT - Quit from keyboard
+# 9 - SIGKILL - Kill signal
+#10 - SIGUSR1 - User-defined signal 1
+# 15 - SIGTERM - Termination signal
+
+# Get copy status
+dd if=/dev/zero of=bigfile count=100000000000 &
+  # when you run SIGUSR1 signal on a dd process, dd will print copy status to the terminal
+kill -SIGUSR1 <PID>
 
 # Kill a job
 kill %<job-number>
