@@ -128,7 +128,8 @@ Ctrl b &
 Ctrl b %
 
 # split current window into horizontal pane
-Ctrl b "
+Ctrl b \"
+Ctrl b <double_quote>
 
 # Show pane numbers
 Ctrl b q
