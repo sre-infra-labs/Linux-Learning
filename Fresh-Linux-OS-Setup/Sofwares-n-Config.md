@@ -434,6 +434,10 @@ vi - default
 
 ```
 
+# Terminal Multiplexer - https://ajaydwivedi.com/go/tmux
+  > tmux
+
+
 # Configure Code & Code Insiders "Git username & email"
   > git config --global user.name "Ajay Kumar Dwivedi"
   > git config --global user.email "ajay.dwivedi2007@gmail.com"

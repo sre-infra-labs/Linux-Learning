@@ -221,6 +221,67 @@ sudo du --max-depth=1 /var | sort -nr | numfmt --field 1 --to iec --format "%-10
 - `mount device-path mount-point` - Mounts a device to the specified mount point.
 
 
+## When using Logical Volumes
+
+```bash
+# Fill your disk by creating a large file
+cd ~
+dd if=/dev/zero of=big_file
+
+# Fill your diks to 16 gb (total 18)
+dd if=/dev/zero of=big_file bs=1G count=16
+
+# Check File System
+df -h
+
+    Filesystem           Size  Used Avail Use% Mounted on
+    /dev/mapper/cs-root   39G  5.4G   34G  14% /
+    devtmpfs             1.8G     0  1.8G   0% /dev
+    tmpfs                1.8G     0  1.8G   0% /dev/shm
+    efivarfs             256K   20K  237K   8% /sys/firmware/efi/efivars
+    tmpfs                716M   11M  705M   2% /run
+    tmpfs                1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+    /dev/mapper/cs-home   19G   19G   28K 100% /home
+    /dev/vda2            2.0G  435M  1.6G  22% /boot
+    /dev/vda1            599M   13M  586M   3% /boot/efi
+    tmpfs                358M   56K  358M   1% /run/user/1000
+    tmpfs                358M   76K  358M   1% /run/user/42
+    tmpfs                1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyAMA0.service
+
+# List block devices. This will help us indentify if we are using logical volumes in `TYPE` attribute
+lsblk
+
+    NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+    sr0          11:0    1 1024M  0 rom  
+    vda         252:0    0   64G  0 disk 
+    ├─vda1      252:1    0  600M  0 part /boot/efi
+    ├─vda2      252:2    0    2G  0 part /boot
+    └─vda3      252:3    0 61.4G  0 part 
+      ├─cs-root 253:0    0 38.6G  0 lvm  /
+      ├─cs-swap 253:1    0  3.9G  0 lvm  [SWAP]
+      └─cs-home 253:2    0 18.9G  0 lvm  /home
+    vdb         252:16   0    5G  0 disk 
+    vdc         252:32   0    8G  0 disk 
+    vdd         252:48   0    2G  0 disk 
+    vde         252:64   0    8G  0 disk 
+
+# Get available volume groups
+vgs
+
+      VG #PV #LV #SN Attr    VSize  VFree
+      cs   1   3   0 wz--n-- 61.41g    0 
+
+# Get available logical volumes
+lvs
+
+# Get physical volumes
+pvs
+
+# If there is free space in volume group, then increase the space on logical volume
+sudo lvextend --extents +100%FREE --resizefs /dev/
+```
+
+
 ## Directory Traversal Commands
 
 - `cd ..` - Navigates to the parent directory.
