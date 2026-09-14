@@ -557,7 +557,10 @@ sudo update-desktop-database
   sudo usermod -aG sudo $USER
   sudo systemctl enable cockpit cockpit.socket
   sudo systemctl start cockpit cockpit.socket
+
   sudo ufw allow 9090/tcp
+  sudo firewall-cmd --add-port=9090/tcp --permanent
+  sudo firewall-cmd --add-service cockpit
 
   sudo apt-get install podman cockpit-podman -y
   sudo systemctl enable --now podman
@@ -566,6 +569,8 @@ sudo update-desktop-database
       cockpit-machines \
       cockpit-ostree \
       cockpit-storaged \
+      cockpit-packagekit \
+      cockpit-podman \
       cockpit-networkmanager \
       cockpit-files \
       cockpit-sosreport
@@ -581,7 +586,16 @@ sudo update-desktop-database
 
 ## Ports to open for supertuxkart
 sudo ufw allow 2759/udp
+sudo ufw allow 2759/tcp
 sudo ufw allow 2757/udp
+sudo ufw allow 2757/tcp
+sudo ufw reload
+
+sudo firewall-cmd --add-port=2759/udp --permanent
+sudo firewall-cmd --add-port=2759/tcp --permanent
+sudo firewall-cmd --add-port=2757/udp --permanent
+sudo firewall-cmd --add-port=2757/tcp --permanent
+sudo firewall-cmd --reload
 
 # GCompris
   > Use "Software" application

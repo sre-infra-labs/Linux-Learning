@@ -221,9 +221,15 @@ sudo du --max-depth=1 /var | sort -nr | numfmt --field 1 --to iec --format "%-10
 - `mount device-path mount-point` - Mounts a device to the specified mount point.
 
 
-## When using Logical Volumes
+## When using Logical Volumes (https://www.youtube.com/live/S5Jgw4en5ME?si=_Vl99UBLbpRfMcBO)
 
 ```bash
+# BASIC Flow
+Physical Disk (lsblk || blkid) -> Disk Partition (fdisk || parted || gdisk) -> Logical Physical Volume (pvs || pvcreate) -> Volume Groups (vgs || vgcreate || vgextend ) -> Logical Volumes (lvs || lvextend) -> File System (df -hT || mkfs.* || xfs_growfs)
+
+# Figure out commands
+compgen -c | sort -u | xargs -n 1 whatis 2>/dev/null | grep -i volume | grep -i group
+
 # Fill your disk by creating a large file
 cd ~
 dd if=/dev/zero of=big_file
@@ -231,25 +237,25 @@ dd if=/dev/zero of=big_file
 # Fill your diks to 16 gb (total 18)
 dd if=/dev/zero of=big_file bs=1G count=16
 
-# Check File System
-df -h
+# Check File System. With option T, we get Type info as well.
+df -hT
 
-    Filesystem           Size  Used Avail Use% Mounted on
-    /dev/mapper/cs-root   39G  5.4G   34G  14% /
-    devtmpfs             1.8G     0  1.8G   0% /dev
-    tmpfs                1.8G     0  1.8G   0% /dev/shm
-    efivarfs             256K   20K  237K   8% /sys/firmware/efi/efivars
-    tmpfs                716M   11M  705M   2% /run
-    tmpfs                1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
-    /dev/mapper/cs-home   19G   19G   28K 100% /home
-    /dev/vda2            2.0G  435M  1.6G  22% /boot
-    /dev/vda1            599M   13M  586M   3% /boot/efi
-    tmpfs                358M   56K  358M   1% /run/user/1000
-    tmpfs                358M   76K  358M   1% /run/user/42
-    tmpfs                1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyAMA0.service
+    Filesystem          Type      Size  Used Avail Use% Mounted on
+    /dev/mapper/cs-root xfs        39G  5.4G   34G  14% /
+    devtmpfs            devtmpfs  1.8G     0  1.8G   0% /dev
+    tmpfs               tmpfs     1.8G     0  1.8G   0% /dev/shm
+    efivarfs            efivarfs  256K   20K  237K   8% /sys/firmware/efi/efivars
+    tmpfs               tmpfs     716M   11M  705M   2% /run
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+    /dev/mapper/cs-home xfs        19G   17G  2.2G  89% /home
+    /dev/vda2           xfs       2.0G  435M  1.6G  22% /boot
+    /dev/vda1           vfat      599M   13M  586M   3% /boot/efi
+    tmpfs               tmpfs     358M   56K  358M   1% /run/user/1000
+    tmpfs               tmpfs     358M   76K  358M   1% /run/user/42
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyAMA0.service
 
 # List block devices. This will help us indentify if we are using logical volumes in `TYPE` attribute
-lsblk
+lsblk -fs
 
     NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
     sr0          11:0    1 1024M  0 rom  
@@ -278,7 +284,38 @@ lvs
 pvs
 
 # If there is free space in volume group, then increase the space on logical volume
-sudo lvextend --extents +100%FREE --resizefs /dev/
+sudo lvextend --extents +100%FREE --resizefs /dev/mapper/cs-home
+
+#or just increase the logical volume size. Not filesystem
+sudo lvextend --extents +100%FREE /dev/mapper/cs-home
+
+# since filesystem type is xfs (check df -hT), we use xfs utilities to grow filesystem
+sudo xfs_growfs /dev/mapper/cs-home
+
+# Convert a physical disk to physical volume
+sudo pvcreate /dev/vdd
+
+    adwivedi@centos:~$ sudo pvcreate /dev/vdd
+    WARNING: xfs signature detected on /dev/vdd at offset 0. Wipe it? [y/n]: y
+      Wiping xfs signature on /dev/vdd.
+      Physical volume "/dev/vdd" successfully created.
+
+sudo pvs
+    adwivedi@centos:~$ sudo pvs
+    PV         VG Fmt  Attr PSize  PFree
+    /dev/vda3  cs lvm2 a--  61.41g    0
+    /dev/vdd      lvm2 ---   2.00g 2.00g
+
+# Add PV to VG
+sudo vgs
+    adwivedi@centos:~$ sudo vgs
+      VG #PV #LV #SN Attr    VSize  VFree
+      cs   1   3   0 wz--n-- 61.41g    0 
+
+sudo vgextend cs /dev/vdd
+    adwivedi@centos:~$ sudo vgextend cs /dev/vdd
+      Volume group "cs" successfully extended
+
 ```
 
 

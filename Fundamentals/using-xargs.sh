@@ -82,5 +82,10 @@ Examples:
     # Example 09. Get help on available commands on linux box
     compgen -c | sort -u | xargs -n 1 -P 5 whatis 2>/dev/null
 
+    # find commands related to disk
+    compgen -c | sort -u | xargs -n 1 -P 5 whatis 2>/dev/null | grep -i disk
+
+    sudo du -ahb -d 4 /home | sort -gr --key 1 | head -n 20
+
 COMMENTS
 
