@@ -22,6 +22,9 @@ Add the following to cache valid sudo credentials for 4 hours:
 # tail -5 /etc/sudoers
 sudo cat /etc/sudoers | grep timestamp
 
+# Logging sudo commands
+Any command run with sudo will be logged to /var/log/secure (RHEL) or /var/log/auth.log (Ubuntu)
+
 Examples:
 
     # Allow saanvi user to impersonate adwivedi user without password
@@ -36,6 +39,9 @@ Examples:
     # within adwivedi user context, run below command
         # no password prompt should appear
     sudo -u postgres psql
+
+    # allow adwivedi to restart cockpit service without password prompt
+    adwivedi ALL=(ALL) NOPASSWD: /bin/systemctl restart cockpit.service
 
 COMMENTS
 
