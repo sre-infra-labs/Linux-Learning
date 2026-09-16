@@ -3,7 +3,7 @@
 Obtaining IP Address Configuration
 ----------------------------------
 
--> On servers, IP address configuration is set statically, using tools like nmcli or nmtui
+-> On servers, IP address configuration is set statically, using tools like nmcli (rhel), nmtui or netplan (ubuntu)
 
 -> On workstations, IP address configuration typically is handed out by a DHCP server
 
@@ -32,6 +32,9 @@ Examples -
 -> ip route show
 
 -> ip route add default via 10.0.0.1
+
+
+
 
 COMMENTS
 

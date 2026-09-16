@@ -565,15 +565,15 @@ sudo update-desktop-database
   sudo apt-get install podman cockpit-podman -y
   sudo systemctl enable --now podman
 
-  sudo apt install -y \
-      cockpit-machines \
-      cockpit-ostree \
-      cockpit-storaged \
-      cockpit-packagekit \
-      cockpit-podman \
-      cockpit-networkmanager \
-      cockpit-files \
-      cockpit-sosreport
+  sudo apt install -y cockpit-machines
+  sudo apt install -y cockpit-ostree
+  sudo apt install -y cockpit-storaged
+  sudo apt install -y cockpit-packagekit
+  sudo apt install -y cockpit-podman
+  sudo apt install -y cockpit-networkmanager
+  sudo apt install -y cockpit-files
+  sudo apt install -y cockpit-sosreport
+  sudo apt install -y pcp-selinux
 
   sudo systemctl status cockpit
 

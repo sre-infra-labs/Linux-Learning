@@ -54,8 +54,6 @@ More information: https://nmap.org/book/man.html.
  - Attempt evading IDS/IPS detection by using an extremely slow scan (-T0), decoy source addresses (-D), [f]ragmented packets, random data and other methods:
    sudo nmap -T0 -D decoy_ip1,decoy_ip2,... --source-port 53 -f --data-length 16 -Pn ip_or_host
 
-COMMENTS
-
 # ping server with 3 attempts
 ping -c 3 pgprod
 
@@ -74,3 +72,16 @@ sudo nmap pgprod
 # find all open tcp ports for host
 netstat -taupen
 
+# trace route to host
+mtr ajaydwivedi.com
+
+# dns lookup for host
+dig ajaydwivedi.com
+
+# DNS name servers are configured in /etc/resolv.conf
+cat /etc/resolv.conf
+
+
+
+
+COMMENTS
