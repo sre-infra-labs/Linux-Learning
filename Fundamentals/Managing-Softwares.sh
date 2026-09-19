@@ -108,6 +108,10 @@ Managing Packages with yum/dnf
 
 -> And "dnf history" allows you to undo changes after installing packages
 
+-> Finding the right package may be a challenge, but there's "dnf whatprovides" to
+    fix that: "dnf whatprovides */httpd"
+
+
 
 Understanding apt
 ---------------------------

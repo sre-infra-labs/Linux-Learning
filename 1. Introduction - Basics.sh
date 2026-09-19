@@ -31,9 +31,10 @@ cat cmdline
 cd fd
 ls -l
 
-# Find possible commands
-whatis $(compgen -c) 2> /dev/null
-whatis $(compgen -c) 2> /dev/null | grep -i 'disk'
+# Figure out commands
+compgen -c | sort -u | xargs -n 1 whatis 2>/dev/null | grep -i volume | grep -i group
+man -k volume | grep -i group
+
 
 # find all files with the work "regex" in them
 grep -ri 'regex' /stale-storage/GitHub/Linux-Learning

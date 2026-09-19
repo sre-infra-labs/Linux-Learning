@@ -229,6 +229,7 @@ Physical Disk (lsblk || blkid) -> Disk Partition (fdisk || parted || gdisk) -> L
 
 # Figure out commands
 compgen -c | sort -u | xargs -n 1 whatis 2>/dev/null | grep -i volume | grep -i group
+man -k volume | grep -i group
 
 # Fill your disk by creating a large file
 cd ~

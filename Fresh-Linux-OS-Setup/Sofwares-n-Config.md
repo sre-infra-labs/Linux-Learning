@@ -1,5 +1,10 @@
 # Linux Software Installation
 
+- Ubuntu - Mate
+- Fedora - Cinnamon - https://fedoraproject.org/spins/cinnamon/
+
+# Bootable USB Creator Tool - Balena Etcher (Github)
+
 # Install OS with inet1/inet2 adapter
 ![inet1-configuration-rhel](inet1-configuration-rhel.png)
 
@@ -692,12 +697,20 @@ sudo firewall-cmd --reload
   > sudo apt install ubuntu-restricted-extras
     > accept EULA
 
-# Setup Autologin for "saanvi" user
+# Setup Autologin for "saanvi" user on Ubuntu
   > https://askubuntu.com/a/1202233
   > sudo nano /usr/share/lightdm/lightdm.conf.d/50-ubuntu-mate.conf
     
     autologin-user=saanvi
-      
+
+# Setup Autologin for "saanvi" user on Fedora Cinnamon (LightDM Desktop Manager)
+  > sudo vim /etc/lightdm/lightdm.conf
+    Under section [Seat:*], find autologin-user lines, and update appropriately.
+
+    [Seat:*]
+    autologin-user=your-username
+    autologin-user-timeout=0
+
 # Remove Password Keyrings
   > https://linuxconfig.org/how-to-disable-keyring-popup-on-ubuntu
 
