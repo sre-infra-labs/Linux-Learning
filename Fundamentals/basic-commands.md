@@ -24,6 +24,8 @@
 
 - `whoami` - Displays the username of the current user.
 
+- `who am i` - Display who is logged in and related data.
+
 - `finger username` - Displays information about a user named username.
 
 

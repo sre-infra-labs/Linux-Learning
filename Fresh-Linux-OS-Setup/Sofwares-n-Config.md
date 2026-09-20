@@ -1,7 +1,7 @@
 # Linux Software Installation
 
 - Ubuntu - Mate
-- Fedora - Cinnamon - https://fedoraproject.org/spins/cinnamon/
+- Fedora - Cinnamon - https://fedoraproject.org/spins/cinnamon
 
 # Bootable USB Creator Tool - Balena Etcher (Github)
 
@@ -25,8 +25,19 @@ sudo shutdown -r
 # verify
 nvidia-smi
 
-
 ```
+
+
+# Install helping utilities
+```
+sudo apt install tldr -y
+sudo dnf install tldr -y
+
+sudo apt install guake -y
+sudo dnf install guake -y
+```
+
+# numlockx - Enable numlock at startup
 
 # Setup Ubuntu Host with Ansible
 ```
@@ -233,7 +244,7 @@ sudo apt install fd-find plocate -y
   sudo apt install python-is-python3 -y
   pip3 show psutil
   sudo apt install -y python3-pip python3-devel gcc
-  sudo pip3 install psutil tldr --break-system-packages
+  sudo pip3 install psutil --break-system-packages
 
 
 Find commands
@@ -397,7 +408,6 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
 # Tor Browser
   > Download. Extract. Make desktop file as "Trusted".
 
-# numlockx - Enable numlock at startup
 # git
 # Fonts
   > https://github.com/microsoft/cascadia-code

@@ -17,29 +17,43 @@ awk '{print $0}' /etc/passwd
 # Get rows from /etc/passwd with more than 60 characters
 awk 'length($0) > 60' /etc/passwd
 
-# Print Usernames from /etc/passwd
+# Find the longest username in /etc/passwd
+awk -F: 'length($1) > max {max=length($1); user=$1} END {print user, max}' /etc/passwd
+
+# Print Usernames from /etc/passwd using colon as Field separator
 awk -F : '{print $1}' /etc/passwd
 
+# Get home directory of postgres user
+awk -F : '/postgres/ { print $6 }' /etc/passwd
+grep postgres /etc/passwd | cut -d : -f 6
+
 # Get UserInfo & DefaultShell for postgres user
-awk -F ':' '/postgres/ {printf "%-15s %-20s %-30s\n", $1, $7, $5}' /etc/passwd
+awk -F ':' '/postgres/ {printf "%-25s %-20s %-30s\n", $1, $7, $5}' /etc/passwd
 grep postgres /etc/passwd | cut -d ":" -f 1,5,7
 
 # Get UserInfo & DefaultShell for current user
-awk -F ':' -v user="$USER" '$1 == user {printf "%-15s %-20s %-30s\n", $1, $7, $5}' /etc/passwd
+awk -F ':' -v user="adwivedi" '$1 == user' /etc/passwd
+awk -F ':' -v user="$USER" '$1 == user' /etc/passwd
+awk -F ':' -v user="$USER" '$1 == user {printf "%-25s %-20s %-30s\n", $1, $7, $5}' /etc/passwd
 
 # Get FullName (from UserInfo) & DefaultShell for current user
-awk -F ':' -v user="$USER" '$1 == user {split($5, gecos, ","); printf "%-15s %-20s %-30s\n", $1, $7, gecos[1]}' /etc/passwd
+awk -F ':' -v user="$USER" '$1 == user {split($5, gecos, ","); printf "%-25s %-20s %-30s\n", $1, $7, gecos[1]}' /etc/passwd
 
 # Get FullName (from UserInfo) & DefaultShell for current/postgres/adwivedi users. Add header also.
 awk -F ':' -v user="$USER" '
 BEGIN {
-    printf "%-15s %-20s %-30s\n", "Username", "Default Shell", "Full Name"
-    printf "%-15s %-20s %-30s\n", "---------------", "--------------------", "------------------------------"
+    printf "%-25s %-20s %-30s\n", "Username", "Default Shell", "Full Name"
+    printf "%-25s %-20s %-30s\n", "---------------", "--------------------", "------------------------------"
 }
 $1 == user || $1 == "postgres" || $1 == "adwivedi" {
     split($5, gecos, ",")
-    printf "%-15s %-20s %-30s\n", $1, $7, gecos[1]
-}' /etc/passwd
+    printf "%-25s %-20s %-30s\n", $1, $7, gecos[1]
+}
+END {
+    printf "%-25s %-20s %-30s\n", "---------------", "--------------------", "------------------------------"
+    printf "%-25s %-20s %-30s\n", "Username", "Default Shell", "Full Name"
+}
+' /etc/passwd
 
 
 # Get FullName (from UserInfo) & DefaultShell for current/postgres/adwivedi users. Add header also.
@@ -51,12 +65,12 @@ BEGIN {
         user_array[users[u]] = 1
     }
     # Print header
-    printf "%-15s %-20s %-30s\n", "Username", "Default Shell", "Full Name"
-    printf "%-15s %-20s %-30s\n", "---------------", "--------------------", "------------------------------"
+    printf "%-25s %-20s %-30s\n", "Username", "Default Shell", "Full Name"
+    printf "%-25s %-20s %-30s\n", "---------------", "--------------------", "------------------------------"
 }
 $1 in user_array {
     split($5, gecos, ",")
-    printf "%-15s %-20s %-30s\n", $1, $7, gecos[1]
+    printf "%-25s %-20s %-30s\n", $1, $7, gecos[1]
 }' /etc/passwd
 
 
@@ -98,3 +112,5 @@ awk 'NR==1 {header=$0; next} \
 sort -k5 -nr | \
 awk 'BEGIN {print "\033[4mFilesystem\tSize\tUsed\tAvail\tUse%\033[0m"} {print $1 "\t" $2 "\t" $3 "\t" $4 "\t" $5}' | \
 awk 'BEGIN {print "\t"} {print $0} END {print "\t"}'
+
+

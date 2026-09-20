@@ -11,6 +11,19 @@ sudo getent shadow saanvi
 mkpasswd --method=yescrypt
 
 
+# Who Am I?
+```
+# Display current user and group identity.
+id
+
+# Alias of id --user --name
+whoami
+
+# Display who is logged in and related data (processes, boot time)
+who am i
+
+```
+
 # Load average
 htop
 top
@@ -23,6 +36,12 @@ lproc
 cat /proc/cpuinfo
 hostnamectl
 
+# get release info
+cat /etc/os-release
+
+# get kernel version
+uname -a
+uname -r
 
 # How to shorten command line prompt (bash prompt) & change colors
     # https://askubuntu.com/a/145626/1015062
