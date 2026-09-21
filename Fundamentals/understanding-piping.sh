@@ -118,6 +118,22 @@ sudo iostat -c | tail -n +3 | head -n 2
 # dump raw output to file while running command
 sudo iostat -c | tail -n +3 | tee /tmp/iostat_output_after_tail.txt | head -n 2
 
+# Handle command failure (Normal Behaviour)
+  # Even though first command in pipeline fails, since the last command succeeds, the exit status of the pipeline is 0 (success).
+sudo iostat -c -i-m-awesome | tail -n +3 | head -n 2
+echo $?
+
+# Handle command failure (Strict Behaviour)
+  # If any command in the pipeline fails, the exit status of the pipeline is non-zero (failure).
+set -o pipefail
+sudo iostat -c -i-m-awesome | tail -n +3 | head -n 2
+echo $?
+
+# To enable or disable the pipefail option, you can use the following commands:
+set -o pipefail  # Enable pipefail
+set +o pipefail  # Disable pipefail
+
+
 # dump raw output to file while running command
 grep 'bash$' /etc/passwd | tee /tmp/bash_users.txt | cut -d: -f 1,3,7 | sort
 
@@ -143,5 +159,6 @@ find / -name www 2>/dev/null
 sudo su - rhel
 find / -name www &> /tmp/find_www.txt
 
+# 
 
 COMMENTS
