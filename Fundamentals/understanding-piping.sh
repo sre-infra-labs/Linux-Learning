@@ -109,4 +109,39 @@ sudo du --max-depth=1 /var/lib | sort -nr | head -n 20 | while read size dir; do
   echo "$dir -> $human_size"
 done
 
+# get cpu info
+sudo iostat -c | tail -n +3 | head -n 2
+    root@centos:~# iostat -c | tail -n +3 | head -n 2
+    avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+              0.19    0.00    0.16    0.01    0.00   99.63
+
+# dump raw output to file while running command
+sudo iostat -c | tail -n +3 | tee /tmp/iostat_output_after_tail.txt | head -n 2
+
+# dump raw output to file while running command
+grep 'bash$' /etc/passwd | tee /tmp/bash_users.txt | cut -d: -f 1,3,7 | sort
+
+# Set random password as well as save it to file (RHEL)
+RESET_USER="rhel"
+
+openssl rand -base64 12 | tee /tmp/${RESET_USER}-tmp-password.txt | passwd --stdin ${RESET_USER}
+or
+mkpasswd | tee /tmp/${RESET_USER}-tmp-password.txt | passwd --stdin ${RESET_USER}
+
+# Set random password as well as save it to file (Ubuntu)
+RESET_USER="ubuntu"
+RESET_USER_PWD=$(openssl rand -base64 12)
+echo ${RESET_USER}:${RESET_USER_PWD} | tee /tmp/${RESET_USER}-tmp-password.txt | sudo chpasswd
+cat /tmp/${RESET_USER}-tmp-password.txt | cut -d ':' -f 2
+
+# handling error & output in pipe. Redirecting error to /dev/null
+sudo su - rhel
+find / -name www 2>/dev/null > /tmp/find_www.txt
+find / -name www 2>/dev/null
+
+# put both error & output in same file
+sudo su - rhel
+find / -name www &> /tmp/find_www.txt
+
+
 COMMENTS
