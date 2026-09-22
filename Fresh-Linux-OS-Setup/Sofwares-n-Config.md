@@ -716,19 +716,108 @@ sudo firewall-cmd --reload
   > sudo apt install ubuntu-restricted-extras
     > accept EULA
 
-# Setup Autologin for "saanvi" user on Ubuntu
-  > https://askubuntu.com/a/1202233
-  > sudo nano /usr/share/lightdm/lightdm.conf.d/50-ubuntu-mate.conf
-    
-    autologin-user=saanvi
+# Avoid setting up Autologin for user as it causes issues with Ring Buffer pam authentication
 
-# Setup Autologin for "saanvi" user on Fedora Cinnamon (LightDM Desktop Manager)
-  > sudo vim /etc/lightdm/lightdm.conf
-    Under section [Seat:*], find autologin-user lines, and update appropriately.
+# Hide/Disable user from showing up on Login Screen of Desktop Manager (lightdm - Cinnamon)
+```bash
+# Find active Display Manager
+systemctl status display-manager
 
-    [Seat:*]
-    autologin-user=your-username
-    autologin-user-timeout=0
+## In below example, its `gdm.service`
+    root@centos:~#  systemctl status display-manager
+    ● gdm.service - GNOME Display Manager
+        Loaded: loaded (/usr/lib/systemd/system/gdm.service; enabled; preset: enabled)
+        Active: active (running) since Tue 2026-09-22 17:19:34 IST; 3h 23min ago
+    Invocation: 6841d9a05ed4408eadea434914202ac4
+      Main PID: 1367 (gdm)
+          Tasks: 4 (limit: 29437)
+        Memory: 3.2M (peak: 4.3M)
+            CPU: 31ms
+        CGroup: /system.slice/gdm.service
+                └─1367 /usr/sbin/gdm
+
+    Sep 22 17:19:34 centos systemd[1]: Starting gdm.service - GNOME Display Manager...
+    Sep 22 17:19:34 centos systemd[1]: Started gdm.service - GNOME Display Manager.
+
+## In below example, its `lightdm.service`
+    root@msi:~# systemctl status display-manager
+    ● lightdm.service - Light Display Manager
+        Loaded: loaded (/usr/lib/systemd/system/lightdm.service; enabled; preset: enabled)
+        Drop-In: /usr/lib/systemd/system/service.d
+                └─10-timeout-abort.conf
+        Active: active (running) since Tue 2026-09-22 20:43:38 IST; 1min 29s ago
+    Invocation: bbb28305b18d4bb482d4fc8bc691628b
+          Docs: man:lightdm(1)
+      Main PID: 1270 (lightdm)
+          Tasks: 20 (limit: 38071)
+        Memory: 385.3M (peak: 473.5M)
+            CPU: 3.528s
+        CGroup: /system.slice/lightdm.service
+                ├─1270 /usr/sbin/lightdm
+                └─1308 /usr/libexec/Xorg :0 -seat seat0 -auth /run/lightdm/root/:0 -nolisten tcp vt1 -novtswitch -core -noreset
+
+    Sep 22 20:43:38 msi systemd[1]: Starting lightdm.service - Light Display Manager...
+    Sep 22 20:43:38 msi systemd[1]: Started lightdm.service - Light Display Manager.
+    Sep 22 20:43:44 msi lightdm[2887]: pam_unix(lightdm-greeter:session): session opened for user lightdm(uid=979) by (uid=0)
+    Sep 22 20:44:22 msi lightdm[3094]: gkr-pam: unable to locate daemon control file
+    Sep 22 20:44:22 msi lightdm[3094]: gkr-pam: stashed password to try later in open session
+    Sep 22 20:44:23 msi lightdm[3094]: pam_unix(lightdm:session): session opened for user saanvi(uid=1000) by saanvi(uid=0)
+    Sep 22 20:44:23 msi lightdm[3094]: gkr-pam: gnome-keyring-daemon started properly and unlocked keyring
+
+# Configure Hide Users via `AccountService`
+Create or edit user override files in /var/lib/AccountsService/users/ for all users that should be hidden.
+
+sudo bash -c 'echo -e "[User]\nSystemAccount=true" > /var/lib/AccountsService/users/anant'
+sudo bash -c 'echo -e "[User]\nSystemAccount=true" > /var/lib/AccountsService/users/ansible'
+sudo bash -c 'echo -e "[User]\nSystemAccount=true" > /var/lib/AccountsService/users/rhel'
+sudo bash -c 'echo -e "[User]\nSystemAccount=true" > /var/lib/AccountsService/users/ubuntu'
+
+
+restart now
+
+sudo ls -l /var/lib/AccountsService/users/
+
+In below example, saanvi is user to be used Actively, whereas anant is to be hidden on Login Screen
+    root@msi:~# ls -l /var/lib/AccountsService/users/
+    total 8
+    -rw-------. 1 root root  26 Sep 21 21:20 ansible
+    -rw-------. 1 root root 186 Sep 21 20:37 saanvi
+    root@msi:~# cat /var/lib/AccountsService/users/ansible 
+    [User]
+    SystemAccount=true
+
+    root@msi:~# 
+    root@msi:~# cat /var/lib/AccountsService/users/saanvi 
+    [org.freedesktop.DisplayManager.AccountsService]
+    BackgroundFile='/usr/share/backgrounds/gnome/blobs-l.svg'
+
+    [User]
+    Session=
+    XSession=cinnamon
+    Icon=/home/saanvi/.face
+    SystemAccount=false
+    root@msi:~# 
+```
+
+# NOT-ON-DESKTOP OS ---- Install LightDM Desktop Manager on Ubuntu Server if Desired
+```bash
+sudo su -
+apt update && apt install lightdm -y
+
+apt list --installed | grep lightdm
+dpkg -l | grep lightdm
+    root@ubuntu24:~# apt list --installed | grep lightdm
+
+    WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+    liblightdm-gobject-1-0/noble,now 1.30.0-0ubuntu14 arm64 [installed,automatic]
+    lightdm/noble,now 1
+
+# Select LightDM as Default display manager
+sudo dpkg-reconfigure lightdm
+sudo systemctl enable lightdm --now
+
+```
 
 # Remove Password Keyrings
   > https://linuxconfig.org/how-to-disable-keyring-popup-on-ubuntu

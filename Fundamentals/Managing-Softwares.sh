@@ -382,3 +382,10 @@ dpkg -l | grep linux-image
     ii  linux-image-generic                   6.8.0-139.139                                    arm64        Generic Linux kernel image
     root@ubuntu24:~# 
 
+# Live Kernel Patch
+  # If your system has a kernel that is susceptible to security issue, then Redhat may provide live kernel patch for it if possible.
+dnf install kpatch
+kpatch list
+dnf list kpatch-patch*
+
+dnf install "kpatch-patch = $(uname -r)"
