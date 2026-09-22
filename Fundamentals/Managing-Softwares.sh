@@ -281,6 +281,7 @@ apt update && apt upgrade linux-image-generic
 
 # To remove a kernel
 dpkg -l | grep linux-image
+    :<<'COMMAND_OUTPUT'
     root@ubuntu24:~# dpkg -l | grep linux-image
     ii  linux-image-6.8.0-101-generic         6.8.0-101.101                                    arm64        Signed kernel image generic
     ii  linux-image-6.8.0-139-generic         6.8.0-139.139                                    arm64        Signed kernel image generic
@@ -288,8 +289,10 @@ dpkg -l | grep linux-image
     root@ubuntu24:~#
     root@ubuntu24:~# uname -r
     6.8.0-139-generic
+COMMAND_OUTPUT
 
 dnf list kernel
+    :<<'COMMAND_OUTPUT'
     root@centos:~# dnf list kernel
     Last metadata expiration check: 0:21:29 ago on Tue 22 Sep 2026 04:56:57 PM IST.
     Installed Packages
@@ -300,12 +303,14 @@ dnf list kernel
     root@centos:~# uname -r
     6.12.0-266.el10.aarch64
     root@centos:~# 
+COMMAND_OUTPUT
 
 uname -r
     root@centos:~# uname -r
     6.12.0-267.el10.aarch64
 
 apt purge linux-image-6.8.0-101-generic
+    :<<'COMMAND_OUTPUT'
     root@ubuntu24:~# apt purge linux-image-6.8.0-101-generic
     Reading package lists... Done
     Building dependency tree... Done
@@ -338,8 +343,10 @@ apt purge linux-image-6.8.0-101-generic
     Purging configuration files for linux-image-6.8.0-101-generic (6.8.0-101.101) ...
     rmdir: failed to remove '/lib/modules/6.8.0-101-generic': Directory not empty
     root@ubuntu24:~# 
+COMMAND_OUTPUT
 
 dnf remove kernel-6.12.0-264.el10
+    :<<'COMMAND_OUTPUT'
     root@centos:~# dnf remove kernel-6.12.0-264.el10
     Dependencies resolved.
     ============================================================================================================================
@@ -367,20 +374,25 @@ dnf remove kernel-6.12.0-264.el10
 
     Complete!
     root@centos:~#
+COMMAND_OUTPUT
 
 dnf list kernel
+    :<<'COMMAND_OUTPUT'
     root@centos:~# dnf list kernel
     Last metadata expiration check: 0:31:44 ago on Tue 22 Sep 2026 04:56:57 PM IST.
     Installed Packages
     kernel.aarch64                                            6.12.0-266.el10                                            @baseos
     kernel.aarch64                                            6.12.0-267.el10                                            @baseos
     root@centos:~#
+COMMAND_OUTPUT
 
 dpkg -l | grep linux-image
+    :<<'COMMAND_OUTPUT'
     root@ubuntu24:~# dpkg -l | grep linux-image
     ii  linux-image-6.8.0-139-generic         6.8.0-139.139                                    arm64        Signed kernel image generic
     ii  linux-image-generic                   6.8.0-139.139                                    arm64        Generic Linux kernel image
     root@ubuntu24:~# 
+COMMAND_OUTPUT
 
 # Live Kernel Patch
   # If your system has a kernel that is susceptible to security issue, then Redhat may provide live kernel patch for it if possible.
@@ -389,3 +401,22 @@ kpatch list
 dnf list kpatch-patch*
 
 dnf install "kpatch-patch = $(uname -r)"
+
+# Get list of changes inside a patch
+uname -r
+rpm -q --changelog kernel-$(uname -r)
+rpm -q --changelog kpatch-patch-$(uname -r)
+
+# Getting update pre-staged (pre-downloaded) prior to maintenance window
+  # Means, don't install the updates, just download them to cache
+dnf update --downloadonly
+  # Now, install the packages present in cache
+dnf update --cacheonly
+or
+dnf upgrade
+
+# For automatic updates (NOT REcommended)
+dnf install dnf-automatic
+
+# Redhat Security Advisories - https://access.redhat.com/security/security-updates/
+  # This helps us figure out found & fixed critical vulnerability & Exposures (CVE).
