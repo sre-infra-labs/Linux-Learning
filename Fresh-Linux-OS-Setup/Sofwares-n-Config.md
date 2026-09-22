@@ -37,7 +37,15 @@ sudo apt install guake -y
 sudo dnf install guake -y
 ```
 
-# numlockx - Enable numlock at startup
+# numlockx - Enable numlock at startup (before login screen)
+```bash
+sudo dnf install numlockx
+
+sudo nano /etc/lightdm/lightdm.conf
+
+[Seat:*]
+greeter-setup-script=/usr/bin/numlockx on
+```
 
 # Setup Ubuntu Host with Ansible
 ```
@@ -753,7 +761,7 @@ ln -s "/stale-storage/Softwares"
 
 mkdir Study-Videos
 cd Study-Videos
-ln -s "/stale-storage/Study-Zone/Linux/Complete Linux Bash Shell Scripting with Real Life Examples" 
+ln -s "/stale-storage/Study-Zone/Linux/Complete Linux Bash Shell Scripting with Real Life Examples"
 ln -s "/stale-storage/Study-Zone/SQL Server/BrentOzar-Recordings"
 ln -s "/stale-storage/Study-Zone/SQL Server/SQLSkills.com-Recording"
 ln -s "/stale-storage/Study-Zone/Python/Complete Python Bootcamp"

@@ -50,7 +50,7 @@ Understanding Libraries
 -> When installing software packages, libraries are installed as dependencies
 
 
-Working with Sofware Managers
+Working with Software Managers
 ---------------------------------
 
 -> Software Managers were developed to fix the dependency problems
@@ -134,7 +134,7 @@ Understanding apt
 -> Use "apt list --installed" to get installed packages
 sudo apt list --installed | grep cow
 
--> Use "apt install" to remove packages
+-> Use "apt install" to install packages
     -> If a package contains a service, it will be started and enabled automatically
 
 -> Use "apt upgrade" to upgrade packages
@@ -163,6 +163,12 @@ Understanding rpm
     -> rpm -qp --scripts mypackage.rpm
         shows scripts that may be present in a package
 
+
+Kernel Updates
+-----------------------------------------
+-> Update means, save package name, but never version.
+-> Kernel modules are never upgraded, rather always installed with new version side by side
+-> Kernels are multiple installed at same time.
 
 COMMENTS
 
@@ -249,6 +255,130 @@ rpm -qpl ./Downloads/virtio-win-1.9.44-1.el10.noarch.rpm
 rpm -qp --scripts ./Downloads/virtio-win-1.9.44-1.el10.noarch.rpm
 
 # what updates are available for installed packages
+sudo cat /etc/os-release
+
+sudo dnf check-update
 sudo dnf list updates
+sudo dnf upgrade --assumeno
+
 sudo apt list --upgradable
+
+# update a particular package
+dnf update httpd
+
+# install only security updates
+dnf update --security
+
+# check kernel content (rhel)
+ls -l /lib/modules
+
+# get current kernel
+uname -r
+
+# Update kernel update
+dnf update kernel
+apt update && apt upgrade linux-image-generic
+
+# To remove a kernel
+dpkg -l | grep linux-image
+    root@ubuntu24:~# dpkg -l | grep linux-image
+    ii  linux-image-6.8.0-101-generic         6.8.0-101.101                                    arm64        Signed kernel image generic
+    ii  linux-image-6.8.0-139-generic         6.8.0-139.139                                    arm64        Signed kernel image generic
+    ii  linux-image-generic                   6.8.0-139.139                                    arm64        Generic Linux kernel image
+    root@ubuntu24:~#
+    root@ubuntu24:~# uname -r
+    6.8.0-139-generic
+
+dnf list kernel
+    root@centos:~# dnf list kernel
+    Last metadata expiration check: 0:21:29 ago on Tue 22 Sep 2026 04:56:57 PM IST.
+    Installed Packages
+    kernel.aarch64                                           6.12.0-264.el10                                           @anaconda
+    kernel.aarch64                                           6.12.0-266.el10                                           @baseos
+    kernel.aarch64                                           6.12.0-267.el10                                           @baseos
+    root@centos:~# 
+    root@centos:~# uname -r
+    6.12.0-266.el10.aarch64
+    root@centos:~# 
+
+uname -r
+    root@centos:~# uname -r
+    6.12.0-267.el10.aarch64
+
+apt purge linux-image-6.8.0-101-generic
+    root@ubuntu24:~# apt purge linux-image-6.8.0-101-generic
+    Reading package lists... Done
+    Building dependency tree... Done
+    Reading state information... Done
+    The following packages were automatically installed and are no longer required:
+      libcmark0.30.2 libfwupd2 libgusb2 tldr-hs
+    Use 'apt autoremove' to remove them.
+    The following packages will be REMOVED:
+      linux-image-6.8.0-101-generic*
+    0 upgraded, 0 newly installed, 1 to remove and 0 not upgraded.
+    After this operation, 18.4 MB disk space will be freed.
+    Do you want to continue? [Y/n] Y
+    (Reading database ... 135059 files and directories currently installed.)
+    Removing linux-image-6.8.0-101-generic (6.8.0-101.101) ...
+    I: /boot/vmlinuz.old is now a symlink to vmlinuz-6.8.0-139-generic
+    I: /boot/initrd.img.old is now a symlink to initrd.img-6.8.0-139-generic
+    /etc/kernel/postrm.d/initramfs-tools:
+    update-initramfs: Deleting /boot/initrd.img-6.8.0-101-generic
+    /etc/kernel/postrm.d/zz-update-grub:
+    Sourcing file `/etc/default/grub'
+    Generating grub configuration file ...
+    Found linux image: /boot/vmlinuz-6.8.0-139-generic
+    Found initrd image: /boot/initrd.img-6.8.0-139-generic
+    Warning: os-prober will not be executed to detect other bootable partitions.
+    Systems on them will not be added to the GRUB boot configuration.
+    Check GRUB_DISABLE_OS_PROBER documentation entry.
+    Adding boot menu entry for UEFI Firmware Settings ...
+    done
+    (Reading database ... 135055 files and directories currently installed.)
+    Purging configuration files for linux-image-6.8.0-101-generic (6.8.0-101.101) ...
+    rmdir: failed to remove '/lib/modules/6.8.0-101-generic': Directory not empty
+    root@ubuntu24:~# 
+
+dnf remove kernel-6.12.0-264.el10
+    root@centos:~# dnf remove kernel-6.12.0-264.el10
+    Dependencies resolved.
+    ============================================================================================================================
+    Package                   Architecture               Version                            Repository                    Size
+    ============================================================================================================================
+    Removing:
+    kernel                    aarch64                    6.12.0-264.el10                    @anaconda                      0
+
+    Transaction Summary
+    ============================================================================================================================
+    Remove  1 Package
+
+    Freed space: 0  
+    Is this ok [y/N]: y
+    Running transaction check
+    Transaction check succeeded.
+    Running transaction test
+    Transaction test succeeded.
+    Running transaction
+      Preparing        :                                                                                                    1/1
+      Erasing          : kernel-6.12.0-264.el10.aarch64                                                                     1/1
+
+    Removed:
+      kernel-6.12.0-264.el10.aarch64
+
+    Complete!
+    root@centos:~#
+
+dnf list kernel
+    root@centos:~# dnf list kernel
+    Last metadata expiration check: 0:31:44 ago on Tue 22 Sep 2026 04:56:57 PM IST.
+    Installed Packages
+    kernel.aarch64                                            6.12.0-266.el10                                            @baseos
+    kernel.aarch64                                            6.12.0-267.el10                                            @baseos
+    root@centos:~#
+
+dpkg -l | grep linux-image
+    root@ubuntu24:~# dpkg -l | grep linux-image
+    ii  linux-image-6.8.0-139-generic         6.8.0-139.139                                    arm64        Signed kernel image generic
+    ii  linux-image-generic                   6.8.0-139.139                                    arm64        Generic Linux kernel image
+    root@ubuntu24:~# 
 
