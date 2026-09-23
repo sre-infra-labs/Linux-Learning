@@ -1,33 +1,46 @@
 #!/bin/bash
 
-# Written by Ajay.
+# Purpose: Learning Shell Scripting
+#           Optional: Receive zero or more username from commandline. If no arguments provided, then ask user to provide one
+# 2026-Sep-23 - Ajay Dwivedi - Initial Draft
 
 echo -n "The time is currently: "
 date
+echo
 
+echo "********************** IOSTAT Output **********************"
 iostat -c | tail -n +3 | head -n 2
-
 echo
 
+echo "********************** MEMORY Output **********************"
 free -h
-
 echo
 
-#echo -n "What user to query? "
-#read user_query
-#echo
-#last "$user_query" | grep "$user_query"
+
+input_user=$*
+
+# check for zero length with test command
+if [ -z "$input_user" ]
+then
+  echo -n "What user to query? "
+  read input_user
+  echo
+fi
 
 # subshell or quoted execution
 myuser=$(whoami)
 
-echo "Looking for '$1' user last session as '$myuser'.."
-echo ''
+for user in $input_user;
+do
+  echo "********************** SESSION Output **********************"
+  echo "Looking for '$user' user last session as '$myuser'.."
+  echo ''
 
-last "$1" | grep "$1" | head -n 5
+  last "$user" | grep "$user" | head -n 5
 
-echo ''
-echo "Groups for '$1' user.."
-groups "$1"
-echo
+  echo ''
+  echo "Groups for '$user' user.."
+  groups "$user"
+  echo
+done
 

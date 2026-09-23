@@ -603,6 +603,100 @@ sudo update-desktop-database
   sudo netstat -pnltu | grep 9090
 ```
 
+# Remote Desktop using VNC - Setup VNC Server
+
+Client - client host that will run vnc viewer
+Server - server host running vnc server whose RDP is needed
+
+```bash
+# On server host, install tigervnc-server
+sudo dnf install tigervnc-server
+
+# On server host, Configure a VNC User and Password
+whoami
+    saanvi
+vncpasswd
+
+# On server host, Configure the VNC Service
+You need to map the VNC service to a specific display port (for example, display :1, which corresponds to port 5901).
+
+sudo cp /lib/systemd/system/vncserver@.service /etc/systemd/system/vncserver@:1.service
+
+# Add `saanvi` as VNC user
+sudo nano /etc/tigervnc/vncserver.users
+:<<'VNCSERVER_USERS_CODE'
+:1=saanvi
+VNCSERVER_USERS_CODE
+
+# On Server, Configure Cinnamon for VNC
+mkdir ~/.vnc
+nano ~/.vnc/xstartup
+chmod +x ~/.vnc/xstartup
+
+:<<'CODE_BLOCK_4_xstartup_file'
+#!/bin/sh
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+exec cinnamon-session
+CODE_BLOCK_4_xstartup_file
+
+# On server, Start & Enable the service
+sudo systemctl daemon-reload
+sudo systemctl enable --now vncserver@:1.service
+
+# On server, Open firewall ports
+sudo firewall-cmd --permanent --add-port=5901/tcp
+sudo firewall-cmd --reload
+
+# On server, check service status
+sudo systemctl status vncserver@:1.service
+
+    :<<'SERVICE_STATUS_COMMAND_OUTPUT'
+    ● vncserver@:1.service - Remote desktop service (VNC)
+        Loaded: loaded (/etc/systemd/system/vncserver@:1.service; enabled; preset: disabled)
+        Drop-In: /usr/lib/systemd/system/service.d
+                └─10-timeout-abort.conf
+        Active: active (running) since Wed 2026-09-23 09:38:08 IST; 5min ago
+    Invocation: 001eaa2394f44a4cab458d9de10871c8
+        Process: 13448 ExecStartPre=/usr/libexec/vncsession-restore :1 (code=exited, status=0/SUCCESS)
+        Process: 13459 ExecStart=/usr/libexec/vncsession-start :1 (code=exited, status=0/SUCCESS)
+      Main PID: 13467 (vncsession)
+          Tasks: 498 (limit: 38071)
+        Memory: 1.2G (peak: 1.4G)
+            CPU: 30.750s
+        CGroup: /system.slice/system-vncserver.slice/vncserver@:1.service
+                ├─13467 /usr/bin/vncsession saanvi :1
+                ├─13468 xinit /etc/X11/xinit/Xsession "env XDG_SESSION_TYPE=x11 cinnamon-session-cinnamon" -- />
+                ├─13477 /usr/bin/Xvnc :1 -auth /home/saanvi/.Xauthority -desktop "msi:1 (saanvi)" -fp catalogue>
+                ├─13487 /usr/libexec/cinnamon-session-binary --session cinnamon
+                ├─13496 dbus-launch --sh-syntax --exit-with-session
+                ├─13497 /usr/bin/dbus-daemon --syslog --fork --print-pid 5 --print-address 7 --session
+                ├─13536 /usr/bin/ssh-agent /bin/sh -c "exec -l /bin/bash -c \"env XDG_SESSION_TYPE=x11 cinnamon>
+                ├─13687 /usr/libexec/gvfsd
+                ├─13693 /usr/libexec/gvfsd-fuse /home/saanvi/.gvfs -f
+                ├─13708 /usr/bin/gnome-keyring-daemon --start --components=pkcs11
+                ├─13728 /usr/bin/csd-color
+                ├─13729 /usr/bin/csd-print-notifications
+                ├─13730 /usr/bin/csd-housekeeping
+                ├─13731 /usr/bin/csd-screensaver-proxy
+                ├─13732 /usr/bin/csd-a11y-settings
+                ├─13733 /usr/bin/csd-keyboard
+                ├─13734 /usr/bin/csd-settings-remap
+                ├─13735 /usr/bin/csd-automount
+                ├─13737 /usr/bin/csd-media-keys
+                ├─13738 /usr/bin/csd-wacom
+SERVICE_STATUS_COMMAND_OUTPUT
+
+# On client host, connect using below address
+vnc://msi:5901
+
+# On server, disable the service if not needed
+sudo systemctl stop vncserver@:1.service
+sudo systemctl disable vncserver@:1.service
+```
+
+
+
 # Apache Open Office
 # Other common softwares
   > sudo apt install supertux tuxmath tuxpaint supertuxkart gimp notepadqq scratch gparted -y
