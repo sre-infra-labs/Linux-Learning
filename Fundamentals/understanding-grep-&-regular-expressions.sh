@@ -62,3 +62,10 @@ grep '^.$' myfile
 
 # either option:
 grep -E '(svm|vmx)' /proc/cpuinfo
+
+# extract session recording from journalctl
+journalctl -o verbose | grep -P "\"rec\".*?\,"
+  #play the recording
+tlog-play -r journal -M TLOG_REC=fe837958108a4a3dabf7e07a90a698be-192ad-c8f457
+
+

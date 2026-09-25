@@ -585,7 +585,7 @@ sudo update-desktop-database
   sudo firewall-cmd --add-port=9090/tcp --permanent
   sudo firewall-cmd --permanent --add-service cockpit
 
-  sudo apt-get install podman cockpit-podman -y
+  sudo apt-get install podman -y
   sudo systemctl enable --now podman
 
   sudo apt install -y cockpit-machines
@@ -593,6 +593,7 @@ sudo update-desktop-database
   sudo apt install -y cockpit-storaged
   sudo apt install -y cockpit-packagekit
   sudo apt install -y cockpit-podman
+  sudo apt install -y cockpit-session-recording
   sudo apt install -y cockpit-networkmanager
   sudo apt install -y cockpit-files
   sudo apt install -y cockpit-sosreport
@@ -601,6 +602,40 @@ sudo update-desktop-database
   sudo systemctl status cockpit
 
   sudo netstat -pnltu | grep 9090
+```
+
+## Configure cockpit with SSL if required. NOT REQUIRED if using Cloudflare for domain binding
+   # Useful for localhost only. When not exposing to Internet
+```bash
+# Generate ssl certs in /etc/cockpit/ws-certs.d/
+sudo openssl req -new -x509 -days 365 -nodes \
+  -newkey rsa:2048 \
+  -out /etc/cockpit/ws-certs.d/50-cockpit.crt \
+  -keyout /etc/cockpit/ws-certs.d/50-cockpit.key \
+  -subj "/CN=centos" \
+  -addext "subjectAltName = DNS:centos, DNS:localhost, IP:127.0.0.1"
+
+ls -l /etc/cockpit/ws-certs.d/
+    root@centos:~# ls -l /etc/cockpit/ws-certs.d/
+    total 20
+    -rw-r--r--. 1 root root 1448 Sep 14 17:46 0-self-signed-ca.pem
+    -rw-r--r--. 1 root root 1346 Sep 14 17:46 0-self-signed.cert
+    -rw-------. 1 root root 1704 Sep 14 17:46 0-self-signed.key
+    -rw-r--r--. 1 root root 1115 Sep 25 10:38 50-cockpit.crt
+    -rw-------. 1 root root 1704 Sep 25 10:38 50-cockpit.key
+
+# Set file permissions
+sudo chown root:root /etc/cockpit/ws-certs.d/50-cockpit.*
+sudo chmod 600 /etc/cockpit/ws-certs.d/50-cockpit.key
+sudo chmod 644 /etc/cockpit/ws-certs.d/50-cockpit.crt
+
+# Restart cockpit.socket
+sudo systemctl stop cockpit
+sudo systemctl restart cockpit.socket
+
+# Validate certification
+openssl s_client -connect localhost:9090 -showcerts
+
 ```
 
 # Remote Desktop using VNC - Setup VNC Server
