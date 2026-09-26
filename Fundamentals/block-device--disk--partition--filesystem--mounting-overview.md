@@ -190,7 +190,25 @@ Physical Disk (lsblk || blkid) -> Disk Partition (fdisk || parted || gdisk) -> L
 
 # Figure out commands
 compgen -c | sort -u | xargs -n 1 whatis 2>/dev/null | grep -i volume | grep -i group
-man -k volume | grep -i group
+
+# Figure out commands to work with physical volumes
+man -k volume | grep -i physical
+    :<<'COMMANDS_FOR_PHYSICAL_VOLUMES'
+adwivedi@ubuntu24:~$ man -k volume | grep -i physical
+lvmdiskscan (8)      - List devices that may be used as physical volumes
+pvchange (8)         - Change attributes of physical volume(s)
+pvck (8)             - Check metadata on physical volumes
+pvcreate (8)         - Initialize physical volume(s) for use by LVM
+pvdisplay (8)        - Display various attributes of physical volume(s)
+pvmove (8)           - Move extents from one physical volume to another
+pvremove (8)         - Remove LVM label(s) from physical volume(s)
+pvresize (8)         - Resize physical volume(s)
+pvs (8)              - Display information about physical volumes
+pvscan (8)           - List all physical volumes
+vgextend (8)         - Add physical volumes to a volume group
+vgreduce (8)         - Remove physical volume(s) from a volume group
+vgsplit (8)          - Move physical volumes into a new or existing volume group
+COMMANDS_FOR_PHYSICAL_VOLUMES
 
 # Fill your disk by creating a large file
 cd ~
@@ -301,8 +319,13 @@ Use `mkfs.xfs` or "mkfs.ext4" to create these file systems.
 There is no need to use file systems like vfat or NTFS, unless for formatting USB thumb drives
 
 ```bash
+# Check existing file system type
+df -hT
+
+Based on existing file system Type (xfs or ext4), choose to use "mkfs.xfs" or "mkfs.ext4"
+
 # create file system for a partition
-sudo mkfs.ext4 -L disk_5G /dev/vdb1
+sudo mkfs.xfs -L disk_5G /dev/vdb1
 
 ```
 
@@ -349,17 +372,57 @@ df -h
 # show all mounts
 findmnt
 
-# mount /dev/vdb1
-sudo mount /dev/vdb1 /mnt
+# mount device "/dev/vdd1" to path "/mnt/poc_vdd1"
+sudo mkdir -p /mnt/poc_vdd1
+sudo mount /dev/vdd1 /mnt/poc_vdd1
 
-# mount a device
+    :<<'COMMAND_OUTPUT_AFTER_MOUNTING'
+    root@centos:~# mount | grep -i vdd1
+    /dev/vdd1 on /mnt/poc_vdd1 type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+
+    root@centos:~# lsblk
+    NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+    sr0          11:0    1 1024M  0 rom  
+    vda         252:0    0   64G  0 disk 
+    ├─vda1      252:1    0  600M  0 part /boot/efi
+    ├─vda2      252:2    0    2G  0 part /boot
+    └─vda3      252:3    0 61.4G  0 part 
+      ├─cs-root 253:0    0 38.6G  0 lvm  /
+      ├─cs-swap 253:1    0  3.9G  0 lvm  [SWAP]
+      └─cs-home 253:2    0 18.9G  0 lvm  /home
+    vdb         252:16   0    5G  0 disk 
+    vdc         252:32   0    8G  0 disk 
+    vdd         252:48   0    2G  0 disk 
+    └─vdd1      252:49   0    2G  0 part /mnt/poc_vdd1
+    vde         252:64   0    8G  0 disk 
+
+    root@centos:~# df -hT
+    Filesystem          Type      Size  Used Avail Use% Mounted on
+    /dev/mapper/cs-root xfs        39G  6.8G   32G  18% /
+    devtmpfs            devtmpfs  2.3G     0  2.3G   0% /dev
+    tmpfs               tmpfs     2.3G     0  2.3G   0% /dev/shm
+    efivarfs            efivarfs  256K   20K  236K   8% /sys/firmware/efi/efivars
+    tmpfs               tmpfs     930M   91M  840M  10% /run
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+    /dev/vda2           xfs       2.0G  575M  1.4G  29% /boot
+    /dev/mapper/cs-home xfs        19G  828M   18G   5% /home
+    /dev/vda1           vfat      599M   13M  586M   3% /boot/efi
+    tmpfs               tmpfs     465M   56K  465M   1% /run/user/1000
+    tmpfs               tmpfs     465M   72K  465M   1% /run/user/42
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyAMA0.service
+    /dev/vdd1           xfs       2.0G   71M  1.9G   4% /mnt/poc_vdd1
+    root@centos:~# 
+COMMAND_OUTPUT_AFTER_MOUNTING
+
+# mount a pen drive
+sudo mkdir -p /mnt/usb_drive
 sudo mount /dev/sdb /mnt/usb_drive
 
 # unmount the mounted directory
-sudo umount /mnt
+sudo umount /mnt/poc_vdd1
 
 # unmount a device
-sudo umount /dev/sdb
+sudo umount /dev/vdd1
 
 # if device busy error
 lsof /mnt
@@ -396,6 +459,105 @@ mount | tail -5
 sudo findmnt
 sudo lsblk
 sudo df -h
+
+```
+
+# Disk Space issue
+
+> [!IMPORTANT]
+> The scenario is called as `Open Deleted Files` where a file is deleted while it is still in use by some process in background.
+> So filesystem usage still shows full, while file does not existing on directory path.
+
+```bash
+
+# Fill 2Gb disk /mnt/poc_vdd1 by creating a big file of 1.8 gb (95% disk utilization scenario)
+cd /mnt/poc_vdd1
+dd if=/dev/zero of=big_file bs=100M count=18
+chmod 777 big_file
+    :<<'DISK_FILESYSTEM_COMMAND_OUTPUT'
+
+    root@centos:/mnt/poc_vdd1# df -hT
+    Filesystem          Type      Size  Used Avail Use% Mounted on
+    /dev/mapper/cs-root xfs        39G  6.9G   32G  18% /
+    devtmpfs            devtmpfs  2.3G     0  2.3G   0% /dev
+    tmpfs               tmpfs     2.3G     0  2.3G   0% /dev/shm
+    efivarfs            efivarfs  256K   20K  236K   8% /sys/firmware/efi/efivars
+    tmpfs               tmpfs     930M   87M  843M  10% /run
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+    /dev/vda2           xfs       2.0G  575M  1.4G  29% /boot
+    /dev/mapper/cs-home xfs        19G  828M   18G   5% /home
+    /dev/vda1           vfat      599M   13M  586M   3% /boot/efi
+    tmpfs               tmpfs     465M   56K  465M   1% /run/user/1000
+    tmpfs               tmpfs     465M   72K  465M   1% /run/user/42
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyAMA0.service
+    /dev/vdd1           xfs       2.0G  1.9G  112M  95% /mnt/poc_vdd1
+DISK_FILESYSTEM_COMMAND_OUTPUT
+
+In above output, we can see that mount point /mnt/poc_vdd1 of 2 gb is full to 95%.
+It is full because of `big_file`.
+
+    :<<'DISK_USAGE_OUTPUT'
+    root@centos:/mnt/poc_vdd1# du -h --max-depth=3 /mnt/poc_vdd1
+    1.8G    /mnt/poc_vdd1
+
+    root@centos:/mnt/poc_vdd1# ls -lh
+    total 1.8G
+    -rwxrwxrwx. 1 root root 1.8G Sep 26 17:32 big_file
+DISK_USAGE_OUTPUT
+
+# In order to generate "Deleted File Still Open" scenario, In another session, Open the big_file for reading using `tail`. KEEP IT OPEN.
+tail -f /mnt/poc_vdd1/big_file
+
+# In original session, delete the file
+rm -y /mnt/poc_vdd1/big_file
+
+# Disk FileSystem is still showing 95% used, but space usage on mount point is NOT showing any large file usage.
+du --max-depth=2 -h /mnt/poc_vdd1/
+ls -lh
+
+    :<<'DISK_USAGE_OUTPUT'
+    root@centos:/mnt/poc_vdd1# ls -lh
+    total 0
+
+    root@centos:/mnt/poc_vdd1# du --max-depth=2 -h /mnt/poc_vdd1/
+    0       /mnt/poc_vdd1/
+DISK_USAGE_OUTPUT
+
+    :<<'DISK_FILESYSTEM_COMMAND_OUTPUT'
+    root@centos:/mnt/poc_vdd1# df -hT
+    Filesystem          Type      Size  Used Avail Use% Mounted on
+    /dev/mapper/cs-root xfs        39G  6.9G   32G  18% /
+    devtmpfs            devtmpfs  2.3G     0  2.3G   0% /dev
+    tmpfs               tmpfs     2.3G     0  2.3G   0% /dev/shm
+    efivarfs            efivarfs  256K   20K  236K   8% /sys/firmware/efi/efivars
+    tmpfs               tmpfs     930M   87M  843M  10% /run
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+    /dev/vda2           xfs       2.0G  575M  1.4G  29% /boot
+    /dev/mapper/cs-home xfs        19G  828M   18G   5% /home
+    /dev/vda1           vfat      599M   13M  586M   3% /boot/efi
+    tmpfs               tmpfs     465M   56K  465M   1% /run/user/1000
+    tmpfs               tmpfs     465M   72K  465M   1% /run/user/42
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyAMA0.service
+    /dev/vdd1           xfs       2.0G  1.9G  112M  95% /mnt/poc_vdd1
+DISK_FILESYSTEM_COMMAND_OUTPUT
+
+
+# Find out processes using any file from mount point `/mnt/vdd1` having disk issue
+lsof +D /path/to/directory
+lsof | grep -i poc_vdd1 | grep -i deleted
+    :<<'LSOF_COMMAND_OUTPUT'
+    root@centos:/mnt/poc_vdd1# lsof | grep -i poc_vdd1 | grep -i deleted
+    lsof: WARNING: can't stat() fuse.portal file system /run/user/42/doc
+          Output information may be incomplete.
+    tail      151476                        adwivedi    3r      REG             252,49 1887436800        131 /mnt/poc_vdd1/big_file (deleted)
+LSOF_COMMAND_OUTPUT
+
+Here we can notice that file /mnt/poc_vdd1/big_file marked as "deleted" is open by user adwivedi from tool "tail" under pid 151476.
+The file size is 1887436800 byes (~1.8 gb).
+
+# Kill the process which has file open to release the deleted file. -9 for terminate signal, -15 for graceful stop signal
+kill -15 151476
+kill -9 151476
 
 ```
 
