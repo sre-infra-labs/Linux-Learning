@@ -14,6 +14,8 @@ To address disks, Linux provides devices files in /dev
 
 ```
 
+> [!NOTICE]
+> It is important to note that leave some free/unallocated space after a partition can be part of strategy to use it in later stages during space crisis.
 
 # Get Attached Disk Devices on Host using `lsblk`
 
@@ -129,6 +131,8 @@ GDISK_HELP
 # Work with 3rd virtual disk device (/dev/vdc)
 sudo gdisk /dev/vdc
 
+# Flush the new partition table changes for os kernel
+partprobe
 ```
 
 ## Understanding `MBR` Partitions
@@ -180,13 +184,22 @@ FDISK_HELP
 # create partition for vdb device
 sudo fdisk /dev/vdb
 
+# Flush the new partition table changes for os kernel
+partprobe
 ```
 
-## When using Logical Volumes (https://www.youtube.com/live/S5Jgw4en5ME?si=_Vl99UBLbpRfMcBO)
+## When using Logical Volumes
+- Main - https://www.youtube.com/live/JyuJ10_SETE?si=FWJrhRHzB2UH-xiJ
+- Small content -  https://www.youtube.com/live/S5Jgw4en5ME?si=_Vl99UBLbpRfMcBO
 
 ```bash
 # BASIC Flow
-Physical Disk (lsblk || blkid) -> Disk Partition (fdisk || parted || gdisk) -> Logical Physical Volume (pvs || pvcreate) -> Volume Groups (vgs || vgcreate || vgextend ) -> Logical Volumes (lvs || lvextend) -> File System (df -hT || mkfs.* || xfs_growfs)
+Physical Disk (lsblk -f || blkid) ->
+  Disk Partition (fdisk || parted || gdisk || partprobe) ->
+    Logical Physical Volume (pvs/pvscan || pvcreate || pvdisplay || pvremove || pvresize) ->
+      Volume Groups (vgs/vgdisplay || vgcreate || vgextend || vgreduce || vgremove ) ->
+        Logical Volumes (lvs/lvdisplay || lvcreate || lvextend || lvreduce || lvresize || lvremove) ->
+          File System (df -hT || mkfs.* || xfs_growfs) -> Mount (mount || umount || fstab)
 
 # Figure out commands
 compgen -c | sort -u | xargs -n 1 whatis 2>/dev/null | grep -i volume | grep -i group
@@ -295,6 +308,92 @@ sudo vgs
 sudo vgextend cs /dev/vdd
     adwivedi@centos:~$ sudo vgextend cs /dev/vdd
       Volume group "cs" successfully extended
+
+
+# Logical Volume Details. Notice DEVICE NAME, LV NAME, UUID, FSTYPE
+  # We use these for mounting using fstab
+
+    :<<'LOGICAL_VOLUMES_COMMAND_OUTPUT'
+    root@centos:/mnt# pwd
+    /mnt
+
+    root@centos:/mnt# ls -l 
+    total 0
+    drwxr-xr-x. 2 root root 6 Sep 27 07:40 pg-backup
+    drwxr-xr-x. 2 root root 6 Sep 27 07:40 pg-data
+    drwxr-xr-x. 2 root root 6 Sep 26 17:18 poc_vdd1
+    drwxr-xr-x. 2 root root 6 Sep  7 19:20 vdd
+
+    root@centos:/mnt# lsblk -f
+    NAME          FSTYPE      FSVER    LABEL UUID                                   FSAVAIL FSUSE% MOUNTPOINTS
+    sr0                                                                                            
+    vda                                                                                            
+    ├─vda1        vfat        FAT32          4F17-74B1                               585.9M     2% /boot/efi
+    ├─vda2        xfs                        fa4433be-1431-49cf-8f66-4cfeba31a5e4      1.4G    29% /boot
+    └─vda3        LVM2_member LVM2 001       tn3VqK-kvUa-c4iE-gMYH-N0Wu-dPr2-XqMZ45                
+      ├─cs-root   xfs                        257ff407-5a9e-45a1-80a6-0efdc4648883     31.8G    18% /
+      ├─cs-swap   swap        1              3c0749d1-56a1-4162-b864-baf72ef91ff5                  [SWAP]
+      └─cs-home   xfs                        2b5deda7-2c60-4f5b-8adc-5ee5dcfdb18c       18G     4% /home
+    vdb                                                                                            
+    vdc                                                                                            
+    vdd                                                                                            
+    └─vdd1        LVM2_member LVM2 001       DB7y8s-8GtJ-qrwA-Wxnv-sCnD-oudF-Dk6hhT                
+      ├─pg-data                                                                                    
+      └─pg-backup                                                                                  
+    vde                                                                                            
+    ├─vde1        LVM2_member LVM2 001       PEuHP8-uIaw-XhXh-p4lh-P6Jl-6lj1-2qs5Yb                
+    │ └─pg-data                                                                                    
+    └─vde2        LVM2_member LVM2 001       Qh9YWJ-gI6O-bhKX-uolZ-EHIv-HN3V-QqDu30                
+      └─pg-backup   
+
+    root@centos:/mnt# lvs -o lv_name,vg_name,lv_path,lv_size
+      LV     VG Path           LSize  
+      home   cs /dev/cs/home   <18.86g
+      root   cs /dev/cs/root    38.62g
+      swap   cs /dev/cs/swap    <3.93g
+      backup pg /dev/pg/backup   2.00g
+      data   pg /dev/pg/data     4.00g
+
+LOGICAL_VOLUMES_COMMAND_OUTPUT
+
+# Create filesystem & directories for mounting
+mkdir /mnt/pg-data
+mkfs.xfs /dev/pg/data
+mkdir /mnt/pg-backp
+mkfs.xfs /dev/pg/backup
+
+# Temporary mounting of logical volumes
+mount /dev/<vg_name>/<lv_name>
+mount /dev/pg/data /mnt/pg-data
+mount /dev/pg/backup /mnt/pg-backup
+
+# Permanent mounting of logical volumes
+vim /etc/fstab
+
+UUID=7a4d80a4-0ab8-437d-aca4-998908c51a16  /mnt/pg-data    xfs  defaults  0 0
+UUID=a72cf968-6e12-4d88-9ca7-dddbb9e2c0bd  /mnt/pg-backup  xfs  defaults  0 0
+
+mount -a
+systemctl daemon-reload
+
+    :<<'DISK_COMMAND_OUTPUT'
+    root@centos:/mnt# df -hT
+    Filesystem            Type      Size  Used Avail Use% Mounted on
+    /dev/mapper/cs-root   xfs        39G  6.8G   32G  18% /
+    devtmpfs              devtmpfs  2.3G     0  2.3G   0% /dev
+    tmpfs                 tmpfs     2.3G     0  2.3G   0% /dev/shm
+    efivarfs              efivarfs  256K   20K  236K   8% /sys/firmware/efi/efivars
+    tmpfs                 tmpfs     930M   91M  839M  10% /run
+    tmpfs                 tmpfs     1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+    /dev/vda2             xfs       2.0G  575M  1.4G  29% /boot
+    /dev/mapper/cs-home   xfs        19G  828M   18G   5% /home
+    /dev/vda1             vfat      599M   13M  586M   3% /boot/efi
+    tmpfs                 tmpfs     465M   56K  465M   1% /run/user/1000
+    tmpfs                 tmpfs     465M   72K  465M   1% /run/user/42
+    tmpfs                 tmpfs     1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyAMA0.service
+    /dev/mapper/pg-data   xfs       4.0G  110M  3.9G   3% /mnt/pg-data
+    /dev/mapper/pg-backup xfs       2.0G   71M  1.9G   4% /mnt/pg-backup
+DISK_COMMAND_OUTPUT
 
 ```
 
@@ -462,7 +561,9 @@ sudo df -h
 
 ```
 
-# Disk Space issue
+---
+
+# Disk Space issue - Deleted Open File
 
 > [!IMPORTANT]
 > The scenario is called as `Open Deleted Files` where a file is deleted while it is still in use by some process in background.
@@ -507,6 +608,8 @@ DISK_USAGE_OUTPUT
 
 # In order to generate "Deleted File Still Open" scenario, In another session, Open the big_file for reading using `tail`. KEEP IT OPEN.
 tail -f /mnt/poc_vdd1/big_file
+or
+less /mnt/poc_vdd1/big_file
 
 # In original session, delete the file
 rm -y /mnt/poc_vdd1/big_file
@@ -542,7 +645,7 @@ DISK_USAGE_OUTPUT
 DISK_FILESYSTEM_COMMAND_OUTPUT
 
 
-# Find out processes using any file from mount point `/mnt/vdd1` having disk issue
+# Find out processes using any file from mount point `/mnt/vdd1` having disk issue - https://www.youtube.com/live/JyuJ10_SETE?si=lj-IN9mZsWV0NCx-
 lsof +D /path/to/directory
 lsof | grep -i poc_vdd1 | grep -i deleted
     :<<'LSOF_COMMAND_OUTPUT'
@@ -559,7 +662,133 @@ The file size is 1887436800 byes (~1.8 gb).
 kill -15 151476
 kill -9 151476
 
+
+# Logrotate working
+Remove old file > Compress old file > Create new file > Reload or SigHup the service using the log file
+
+
 ```
 
+---
+
+# Disk Space issue - Inode Limit Reached - Ext4 file system Types
+
+An inode (index node) is a fundamental data structure in Unix-like file systems (such as Linux ext4, XFS, etc.) that stores metadata about a file or directory, but not its actual data or name.
+
+Here is a quick breakdown of what an inode does and contains:
+
+What it stores (Metadata): File size, ownership (UID/GID), access permissions (read/write/execute), timestamps (creation, modification, access), and pointers to the disk blocks where the actual file data is stored.
+
+What it does NOT store: The file's name or its actual contents. File names are stored in directory tables that map human-readable names to specific inode numbers.
+
+Inode Number: Every file and directory on the file system has a unique identifying number called an inode number. You can view inode numbers using the -i flag in commands like ls (ls -li).
+
+Inode Limit: A file system is created with a fixed number of inodes. This means a disk can theoretically run out of inodes (and prevent you from creating new files) even if it still has plenty of disk space left, usually caused by having a massive number of very small files.
+
+> [!IMPORTANT]
+> This issue happens only on ext4. xfs filesystem start using data blocks for storing inode table incase of space for inode is exhaused.
+> But ext4 inode structure is laid out at format time. So it never extends.
+
+```bash
+# Validate the file system type for /mnt/poc_vdd1 mount point (DISK /dev/vdd1)
+df -hT
+
+    :<<'DISK_FILESYSTEM_COMMAND_OUTPUT'
+    Filesystem          Type      Size  Used Avail Use% Mounted on
+    /dev/mapper/cs-root xfs        39G  6.9G   32G  18% /
+    devtmpfs            devtmpfs  2.3G     0  2.3G   0% /dev
+    tmpfs               tmpfs     2.3G     0  2.3G   0% /dev/shm
+    efivarfs            efivarfs  256K   20K  236K   8% /sys/firmware/efi/efivars
+    tmpfs               tmpfs     930M   90M  840M  10% /run
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+    /dev/vda2           xfs       2.0G  575M  1.4G  29% /boot
+    /dev/mapper/cs-home xfs        19G  828M   18G   5% /home
+    /dev/vda1           vfat      599M   13M  586M   3% /boot/efi
+    tmpfs               tmpfs     465M   56K  465M   1% /run/user/1000
+    tmpfs               tmpfs     465M   72K  465M   1% /run/user/42
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyAMA0.service
+    /dev/vdd1           ext4      2.0G   24K  1.9G   1% /mnt/poc_vdd1
+DISK_FILESYSTEM_COMMAND_OUTPUT
+
+# Fill 2 gb disk /mnt/poc_vdd1 by 1 gb
+dd if=/dev/zero of=/mnt/poc_vdd1/one_gb_file bs=100M count=10
+df -hT
+    :<<'DISK_FILESYSTEM_COMMAND_OUTPUT'
+    Filesystem          Type      Size  Used Avail Use% Mounted on
+    /dev/mapper/cs-root xfs        39G  6.9G   32G  18% /
+    devtmpfs            devtmpfs  2.3G     0  2.3G   0% /dev
+    tmpfs               tmpfs     2.3G     0  2.3G   0% /dev/shm
+    efivarfs            efivarfs  256K   20K  236K   8% /sys/firmware/efi/efivars
+    tmpfs               tmpfs     930M   90M  840M  10% /run
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+    /dev/vda2           xfs       2.0G  575M  1.4G  29% /boot
+    /dev/mapper/cs-home xfs        19G  828M   18G   5% /home
+    /dev/vda1           vfat      599M   13M  586M   3% /boot/efi
+    tmpfs               tmpfs     465M   56K  465M   1% /run/user/1000
+    tmpfs               tmpfs     465M   72K  465M   1% /run/user/42
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyAMA0.service
+    /dev/vdd1           ext4      2.0G 1001M  858M  54% /mnt/poc_vdd1
+DISK_FILESYSTEM_COMMAND_OUTPUT
+
+# create empty files & directories (technically they should contribute to any space consumption)
+cd /mnt/poc_vdd1/
+mkdir -p d{1..500} && for d in d{1..500}; do touch $d/f{1..1000}; done
+    :<<'TOUCH_COMMAND_OUTPUT'
+    touch: cannot touch 'd500/f994': No space left on device
+    touch: cannot touch 'd500/f995': No space left on device
+    touch: cannot touch 'd500/f996': No space left on device
+    touch: cannot touch 'd500/f997': No space left on device
+    touch: cannot touch 'd500/f998': No space left on device
+    touch: cannot touch 'd500/f999': No space left on device
+    touch: cannot touch 'd500/f1000': No space left on device
+    root@centos:/mnt/poc_vdd1# 
+TOUCH_COMMAND_OUTPUT
+
+Command failed saying "No space left on device", `df -hT` still show only 55% full disk.
+
+df -hT
+    :<<'DISK_FILESYSTEM_COMMAND_OUTPUT'
+    Filesystem          Type      Size  Used Avail Use% Mounted on
+    /dev/mapper/cs-root xfs        39G  6.9G   32G  18% /
+    devtmpfs            devtmpfs  2.3G     0  2.3G   0% /dev
+    tmpfs               tmpfs     2.3G     0  2.3G   0% /dev/shm
+    efivarfs            efivarfs  256K   20K  236K   8% /sys/firmware/efi/efivars
+    tmpfs               tmpfs     930M   91M  839M  10% /run
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+    /dev/vda2           xfs       2.0G  575M  1.4G  29% /boot
+    /dev/mapper/cs-home xfs        19G  828M   18G   5% /home
+    /dev/vda1           vfat      599M   13M  586M   3% /boot/efi
+    tmpfs               tmpfs     465M   56K  465M   1% /run/user/1000
+    tmpfs               tmpfs     465M   72K  465M   1% /run/user/42
+    tmpfs               tmpfs     1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyAMA0.service
+    /dev/vdd1           ext4      2.0G 1005M  854M  55% /mnt/poc_vdd1
+DISK_FILESYSTEM_COMMAND_OUTPUT
+
+# To get inode utilization on filesystem
+df -hTi
+    :<<'DISK_FILESYSTEM_COMMAND_OUTPUT'
+    Filesystem          Type     Inodes IUsed IFree IUse% Mounted on
+    /dev/mapper/cs-root xfs         20M  181K   20M    1% /
+    devtmpfs            devtmpfs   575K   551  574K    1% /dev
+    tmpfs               tmpfs      581K     2  581K    1% /dev/shm
+    efivarfs            efivarfs      0     0     0     - /sys/firmware/efi/efivars
+    tmpfs               tmpfs      800K  1.2K  799K    1% /run
+    tmpfs               tmpfs      1.0K     2  1022    1% /run/credentials/systemd-journald.service
+    /dev/vda2           xfs        1.0M  2.1K 1022K    1% /boot
+    /dev/mapper/cs-home xfs        9.5M   18K  9.5M    1% /home
+    /dev/vda1           vfat          0     0     0     - /boot/efi
+    tmpfs               tmpfs      117K    55  117K    1% /run/user/1000
+    tmpfs               tmpfs      117K    78  117K    1% /run/user/42
+    tmpfs               tmpfs      1.0K     2  1022    1% /run/credentials/serial-getty@ttyAMA0.service
+    /dev/vdd1           ext4       128K  128K     0  100% /mnt/poc_vdd1
+DISK_FILESYSTEM_COMMAND_OUTPUT
+
+In above output, we can see that IUse% is 100%.
+
+# track inode at directory level
+du --inodes --max-depth=1
+
+
+```
 
 
