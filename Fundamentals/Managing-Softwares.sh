@@ -67,6 +67,14 @@ Working with Software Managers
 
 -> Common software managers are "yum/dnf" and "apt"
 
+# Get repos installed
+dnf repolist
+
+# Check existing gpg keys
+rpm -q --queryformat "%{SUMMARY}\n" $(rpm -q gpg-pubkey)
+rpm -q gpg-pubkey
+
+
 # Enable extra repos in rhel
 sudo dnf install \
 https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
