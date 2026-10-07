@@ -321,7 +321,11 @@ compgen -ac | sort -u | xargs -n 1 tldr
 
 # SSH for github (ryzen9--saanvi--id_ed25519.pub)
 ```bash
-ssh-keygen -t ed25519 -C "your_email@example.com"
+ssh-keygen
+cat ~/.ssh/id_ed25519.pub
+
+# if remote url issue
+git remote set-url origin https://github.com/sre-infra-labs/Linux-Learning.git
 
 
 
