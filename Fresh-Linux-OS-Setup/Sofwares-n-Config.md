@@ -215,16 +215,39 @@ usermod -aG sudo-nopw ansible
     ip route show
 ```
 
-# Enable bridge interface for dhcp
-```
-  # On Rhel
-  sudo nmcli device up enp1s0
-  sudo nmcli con mod enp1s0 ipv4.method auto
-  sudo nmcli con reload
-  sudo nmcli con up enp1s0
+# For Hypervisor Internal Only Network (Static Ipv4 with gateway to allow 192.168.0.0/14 traffic)
 
-  # On Ubuntu
-  sudo netplan set ethernets.enp1s0.dhcp4=true
+```bash
+
+```
+
+# For LAN/Bridge Adapter (Static Ipv4 along with Internet Access)
+```bash
+# On Rhel
+  # Enable link if disabled
+  sudo nmcli device up enp2s0
+
+  # Get ipv4 using DHCP
+  sudo nmcli con mod enp2s0 ipv4.method auto
+  sudo nmcli con reload
+  sudo nmcli con up enp2s0
+
+  # Set static ipv4
+  sudo nmcli con mod enp2s0 ipv4.method manual ipv4.addresses 192.168.29.55/24
+  sudo nmcli con reload
+  sudo nmcli con up enp2s0
+
+# On Ubuntu
+  # Enable link if disabled
+  sudo ip link set enp2s0 up
+
+  # Get ipv4 using DHCP
+  sudo netplan set ethernets.enp2s0.dhcp4=true
+  sudo netplan apply
+
+  # Set static IPv4
+  sudo netplan set ethernets.enp2s0.dhcp4=false
+  sudo netplan set ethernets.enp2s0.addresses='[192.168.29.54/24]'
   sudo netplan apply
 ```
 
@@ -328,7 +351,6 @@ cat ~/.ssh/id_ed25519.pub
 git remote set-url origin https://github.com/sre-infra-labs/Linux-Learning.git
 
 
-
 ```
 
 # NOTE: Start a GUI software on remote SSH session
@@ -340,7 +362,7 @@ git remote set-url origin https://github.com/sre-infra-labs/Linux-Learning.git
   ssh msi "DISPLAY=:0 nohup firefox"
 ```
 
-# Configure /etc/hosts using etc_hosts_ubuntu.txt
+# Configure /etc/hosts using Linux-Learning/Fresh-Linux-OS-Setup/etc_hosts_ubuntu.txt
 ```
   192.168.1.2 officelaptop
   192.168.1.3 msi
@@ -559,9 +581,24 @@ sudo update-desktop-database
 # KVM & Virt Viewer
   > https://linuxcapable.com/how-to-install-kvm-on-ubuntu-linux/
   > https://ubuntu.com/server/docs/virtualization-virt-tools
+  > https://docs.netapp.com/us-en/netapp-solutions-virtualization/kvm/kvm-overview.html#overview-of-components
+
   > Reattach virtual machines
   > Ensure network ip in subnet 192.168.100.x & 192.168.200.x
   > Reboot after install
+
+## Additional Commands including related to drivers - SqlServerLab/qemu-kvm/common-commands.sh
+
+```bash
+# Save VM Config for future Restore.
+  # Scriptout Path - SqlServerLab/kvm-vms-config/*.xml
+  # https://schh.medium.com/backup-and-restore-kvm-vms-21c049e707c1
+virsh dumpxml vmname > vmname.xml
+
+# Restore VM from Config file
+  # https://schh.medium.com/backup-and-restore-kvm-vms-21c049e707c1
+virsh define --file vm_name.xml
+```
 
 # Shared Folders (samba) when using "Ubuntu-Mate-Desktop"
 ```
