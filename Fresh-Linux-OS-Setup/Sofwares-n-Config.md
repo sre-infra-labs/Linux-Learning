@@ -102,126 +102,8 @@ usermod -aG sudo-nopw ansible
 # Fix Internet Issue by Setting Proper Routing
 - https://github.com/sre-infra-labs/Ansible-Learning/blob/dev/setup/Setup.md
 
-# Configure static Ipv4 for inet1 adapter
-```
-  # Find ethernets
-  ip link show
 
-  # On Ubuntu, Edit network-manager-all.yaml
-  sudo -i -u root
-  ls -l /etc/netplan
-  sudo nano /etc/netplan/01-network-manager-all.yaml
-  sudo nano /etc/netplan/50-cloud-init.yaml
-
-    # Add following content after changing ip addresses
-    network:
-      version: 2
-      renderer: NetworkManager
-      ethernets:
-        enp1s0:
-          dhcp4: no
-          addresses: [192.168.100.36/24]
-          nameservers:
-            addresses: [192.168.100.10, 192.168.100.1]
-          routes:
-            - to: 192.168.100.0/24
-              scope: link
-            - to: 192.168.200.0/24
-              via: 192.168.100.10
-
-    # Apply the changes
-    sudo chmod 600 /etc/netplan/01-network-manager-all.yaml
-    sudo netplan apply
-
-  # On Rhel, Edit file /etc/NetworkManager/system-connections/<link>.nmconnection
-    ## Modify Configuration for internal Network (192.168.100.0/24)
-
-      # edit connection profile with ip and dns
-      sudo nmcli connection modify enp1s0 \
-        connection.autoconnect yes \
-        ipv4.method manual \
-        ipv4.addresses "192.168.100.46/24" \
-        ipv4.dns "192.168.100.10;8.8.8.8" \
-        ipv4.never-default yes
-
-      # edit connection profile to add static routes
-      sudo nmcli connection modify enp1s0 \
-        +ipv4.routes "192.168.100.0/24 0.0.0.0"
-
-      sudo nmcli connection modify enp1s0 \
-        +ipv4.routes "192.168.200.0/24 192.168.100.10"
-
-    ## Configuration for LAN Network (192.168.1.0/24)
-
-      # Edit connection profile
-      sudo nmcli connection modify enp2s0 \
-        connection.autoconnect yes \
-        ipv4.method auto
-
-    or
-
-    ## Internal Network settings in /etc/NetworkManager/system-connections/<link>.nmconnection
-      [connection]
-      id=enp1s0
-      uuid=b7f36905-d66c-461e-b8d4-60c0f81736be
-      type=ethernet
-      interface-name=enp1s0
-      autoconnect=true
-      autoconnect-priority=0
-
-      [ethernet]
-
-      [ipv4]
-      method=manual
-      address1=192.168.100.46/24
-      dns=192.168.100.10;8.8.8.8;
-      route1=192.168.100.0/24,0.0.0.0
-      route2=192.168.200.0/24,192.168.100.10
-      never-default=true
-
-      [ipv6]
-      method=disabled
-
-      [proxy]
-
-    ## LAN Network settings in /etc/NetworkManager/system-connections/<link>.nmconnection
-      [connection]
-      id=enp2s0
-      uuid=eb9e5f7f-65ef-48aa-810d-229993650402
-      type=ethernet
-      interface-name=enp2s0
-      autoconnect=true
-      autoconnect-priority=0
-
-      [ethernet]
-
-      [ipv4]
-      method=auto
-
-      [ipv6]
-      method=disabled
-
-      [proxy]
-
-    or
-
-    sudo nmtui
-
-    # fix permission, and reload settings
-    sudo chmod 600 /etc/NetworkManager/system-connections/enp1s0.nmconnection
-    sudo nmcli con down enp1s0
-    sudo nmcli con up enp1s0
-    ip addr show enp1s0
-    ip route show
-```
-
-# For Hypervisor Internal Only Network (Static Ipv4 with gateway to allow 192.168.0.0/14 traffic)
-
-```bash
-
-```
-
-# For LAN/Bridge Adapter (Static Ipv4 along with Internet Access)
+# Set Ipv4
 ```bash
 # On Rhel
   # Enable link if disabled
@@ -250,6 +132,50 @@ usermod -aG sudo-nopw ansible
   sudo netplan set ethernets.enp2s0.addresses='[192.168.29.54/24]'
   sudo netplan apply
 ```
+
+
+# Set routing for Inet networks (Both 192.168.100.0/24 & 192.168.200.0/24 traffic through same adapter)
+
+```bash
+# On Rhel
+  # check existing routing
+  ip route
+      # for inet1 192.168.100.0/24 subnet, we should see something like below
+      192.168.29.0/24 dev enp2s0 proto kernel scope link src 192.168.29.55 metric 101 
+      192.168.100.0/24 dev enp1s0 proto kernel scope link src 192.168.100.55 metric 100 
+
+  # check routing
+  nmcli connection show enp1s0 | grep ipv4.routes
+
+  # temporary routing
+  sudo ip route add 192.168.200.0/24 via 192.168.100.1 dev enp1s0
+
+  # remove extra route if any. In this example route "192.168.0.0/16" is not desired
+  sudo ip route del 192.168.0.0/16 via 192.168.100.1 dev enp1s0
+
+  # permamently remove extra routing
+  sudo nmcli connection modify enp1s0 -ipv4.routes "192.168.0.0/16 192.168.100.1"
+  sudo nmcli connection up enp1s0
+
+  # permanent routing
+  nmcli connection show
+  sudo nmcli connection modify enp1s0 +ipv4.routes "192.168.200.0/24 192.168.100.1"
+  sudo nmcli connection up enp1s0
+
+# On Ubuntu
+  # Check existing routing
+  ip route
+
+  # locate netplan config file
+  ls /etc/netplan
+
+  # add routing
+  sudo netplan set ethernets.enp1s0.routes='[{to: "192.168.200.0/24", via: "192.168.100.1"}]'
+  sudo netplan apply
+  ip route show dev enp1s0
+
+```
+
 
 # Fix /etc/resolv.conf on Redhat OS
 ```
