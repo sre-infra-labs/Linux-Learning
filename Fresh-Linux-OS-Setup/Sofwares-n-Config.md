@@ -1,7 +1,24 @@
 # Linux Software Installation
 
-- Ubuntu - Mate
+- Ubuntu - Cinnamon - 
 - Fedora - Cinnamon - https://fedoraproject.org/spins/cinnamon
+
+# Upgrade from Ubuntu 24 to Ubuntu 26
+```bash
+sudo cp -a /etc/apt/sources.list /etc/apt/sources.list.before-26.04
+sudo cp -a /etc/apt/sources.list.d /etc/apt/sources.list.d.before-26.04
+
+test -f /run/reboot-required && echo "REBOOT REQUIRED" || echo "No reboot required"
+
+sudo do-release-upgrade
+
+nvidia-smi
+systemctl status display-manager
+sudo apt install cinnamon-desktop-environment
+
+
+
+```
 
 # Bootable USB Creator Tool - Balena Etcher (Github)
 
@@ -249,13 +266,15 @@ sudo apt install fd-find plocate -y
 # Install pip
 ```
   python3 --version
+  sudo apt install python3-pip -y
   sudo apt install python-is-python3 -y
   pip3 show psutil
-  sudo apt install -y python3-pip python3-devel gcc
+  sudo apt install -y gcc
   sudo pip3 install psutil --break-system-packages
 
 
 Find commands
+man -k "command_to_find"
 compgen -ac | sort -u | xargs whatis
 compgen -ac | sort -u | xargs -n 1 tldr
 
@@ -298,6 +317,15 @@ compgen -ac | sort -u | xargs -n 1 tldr
 
   # If ssh-copy-id does not work, but ssh works, then
   cat ~/.ssh/id_ed25519.pub | ssh centos 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys'
+
+
+# SSH for github (ryzen9--saanvi--id_ed25519.pub)
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+
+
+
+```
 
 # NOTE: Start a GUI software on remote SSH session
 ```
@@ -474,13 +502,23 @@ vi - default
 
 # [Anaconda with Jupyter Notebook](https://www.anaconda.com/docs/getting-started/anaconda/install#linux-installer)
 ```
-  > Remove jupyter notebook & jupyter nbclassic
-    conda remove nbclassic
-    conda remove notebook
-  > Install jupyterlab
-  conda install -c conda-forge jupyterlab
-  > Launch jupyterlab
-  jupyter lab
+# create virtual environment for jupyter notebook
+cd ~
+python -m venv .notebook
+
+# active virtual environment
+source ~/.notebook/bin/activate
+
+# In virtual environment, install notebook
+pip install notebook
+
+# Launch notebook
+jupyter notebook
+ or
+jupyter notebook /path/to/your/project-directory
+
+    http://localhost:8888/tree
+
 ```
 
 # Akamai VPN Client Tool (eaaclient)
@@ -515,7 +553,7 @@ sudo update-desktop-database
 # Flameshot
 
 # KVM & Virt Viewer
-  > https://www.linuxtechi.com/how-to-install-kvm-on-ubuntu-22-04/
+  > https://linuxcapable.com/how-to-install-kvm-on-ubuntu-linux/
   > https://ubuntu.com/server/docs/virtualization-virt-tools
   > Reattach virtual machines
   > Ensure network ip in subnet 192.168.100.x & 192.168.200.x
@@ -531,7 +569,7 @@ sudo update-desktop-database
   > killall caja
   > caja
 
-  > chmod +775 /hyperactive
+  > chmod +775 /hyper-active
   > chmod +775 /vm-os/
   > chmod +775 /vm-storage-01
   > chmod +775 /vm-storage-02
@@ -573,13 +611,16 @@ sudo update-desktop-database
 # CPU-X
   > sudo apt-get install cpu-x
 
+# Docker
+  > https://docs.docker.com/engine/install/ubuntu/
+
+
 # Cockpit
 ```
-  sudo apt-get install cockpit -y
+  sudo apt-get install -y cockpit
   sudo systemctl enable --now cockpit.socket
   sudo usermod -aG sudo $USER
-  sudo systemctl enable cockpit cockpit.socket
-  sudo systemctl start cockpit cockpit.socket
+  sudo systemctl status cockpit cockpit
 
   sudo ufw allow 9090/tcp
   sudo firewall-cmd --add-port=9090/tcp --permanent
@@ -732,9 +773,14 @@ sudo systemctl disable vncserver@:1.service
 
 
 
-# Apache Open Office
+# Apache/Libre Open Office
+
 # Other common softwares
-  > sudo apt install supertux tuxmath tuxpaint supertuxkart gimp notepadqq scratch gparted -y
+```bash
+for PKG in supertux tuxmath tuxpaint supertuxkart gimp notepadqq scratch gparted; do
+  sudo apt install -y $PKG
+done
+```
 
 ## Ports to open for supertuxkart
 sudo ufw allow 2759/udp
