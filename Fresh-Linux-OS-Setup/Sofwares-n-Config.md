@@ -4,6 +4,7 @@
 - Fedora - Cinnamon - https://fedoraproject.org/spins/cinnamon
 
 # Upgrade from Ubuntu 24 to Ubuntu 26
+
 ```bash
 sudo cp -a /etc/apt/sources.list /etc/apt/sources.list.before-26.04
 sudo cp -a /etc/apt/sources.list.d /etc/apt/sources.list.d.before-26.04
@@ -15,8 +16,6 @@ sudo do-release-upgrade
 nvidia-smi
 systemctl status display-manager
 sudo apt install cinnamon-desktop-environment
-
-
 
 ```
 
@@ -221,7 +220,7 @@ usermod -aG sudo-nopw ansible
 
 
 # Update & upgrade
-```
+```bash
   sudo apt update -y && sudo apt upgrade -y
 ```
 
@@ -230,20 +229,75 @@ usermod -aG sudo-nopw ansible
 sudo apt install fd-find plocate -y
 ```
 
-# Install pip
-```
-  python3 --version
-  sudo apt install python3-pip -y
-  sudo apt install python-is-python3 -y
-  pip3 show psutil
-  sudo apt install -y gcc
-  sudo pip3 install psutil --break-system-packages
-
-
-Find commands
+# Find commands
+```bash
 man -k "command_to_find"
 compgen -ac | sort -u | xargs whatis
 compgen -ac | sort -u | xargs -n 1 tldr
+```
+
+# Install pyenv to support multiple python versions
+- [How to install pyenv](https://github.com/pyenv/pyenv?tab=readme-ov-file#linuxunix)
+- [How to use pyenv](https://github.com/sre-infra-labs/Python-BootCamp#install-pyenv-to-work-with-multiple-python-versions-in-different-projects)
+
+```bash
+python3 --version
+
+# install pyenv with automatic installer
+curl -fsSL https://pyenv.run | bash
+
+sudo apt install -y python3-pip
+sudo apt install -y python-is-python3
+
+python --version
+python3 --version
+
+```
+
+# Install `Jupyter Notebook`
+```
+# create virtual environment for jupyter notebook
+cd ~
+python -m venv .venv
+
+# active virtual environment
+source ~/.venv/bin/activate
+
+# In virtual environment, install notebook
+pip install notebook
+
+# Launch notebook
+jupyter notebook
+ or
+jupyter notebook /stale-storage/GitHub/Python-BootCamp
+
+    http://localhost:8888/tree
+
+```
+
+# Setup alias command for venv
+
+```bash
+# Add below function for shell env
+nano ~/.bashrc
+
+venv() {
+    source ~/.venv/bin/activate
+}
+
+# load the shell env
+source ~/.bashrc
+```
+
+# Install other python packages
+
+```bash
+sudo apt install -y gcc
+pip3 show psutil
+
+source ~/.venv/bin/activate
+sudo pip3 install psutil
+
 
 ```
 
@@ -476,33 +530,6 @@ vi - default
   > git config --global user.name "Ajay Kumar Dwivedi"
   > git config --global user.email "ajay.dwivedi2007@gmail.com"
 
-# Python
-```
-  > sudo apt install python-is-python3 -y
-  > python --version
-  > python3 --version
-```
-
-# [Anaconda with Jupyter Notebook](https://www.anaconda.com/docs/getting-started/anaconda/install#linux-installer)
-```
-# create virtual environment for jupyter notebook
-cd ~
-python -m venv .venv
-
-# active virtual environment
-source ~/.venv/bin/activate
-
-# In virtual environment, install notebook
-pip install notebook
-
-# Launch notebook
-jupyter notebook
- or
-jupyter notebook /stale-storage/GitHub/Python-BootCamp
-
-    http://localhost:8888/tree
-
-```
 
 # Akamai VPN Client Tool (eaaclient)
 ```
