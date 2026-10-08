@@ -422,6 +422,19 @@ find . -maxdepth 1 -type l -exec sh -c 'printf "ln -s \"%s\" \"%s\"\n" "$(readli
 
 # VS Code
 # VS Code Insiders
+
+```bash
+# Problem: It can happen that vs code insider does not launch due to sandboxing issue
+
+# check if sandboxing is issue?
+code-insiders --no-sandbox
+
+# set the app to run under root
+sudo chown root:root /usr/share/code-insiders/chrome-sandbox
+sudo chmod 4755 /usr/share/code-insiders/chrome-sandbox
+
+```
+
 # Azure Data Studio
 
 # Monitoring tools

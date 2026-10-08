@@ -1,5 +1,8 @@
 :<<'COMMENTS'
 
+Youtube - https://www.youtube.com/live/CeN2PnXyeuE?si=2fXZX65nEZ-Lcf2N
+
+
 Linux Logging Overview
 -----------------------------
 
@@ -50,11 +53,27 @@ Understanding Rsyslogd
 # Rsyslogd config files.
 /etc/rsyslog.conf
 
-# On Ubuntu (default log file)
+# On Rhel (default log file)
 /var/log/messages
 
-# On Redhat (default log file)
-/var/log/syslogs
+# On Ubuntu (default log file)
+/var/log/syslog
+
+
+Log messages from applications
+---------------------------------
+-> Applications can log messages to syslog using the "logger" command
+man logger
+
+
+Rotating log files automatically
+--------------------------------------
+-> Log files can grow very large over time
+-> Logrotate is a utility that can be used to rotate log files automatically
+
+cat /etc/logrotate.conf
+    # see "man logrotate" for more details
+
 
 COMMENTS
 
@@ -100,6 +119,42 @@ sudo vim /etc/systemd/journald.conf
 
 # Write something to systemlog
 logger HELLO
+logger "ERROR"
+
+# Logging with a tag
+logger -t ansible -p info "Hi Ajay. This is info log."
+logger -t ansible -p user.warning "Hi Ajay. Warning as your system is running out of disk space"
+
+logger -t ansible -p user.err "Hi Ajay. Some error occurred"
+logger -t ansible -p authpriv.err "Hi Ajay. Some access related error occurred"
+
+logger -t ansible -p user.crit "Hi Ajay. Some critical error occurred"
+
+# Retreive above ansible tagged log from syslog for "user" facility
+grep  '\sansible:' /var/log/syslog
+    2026-10-08T14:49:46.027872+05:30 ryzen9 ansible: Hi Ajay. Some error occurred
+
+# Retreive above ansible tagged log from syslog for "authpriv" facility
+grep Ajay /var/log/auth.log
+    2026-10-08T14:57:56.972423+05:30 ryzen9 ansible: Hi Ajay. Some error occurred
+
+# Find where cron job entries are logged
+grep -i cron /etc/rsyslog.conf /etc/rsyslog.d/*.conf
+    /etc/rsyslog.d/50-default.conf:#cron.*                          /var/log/cron.log
+    /etc/rsyslog.d/50-default.conf:#        cron,daemon.none;\
+
+# Write a rule to log debug priority messages to /tmp/debug.log
+sudo tee /etc/rsyslog.d/debug.conf <<'EOF'
+# Add the following line to the file:
+*.=debug      /tmp/debug.log
+EOF
+
+sudo systemctl restart rsyslog
+
+logger -t ansible -p user.debug "Hi Ajay. This is debug message from python code. Ignore it."
+cat /var/log/debug.log
+    2026-10-08T15:23:15.943574+05:30 ryzen9 ansible: Hi Ajay. This is debug message from python code. Ignore it.
+
 
 
 
