@@ -1090,3 +1090,10 @@ COMMAND_OUTPUT
 # Install network related tools
 sudo apt install -y net-tools
 
+# Common automation commands
+- `awk` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-awk.sh
+- `cut and sort` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-cut-and-sort.sh
+- `xargs` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-xargs.sh
+- `find` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-find.sh
+- `sed` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-sed.sh
+
