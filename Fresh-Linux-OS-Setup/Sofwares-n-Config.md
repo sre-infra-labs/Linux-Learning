@@ -1096,4 +1096,10 @@ sudo apt install -y net-tools
 - `xargs` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-xargs.sh
 - `find` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-find.sh
 - `sed` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-sed.sh
-
+- read logs - /stale-storage/GitHub/Linux-Learning/Fundamentals/logging.sh
+- `jq` - /stale-storage/GitHub/Linux-Learning/Fundamentals/json-processor-jq.sh
+- `grep` - /stale-storage/GitHub/Linux-Learning/Fundamentals/grep-regular-expressions.sh
+- `grep` - /stale-storage/GitHub/Linux-Learning/Fundamentals/understanding-grep-&-regular-expressions.sh
+- redirection - /stale-storage/GitHub/Linux-Learning/Fundamentals/understanding-redirection.sh
+- piping - /stale-storage/GitHub/Linux-Learning/Fundamentals/understanding-piping.sh
+- 

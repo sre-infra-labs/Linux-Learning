@@ -58,6 +58,14 @@ Understanding Rsyslogd
 
 COMMENTS
 
+# read latest log
+tail /var/log/system
+tail /var/log/messages
+
+# On Ubuntu, read log messages for particular time for 5 minutes
+grep '2026-10-08T07:3[0-5]' /var/log/syslog
+grep 'Oct  8 13:2[5-9]' /var/log/messages
+
 # check log
 sudo journalctl
 # view logs since last boot
