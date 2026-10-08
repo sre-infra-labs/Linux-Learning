@@ -537,11 +537,31 @@ sudo update-desktop-database
 # Save VM Config for future Restore.
   # Scriptout Path - SqlServerLab/kvm-vms-config/*.xml
   # https://schh.medium.com/backup-and-restore-kvm-vms-21c049e707c1
-virsh dumpxml vmname > vmname.xml
+cd /stale-storage/GitHub/SqlServerLab/kvm-vms-config
+
+VM_LIST=$(virsh list --all | awk 'NR > 2 {print $2}')
+
+for VM in $VM_LIST; do
+  echo
+  echo "Working on __ $VM __"
+  virsh dumpxml $VM > "$VM.xml"
+done
+
+# *************************************************
 
 # Restore VM from Config file
+  # Scriptout Path - SqlServerLab/kvm-vms-config/*.xml
   # https://schh.medium.com/backup-and-restore-kvm-vms-21c049e707c1
-virsh define --file vm_name.xml
+cd /stale-storage/GitHub/SqlServerLab/kvm-vms-config
+
+VM_LIST=$(ls *.xml | sed 's/\.xml$//' | grep -v '^VM_LIST$')
+
+for VM in $VM_LIST; do
+  echo
+  echo "Working on __ $VM __"
+  virsh define --file "$VM.xml"
+done
+
 ```
 
 # Shared Folders (samba) when using "Ubuntu-Mate-Desktop"
