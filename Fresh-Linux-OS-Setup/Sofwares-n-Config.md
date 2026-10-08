@@ -64,8 +64,26 @@ sudo nano /etc/lightdm/lightdm.conf
 greeter-setup-script=/usr/bin/numlockx on
 ```
 
-# Setup Ubuntu Host with Ansible
+# Install ansible
+
+```bash
+# Ubuntu control node
+
+  #Install ansible
+  sudo apt install ansible-core
+
+  ansible --version
+
+  # Install ansible-navigator in virtual environment
+  cd ~
+  python -m venv .venv
+  source .venv/bin/activate
+
+  pip install ansible-navigator
 ```
+
+# Setup Ubuntu Host with Ansible User
+```bash
 sudo -i -u root
 
 sudo apt update && sudo apt install -y qemu-guest-agent
@@ -456,10 +474,10 @@ vi - default
 ```
 # create virtual environment for jupyter notebook
 cd ~
-python -m venv .notebook
+python -m venv .venv
 
 # active virtual environment
-source ~/.notebook/bin/activate
+source ~/.venv/bin/activate
 
 # In virtual environment, install notebook
 pip install notebook
@@ -467,7 +485,7 @@ pip install notebook
 # Launch notebook
 jupyter notebook
  or
-jupyter notebook /path/to/your/project-directory
+jupyter notebook /stale-storage/GitHub/Python-BootCamp
 
     http://localhost:8888/tree
 
