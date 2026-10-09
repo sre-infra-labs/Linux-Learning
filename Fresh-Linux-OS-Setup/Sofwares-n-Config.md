@@ -1130,16 +1130,48 @@ COMMAND_OUTPUT
 # Install network related tools
 sudo apt install -y net-tools
 
+# Python in VSCode, Set indent to 2 spaces
+> Ctrl + Shift + P
+> Preferences: Open User Settings (JSON)
+> Type following python specific block within curly braces
+
+```json
+"[python]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false
+}
+```
+
+# Python in VSCode, set python to venv python
+> Ctrl + Shift + P
+> Python: Select Interpreter
+> Set path to /home/saanvi/.venv/bin/python
+
+# Python in VSCode, assign F5 shortcut for Python file for action "Run Python File in Terminal"
+> Ctrl + Shift + P
+> Preferences: Open Keyboard Shortcuts (JSON)
+> Paste the following block inside the square brackets [] of your keybindings.json file
+```json
+{
+    "key": "f5",
+    "command": "python.execInTerminal",
+    "when": "editorLangId == 'python' && editorTextFocus"
+}
+
+```
+
 # Common automation commands
-- `awk` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-awk.sh
-- `cut and sort` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-cut-and-sort.sh
-- `xargs` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-xargs.sh
-- `find` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-find.sh
-- `sed` - /stale-storage/GitHub/Linux-Learning/Fundamentals/using-sed.sh
-- read logs - /stale-storage/GitHub/Linux-Learning/Fundamentals/logging.sh
-- `jq` - /stale-storage/GitHub/Linux-Learning/Fundamentals/json-processor-jq.sh
-- `grep` - /stale-storage/GitHub/Linux-Learning/Fundamentals/grep-regular-expressions.sh
-- `grep` - /stale-storage/GitHub/Linux-Learning/Fundamentals/understanding-grep-&-regular-expressions.sh
-- redirection - /stale-storage/GitHub/Linux-Learning/Fundamentals/understanding-redirection.sh
-- piping - /stale-storage/GitHub/Linux-Learning/Fundamentals/understanding-piping.sh
+- `awk` - https://github.com/sre-infra-labs/Linux-Learning/blob/main/Fundamentals/using-awk.sh
+- `cut and sort` - https://github.com/sre-infra-labs/Linux-Learning/blob/main/Fundamentals/using-cut-and-sort.sh
+- `xargs` - https://github.com/sre-infra-labs/Linux-Learning/blob/main/Fundamentals/using-xargs.sh
+- `find` - https://github.com/sre-infra-labs/Linux-Learning/blob/main/Fundamentals/using-find.sh
+- `sed` - https://github.com/sre-infra-labs/Linux-Learning/blob/main/Fundamentals/using-sed.sh
+- read logs - https://github.com/sre-infra-labs/Linux-Learning/blob/main/Fundamentals/logging.sh
+- `jq` - https://github.com/sre-infra-labs/Linux-Learning/blob/main/Fundamentals/json-processor-jq.sh
+- `grep` - https://github.com/sre-infra-labs/Linux-Learning/blob/main/Fundamentals/grep-regular-expressions.sh
+- `grep` - https://github.com/sre-infra-labs/Linux-Learning/blob/main/Fundamentals/understanding-grep-&-regular-expressions.sh
+- `tr` - https://github.com/sre-infra-labs/Linux-Learning/blob/main/Fundamentals/using-tr.sh
+- redirection - https://github.com/sre-infra-labs/Linux-Learning/blob/main/Fundamentals/understanding-redirection.sh
+- piping - https://github.com/sre-infra-labs/Linux-Learning/blob/main/Fundamentals/understanding-piping.sh
 - 
