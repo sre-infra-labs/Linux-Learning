@@ -92,6 +92,7 @@ sudo systemctl enable --now qemu-guest-agent
 adduser ansible
 addgroup sudo-nopw
 echo '%sudo-nopw ALL=(ALL:ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/sudo-nopw > /dev/null
+echo 'saanvi ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/poweroff, /sbin/reboot' | sudo tee /etc/sudoers.d/shutdown > /dev/null
 usermod -aG sudo-nopw ansible
 ```
 
