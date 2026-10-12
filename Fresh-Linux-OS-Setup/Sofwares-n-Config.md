@@ -572,6 +572,21 @@ sudo update-desktop-database
   > Ensure network ip in subnet 192.168.100.x & 192.168.200.x
   > Reboot after install
 
+```bash
+# RHEL
+  sudo dnf group info virtualization
+  sudo dnf install -y @virtualization
+
+  systemctl is-enabled virtqemud.socket virtnetworkd.socket virtstoraged.socket libvirtd.socket libvirtd.service
+  systemctl is-active virtqemud.socket virtnetworkd.socket virtstoraged.socket
+
+  sudo systemctl start sockets.target
+  systemctl is-active virtnetworkd.socket virtstoraged.socket virtnodedevd.socket virtsecretd.socket
+
+  sudo virt-host-validate qemu
+```
+
+
 ## Additional Commands including related to drivers - SqlServerLab/qemu-kvm/common-commands.sh
 
 ```bash
