@@ -347,7 +347,15 @@ ssh-keygen
 cat ~/.ssh/id_ed25519.pub
 
 # if remote url issue
-git remote set-url origin https://github.com/sre-infra-labs/Linux-Learning.git
+git remote -v
+    origin  https://github.com/imajaydwivedi/Docker-Practice.git (fetch)
+    origin  https://github.com/imajaydwivedi/Docker-Practice.git (push)
+
+
+git remote set-url origin https://github.com/sre-infra-labs/Docker-Practice.git
+or
+git remote set-url origin git@github.com:sre-infra-labs/Docker-Practice.git
+
 
 
 ```
