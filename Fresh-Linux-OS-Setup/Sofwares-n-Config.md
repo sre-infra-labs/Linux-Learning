@@ -283,7 +283,11 @@ jupyter notebook /stale-storage/GitHub/Python-BootCamp
 nano ~/.bashrc
 
 venv() {
-    source ~/.venv/bin/activate
+    if [[ -z "${VIRTUAL_ENV}" ]]; then
+        source ~/.venv/bin/activate
+    else
+        deactivate
+    fi
 }
 
 # load the shell env
