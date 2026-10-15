@@ -688,7 +688,7 @@ done
   > https://docs.docker.com/engine/install/ubuntu/
 
 
-# Cockpit
+# Cockpit - https://cockpit-project.org/applications
 ```
   sudo apt-get install -y cockpit
   sudo systemctl enable --now cockpit.socket
@@ -713,6 +713,23 @@ done
   sudo apt install -y cockpit-sosreport
   sudo apt install -y pcp-selinux
 
+  # Install Sensors - https://github.com/ocristopfer/cockpit-sensors#debian--ubuntu-and-derivatives
+  sudo install -d -m 0755 /etc/apt/keyrings
+  curl -fsSL https://ocristopfer.github.io/cockpit-sensors/key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/cockpit-sensors.gpg
+  echo "deb [signed-by=/etc/apt/keyrings/cockpit-sensors.gpg] https://ocristopfer.github.io/cockpit-sensors stable main" | sudo tee /etc/apt/sources.list.d/cockpit-sensors.list
+  sudo apt update
+  sudo apt install cockpit-sensors
+
+  # Docker manager - https://github.com/chrisjbawden/cockpit-dockermanager#ubuntudeb
+  echo "deb [trusted=yes arch=all] https://chrisjbawden.github.io/cockpit-dockermanager stable main" \
+    | sudo tee /etc/apt/sources.list.d/cockpit-dockermanager.list
+
+  # Cockpit Top - https://github.com/ismetozalp/ctop
+
+  sudo apt update
+  sudo apt install dockermanager
+
+  sudo systemctl restart cockpit
   sudo systemctl status cockpit
 
   sudo netstat -pnltu | grep 9090
