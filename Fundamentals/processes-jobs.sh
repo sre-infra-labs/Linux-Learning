@@ -88,7 +88,7 @@ Monitoring Process Properties
     ps -e --forest -o pid,ppid,cmd,%cpu,%mem
 
     # List Zombie processes
-    ps -eo pid,ppid,stat,cmd | grep 'Z'
+    ps -eo pid,ppid,stat,cmd | awk '$3 ~ /Z/'
 
     # Show processes for a specific user
     ps -u <username> -o pid,ppid,cmd,%cpu,%mem
