@@ -35,4 +35,9 @@ Untitled*.ipynb
 Untitled*.sql
 *.pyc
 
+.venv/
+.env/
+
+
+
 */.augment/*
