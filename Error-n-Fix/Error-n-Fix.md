@@ -24,8 +24,9 @@ dd if=/dev/zero of=/path/to/mount/test.log bs=1M status=progress count=1000
 # get filesystem space usage
 df -hP
 
-# get directory size info
+# get directory size info from root partition
 du / 2> /dev/null | sort -rn | head
+sudo du -xhd2 / 2>/dev/null | sort -rh | head -30
 
 # get files on particular directory
 ls -lh /mnt/vdd
