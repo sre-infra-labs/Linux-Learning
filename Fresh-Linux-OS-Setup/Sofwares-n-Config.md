@@ -115,6 +115,7 @@ usermod -aG sudo-nopw ansible
 ```
 
 # Create Bridged Network for KVM machines
+  # IMPORTANT - In order to access KVM VM using host network from other home devices, Bridged Network is ONLY way
 - https://www.xmodulo.com/configure-linux-bridge-network-manager-ubuntu.html
 
 # Fix Internet Issue by Setting Proper Routing
