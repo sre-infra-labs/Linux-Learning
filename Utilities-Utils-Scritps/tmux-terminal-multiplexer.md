@@ -155,6 +155,9 @@ Ctrl b M{h,j,k,l}
 # Resize pane
 Ctrl b C{h,j,k,l}
 
+# Zoom in/out (Fullscreen) current pane
+Ctrl b z
+
 # Kill the current pane
 Ctrl b x
 ```
