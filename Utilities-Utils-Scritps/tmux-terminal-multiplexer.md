@@ -37,6 +37,13 @@
 set -g mouse on
 setw -g mode-keys vi
 
+
+# For changing keyboard bindings for (horizontal & vertical) window split
+bind h split-window -h
+bind v split-window -v
+unbind '"'
+unbind %
+
 ```
 
 ### Working with Keyboard Based Copy Paste
@@ -87,6 +94,11 @@ tmux a
 
 # attach to a specific session
 tmux a -t session_name
+
+# Rename session, from inside the session
+Ctrl b $
+or
+tmux rename-session -t <old-name> <new-name>
 
 # Kill a session by [t]arget name:
 tmux kill-session -t session_name
