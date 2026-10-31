@@ -94,6 +94,85 @@ sudo lsof -i :9091
 # Change Port (if 9091 is used by other service)
 ```
 
+## Install node_exporter
+
+Dashboard - /stale-storage/GitHub/Linux-Learning/Monitoring/Node Exporter Full - EXTERNAL.json
+
+node_exporter publishes this machine's CPU, memory, disk and network metrics on port `9100`. Prometheus collects them from there.
+
+### 1. Download and install the binary
+
+```bash
+cd ~/Downloads
+wget https://github.com/prometheus/node_exporter/releases/download/v1.10.2/node_exporter-1.10.2.linux-amd64.tar.gz
+tar xvfz node_exporter-1.10.2.linux-amd64.tar.gz
+sudo cp node_exporter-1.10.2.linux-amd64/node_exporter /usr/local/bin/
+
+# check the version
+/usr/local/bin/node_exporter --version
+```
+
+### 2. Create the service user
+
+The service runs as its own user with no login shell, so it has no more access than it needs. Skip this if the check prints a user ID:
+
+```bash
+id node_exporter || sudo useradd --system --no-create-home --shell /usr/sbin/nologin node_exporter
+```
+
+### 3. Create the systemd service
+
+The unit file is in this folder as `node_exporter.service`. Copy it to systemd's folder:
+
+```bash
+cd /stale-storage/GitHub/Linux-Learning/Monitoring
+sudo cp node_exporter.service /etc/systemd/system/
+```
+
+### 4. Start it and enable it at boot
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now node_exporter
+sudo systemctl status node_exporter
+```
+
+Press `q` to leave the status screen. You should see `active (running)`.
+
+### 5. Verify the metrics endpoint
+
+```bash
+curl -s http://localhost:9100/metrics | head -5
+```
+
+The output should start with lines like `# HELP` and `# TYPE`.
+
+### 6. Tell Prometheus to collect from it
+
+Add this job under `scrape_configs` in `/etc/prometheus/prometheus.yml`:
+
+```yaml
+  - job_name: node
+    static_configs:
+      - targets: ['localhost:9100']
+```
+
+Restart Prometheus, then open `http://localhost:9091/targets`. The `node` job should show as **UP**:
+
+```bash
+sudo systemctl restart prometheus
+```
+
+### Troubleshooting
+
+```bash
+# view the service log
+sudo journalctl -u node_exporter -n 50
+
+# find what is using port 9100
+sudo lsof -i :9100
+```
+
 # Basic Querying (PromQL)
 ```
 
