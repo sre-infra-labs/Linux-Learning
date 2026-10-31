@@ -42,19 +42,15 @@ Prometheus Targets (Jobs and Exporters)
 ![High Level Overview Diagram](prometheus-high-level-overview.png)
 
 
-## Prometheus Installation
+## Prometheus Installation using Pre-Prepared Script on `Port 9091`
 ```
-# copy installation scripts to downloads directory
-cp -r /stale-storage/Study-Zone/Monitoring\ Alerting\ Baselining/lab-01 ~/Downloads/
-
-# switch to downloads
-cd ~/Downloads/lab-01
+cd /stale-storage/GitHub/Linux-Learning/Monitoring/
 
 # make it executable
-chmod +x prometheus-install-v3.4.1.sh
+chmod +x /stale-storage/GitHub/Linux-Learning/Monitoring/prometheus-install-latest.sh
 
 # install
-sudo ./prometheus-install-v3.4.1.sh
+sudo ./prometheus-install-latest.sh
 
 # check service status
 prometheus --version
@@ -90,12 +86,12 @@ journalctl -u prometheus -n 50
 
 ```
 
-## Error/Fix: listen tcp 0.0.0.0:9090: bind: address already in use
+## Error/Fix: listen tcp 0.0.0.0:9091: bind: address already in use
 ```
-# Find which process is using port 9090
-sudo lsof -i :9090
+# Find which process is using port 9091
+sudo lsof -i :9091
 
-# Change Port (if 9090 is used by other service)
+# Change Port (if 9091 is used by other service)
 ```
 
 # Basic Querying (PromQL)
