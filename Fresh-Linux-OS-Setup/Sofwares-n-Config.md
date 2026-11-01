@@ -116,6 +116,7 @@ usermod -aG sudo-nopw ansible
 
 # Create Bridged Network for KVM machines
   # IMPORTANT - In order to access KVM VM using host network from other home devices, Bridged Network is ONLY way
+  # IMPORTANT - Keep wifi connection OFF during bridge network setup
 - https://www.xmodulo.com/configure-linux-bridge-network-manager-ubuntu.html
 
 # Fix Internet Issue by Setting Proper Routing
@@ -211,18 +212,132 @@ usermod -aG sudo-nopw ansible
     sudo nmcli con mod bridged ipv4.dns "8.8.8.8 1.1.1.1"
     sudo nmcli con up bridged
 
+# *****************************************************************************
+# *****************************************************************************
+# *****************************************************************************
+
 # On Ubuntu
-  # Enable link if disabled
-  sudo ip link set enp2s0 up
 
-  # Get ipv4 using DHCP
-  sudo netplan set ethernets.enp2s0.dhcp4=true
-  sudo netplan apply
+  # On Ubuntu Server, STATIC IP using netplan CLI
 
-  # Set static IPv4
-  sudo netplan set ethernets.enp2s0.dhcp4=false
-  sudo netplan set ethernets.enp2s0.addresses='[192.168.29.54/24]'
-  sudo netplan apply
+    # See what exists now
+    ip -br link
+    netplan get
+    ls -l /etc/netplan/
+
+    # Stop cloud-init from regenerating network config at boot (skip if not a cloud-init image)
+    echo 'network: {config: disabled}' | sudo tee /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+
+    # Cleanup: move old netplan files out of the way (keeps a backup)
+    sudo mkdir -p /root/netplan-backup
+    sudo mv /etc/netplan/*.yaml /root/netplan-backup/
+
+    # Configure hostonly (enp1s0). Avoid "Gateway" on this network
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp1s0.dhcp4=false'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp1s0.dhcp6=false'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp1s0.accept-ra=false'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp1s0.link-local=[]'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp1s0.addresses=[192.168.100.54/24]'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp1s0.routes=[{"to":"192.168.200.0/24","via":"192.168.100.1"}]'
+
+    # Configure bridged (enp2s0)
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.dhcp4=false'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.dhcp6=false'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.accept-ra=false'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.link-local=[]'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.addresses=[192.168.29.54/24]'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.routes=[{"to":"default","via":"192.168.29.1"}]'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.nameservers.addresses=[192.168.29.1,8.8.8.8]'
+
+    # Review what was written
+    sudo chmod 600 /etc/netplan/50-cloud-init.yaml
+    netplan get
+    sudo cat /etc/netplan/50-cloud-init.yaml
+
+    # Validate, then apply with auto-rollback (reverts in 120s unless you press Enter)
+    sudo netplan generate
+    sudo netplan try
+
+    # Verify
+    networkctl status enp1s0 enp2s0 --no-pager
+    ip -br a
+    ip route
+    ip route get 8.8.8.8            # expect: dev enp2s0 src 192.168.29.54
+    ip route get 192.168.200.10     # expect: via 192.168.100.1 dev enp1s0
+    ip neigh show dev enp2s0
+    resolvectl status enp2s0
+    ping -c3 192.168.29.1
+    ping -c3 google.com
+
+
+  # On Ubuntu Server, Dynamic IP (DHCP) on bridged, using netplan CLI
+
+    # Switch to DHCP and clear the static settings
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.dhcp4=true'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.addresses=null'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.routes=null'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.nameservers=null'
+
+    sudo netplan try
+
+    # DHCP with fixed DNS: ignore the router's DNS, use your own
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.dhcp4-overrides.use-dns=false'
+    sudo netplan set --origin-hint 01-netcfg 'ethernets.enp2s0.nameservers.addresses=[8.8.8.8,1.1.1.1]'
+    sudo netplan try
+
+    # Verify
+    ip -br a show enp2s0
+    ip route
+    resolvectl status enp2s0
+    ping -c3 google.com
+
+
+# *****************************************************************************
+# *****************************************************************************
+# *****************************************************************************
+
+# On Ubuntu
+
+  # check existing config files
+  sudo ls -l /etc/netplan/
+
+  # Edit existing config file
+sudo tee /etc/netplan/50-cloud-init.yaml >/dev/null <<'EOF'
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp1s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
+      link-local: []
+      addresses:
+        - 192.168.100.54/24
+      routes:
+        - to: 192.168.200.0/24
+          via: 192.168.100.1
+    enp2s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
+      link-local: []
+      addresses:
+        - 192.168.29.54/24
+      routes:
+        - to: default
+          via: 192.168.29.1
+      nameservers:
+        addresses:
+          - 192.168.29.1
+          - 8.8.8.8
+EOF
+
+sudo chmod 600 /etc/netplan/50-cloud-init.yaml
+sudo netplan generate
+sudo netplan try
+
+
 ```
 
 
