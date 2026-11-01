@@ -73,6 +73,8 @@ dnf repolist
 # Check existing gpg keys
 rpm -q --queryformat "%{SUMMARY}\n" $(rpm -q gpg-pubkey)
 rpm -q gpg-pubkey
+rpm -q openssh
+rpm -q postgresql18
 
 
 # Enable extra repos in rhel

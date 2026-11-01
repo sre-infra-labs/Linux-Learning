@@ -218,6 +218,52 @@ usermod -aG sudo-nopw ansible
 
 # On Ubuntu
 
+  # check existing config files
+  sudo ls -l /etc/netplan/
+
+  # Edit existing config file
+sudo tee /etc/netplan/50-cloud-init.yaml >/dev/null <<'EOF'
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp1s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
+      link-local: []
+      addresses:
+        - 192.168.100.54/24
+      routes:
+        - to: 192.168.200.0/24
+          via: 192.168.100.1
+    enp2s0:
+      dhcp4: false
+      dhcp6: false
+      accept-ra: false
+      link-local: []
+      addresses:
+        - 192.168.29.54/24
+      routes:
+        - to: default
+          via: 192.168.29.1
+      nameservers:
+        addresses:
+          - 192.168.29.1
+          - 8.8.8.8
+EOF
+
+sudo chmod 600 /etc/netplan/50-cloud-init.yaml
+sudo netplan generate
+sudo netplan try
+
+
+# *****************************************************************************
+# *****************************************************************************
+# *****************************************************************************
+
+# On Ubuntu
+
   # On Ubuntu Server, STATIC IP using netplan CLI
 
     # See what exists now
@@ -290,52 +336,6 @@ usermod -aG sudo-nopw ansible
     ip route
     resolvectl status enp2s0
     ping -c3 google.com
-
-
-# *****************************************************************************
-# *****************************************************************************
-# *****************************************************************************
-
-# On Ubuntu
-
-  # check existing config files
-  sudo ls -l /etc/netplan/
-
-  # Edit existing config file
-sudo tee /etc/netplan/50-cloud-init.yaml >/dev/null <<'EOF'
-network:
-  version: 2
-  renderer: networkd
-  ethernets:
-    enp1s0:
-      dhcp4: false
-      dhcp6: false
-      accept-ra: false
-      link-local: []
-      addresses:
-        - 192.168.100.54/24
-      routes:
-        - to: 192.168.200.0/24
-          via: 192.168.100.1
-    enp2s0:
-      dhcp4: false
-      dhcp6: false
-      accept-ra: false
-      link-local: []
-      addresses:
-        - 192.168.29.54/24
-      routes:
-        - to: default
-          via: 192.168.29.1
-      nameservers:
-        addresses:
-          - 192.168.29.1
-          - 8.8.8.8
-EOF
-
-sudo chmod 600 /etc/netplan/50-cloud-init.yaml
-sudo netplan generate
-sudo netplan try
 
 
 ```
