@@ -125,18 +125,91 @@ usermod -aG sudo-nopw ansible
 # Set Ipv4
 ```bash
 # On Rhel
-  # Enable link if disabled
-  sudo nmcli device up enp2s0
 
-  # Get ipv4 using DHCP
-  sudo nmcli con mod enp2s0 ipv4.method auto
-  sudo nmcli con reload
-  sudo nmcli con up enp2s0
+  # On Rhel, STATIC IP Configuration
 
-  # Set static ipv4
-  sudo nmcli con mod enp2s0 ipv4.method manual ipv4.addresses 192.168.29.55/24
-  sudo nmcli con reload
-  sudo nmcli con up enp2s0
+    # See what exists now (look for duplicates / stale profiles)
+    sudo nmcli -f NAME,UUID,TYPE,DEVICE con show
+
+    # Check MAC address
+    nmcli -g connection.interface-name,802-3-ethernet.mac-address con show enp7s0
+    nmcli -g connection.interface-name,802-3-ethernet.mac-address con show enp2s0
+    ip -br link
+
+    # cleanup
+    sudo nmcli con delete enp1s0
+    sudo nmcli con delete enp2s0
+    sudo nmcli con delete enp7s0
+
+    # create the profiles
+    sudo nmcli con add type ethernet con-name hostonly ifname enp1s0
+    sudo nmcli con add type ethernet con-name bridged ifname enp2s0
+
+    # configure hostonly (enp1s0). Avoid "Gateway" on this network
+    sudo nmcli con mod hostonly ipv4.method manual ipv4.addresses 192.168.100.55/24
+    sudo nmcli con mod hostonly ipv4.never-default yes
+    sudo nmcli con mod hostonly ipv4.routes "192.168.200.0/24 192.168.100.1"
+    sudo nmcli con mod hostonly ipv6.method disabled
+    sudo nmcli con mod hostonly connection.autoconnect yes
+
+    # configure bridged (enp2s0)
+    sudo nmcli con mod bridged ipv4.method manual ipv4.addresses 192.168.29.55/24
+    sudo nmcli con mod bridged ipv4.gateway 192.168.29.1
+    sudo nmcli con mod bridged ipv4.dns "192.168.29.1 8.8.8.8"
+    sudo nmcli con mod bridged ipv6.method disabled
+    sudo nmcli con mod bridged connection.autoconnect yes
+
+    # Reload and activate
+    sudo nmcli con reload
+    sudo nmcli device connect enp1s0
+    sudo nmcli device connect enp2s0
+    sudo nmcli con up hostonly
+    sudo nmcli con up bridged
+
+    # Verify
+    nmcli con show
+    nmcli device status
+    ip -br a
+    ip route
+    ip route get 8.8.8.8
+    ip neigh show dev enp2s0
+    ping -c3 192.168.29.1
+    ping -c3 google.com
+
+
+  # On Rhel, Dynamic IP Configuration using DHCP
+
+    # Switch to DHCP and clear the static settings
+    sudo nmcli con mod bridged ipv4.method auto
+    sudo nmcli con mod bridged ipv4.addresses ""
+    sudo nmcli con mod bridged ipv4.gateway ""
+    sudo nmcli con mod bridged ipv4.dns ""
+    sudo nmcli con mod bridged ipv4.ignore-auto-dns no
+    sudo nmcli con mod bridged ipv4.ignore-auto-routes no
+    sudo nmcli con mod bridged ipv4.never-default no
+    sudo nmcli con mod bridged ipv6.method disabled
+    sudo nmcli con mod bridged connection.autoconnect yes
+
+    # Reload and activate
+    sudo nmcli con reload
+    sudo nmcli device reapply enp2s0
+    sudo nmcli con up bridged
+
+    # if error in above
+    sudo nmcli device disconnect enp2s0
+    sudo nmcli device connect enp2s0
+
+    # Verify
+    nmcli -f IP4 device show enp2s0
+    ip -br a show enp2s0
+    ip route
+    ip neigh show dev enp2s0
+    ping -c3 google.com
+
+    # DHCP with fixed DNS
+    sudo nmcli con mod bridged ipv4.ignore-auto-dns yes
+    sudo nmcli con mod bridged ipv4.dns "8.8.8.8 1.1.1.1"
+    sudo nmcli con up bridged
 
 # On Ubuntu
   # Enable link if disabled
@@ -159,9 +232,17 @@ usermod -aG sudo-nopw ansible
 # On Rhel
   # check existing routing
   ip route
-      # for inet1 192.168.100.0/24 subnet, we should see something like below
+      # use default when no direct subnet to dev match exists
+      default via 192.168.29.1 dev enp2s0
+
+      # if inet1 adapter (192.168.100.0/24 subnet), we should see something like below
+      192.168.100.0/24 dev enp1s0 proto kernel scope link src 192.168.100.55 metric 100
+
+      # if inet2 adapter (192.168.200.0/24 subnet), we should see something like below
+      192.168.100.0/24 dev enp3s0 proto kernel scope link src 192.168.100.55 metric 100
+
+      # if bridge adapter (192.168.29.0/24 subnet), we should see something like below
       192.168.29.0/24 dev enp2s0 proto kernel scope link src 192.168.29.55 metric 101 
-      192.168.100.0/24 dev enp1s0 proto kernel scope link src 192.168.100.55 metric 100 
 
   # check routing
   nmcli connection show enp1s0 | grep ipv4.routes
@@ -169,8 +250,11 @@ usermod -aG sudo-nopw ansible
   # temporary routing
   sudo ip route add 192.168.200.0/24 via 192.168.100.1 dev enp1s0
 
-  # remove extra route if any. In this example route "192.168.0.0/16" is not desired
+  # remove extra route if any. In this example route "192.168.0.0/16" is not desired. Temporary
   sudo ip route del 192.168.0.0/16 via 192.168.100.1 dev enp1s0
+
+  # add default routing through bridged adapter. Temporary
+  sudo ip route add default via 192.168.29.1 dev enp2s0
 
   # permamently remove extra routing
   sudo nmcli connection modify enp1s0 -ipv4.routes "192.168.0.0/16 192.168.100.1"

@@ -13,7 +13,7 @@ Using Common Network Tools
     Allows for DNS testing
 
 -> nmap
-    A powershell tool that can be used for network analysis:
+    A powerful tool that can be used for network analysis:
     do NOT use on hosts you don't own
 
 -> netstat
