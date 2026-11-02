@@ -273,6 +273,41 @@ sudo dnf upgrade --assumeno
 
 sudo apt list --upgradable
 
+# What updates are available (RHEL)
+sudo dnf updateinfo --summary
+    Updating Subscription Management repositories.
+    Last metadata expiration check: 3:42:22 ago on Mon 02 Nov 2026 05:48:37 AM IST.
+    Updates Information Summary: available
+        29 Security notice(s)
+            1 Critical Security notice(s)
+            22 Important Security notice(s)
+            6 Moderate Security notice(s)
+        9 Bugfix notice(s)
+
+# Give me only critical security updates - https://www.cve.org/
+sudo dnf -q updateinfo list --security | grep 'Critical/Sec.'
+
+# Give me only critical & important security updates - https://www.cve.org/
+sudo dnf -q updateinfo list --security | grep -E 'Critical/Sec\.|Important/Sec\.'
+
+# Get security advisories to patch - https://www.cve.org/
+sudo su -
+HOT=$(dnf -q updateinfo list --security \
+  | awk '/Critical\/Sec\.|Important\/Sec\./ {print $1}' \
+  | sort -u | paste -sd,)
+echo "Advisories to patch: $HOT"
+  # get details of advisories to patch
+dnf updateinfo info --advisory=$HOT
+  # patch by advisories
+dnf update --advisory=$HOT
+
+
+
+
+# What updates are available (Ubuntu)
+sudo apt list --upgradable
+sudo /usr/lib/update-notifier/update-motd-updates-available
+
 # update a particular package
 dnf update httpd
 
