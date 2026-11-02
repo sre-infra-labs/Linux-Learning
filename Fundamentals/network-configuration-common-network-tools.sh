@@ -26,6 +26,8 @@ Using Common Network Tools
 |------------$ tldr nmap
 nmap
 
+Youtube Video -> https://www.youtube.com/live/TNDm1zGieGA?si=hMI-wGCVb2NcnBjK
+
 Network exploration tool and security/port scanner.
 Some features (e.g. SYN scan) activate only when nmap is run with root privileges.
 More information: https://nmap.org/book/man.html.
@@ -57,8 +59,13 @@ More information: https://nmap.org/book/man.html.
 # ping server with 3 attempts
 ping -c 3 pgprod
 
+# scan localhost for open ports and services
+nmap -A localhost > /tmp/nmap-localhost.txt
+less /tmp/nmap-localhost.txt
+
 # get ports being used
 sudo ss -tunap
+sudo ss -tulnp
 
 # Get DNS based information
 sudo dig ajaydwivedi.com
@@ -81,7 +88,8 @@ dig ajaydwivedi.com
 # DNS name servers are configured in /etc/resolv.conf
 cat /etc/resolv.conf
 
-
+# check logs for issues
+sudo journalctl -u NetworkManager -e
 
 
 COMMENTS
