@@ -78,10 +78,39 @@ Both must succeed before you create the Fabric connection.
    - **Authentication method:** Basic
    - **Username:** `grafana`
    - **Password:** `<Secret>`
-   - **Encrypt:** on. If the connection fails with a certificate error, enable **Trust server certificate** for the test.
+   - The Fabric SQL Server dialog has no **Encrypt** or **Trust server certificate** setting. Certificate trust comes from the VM's certificate store (see **Trust the SQL Server certificate on sqlmonitor** below).
 4. Click **Create** and wait for the test to pass.
 
 The label names may differ slightly in your Fabric version. Match the values, not the exact labels.
+
+### Trust the SQL Server certificate on sqlmonitor (keeps Force Encryption on)
+
+This is the chosen fix for the error "The certificate chain was issued by an authority that is not trusted." Force Encryption stays on, and the VM trusts SQL Server's certificate.
+
+1. **Confirm the certificate SQL Server uses.** In SQL Server Configuration Manager, open **SQL Server Network Configuration → Protocols for MSSQLSERVER → TCP/IP → Properties**, then the **Certificate** tab. It shows:
+   - **Friendly name:** `SQLMonitor SSL Cert`
+   - **Issued to:** `sqlmonitor.lab.com`
+   - **Issued by:** `sqlmonitor.lab.com` (self-signed)
+   - **Expiration date:** `12/31/2034`
+
+   The server name clients must use is therefore `sqlmonitor.lab.com`.
+2. **Export the public certificate.** Run `certlm.msc`, go to **Personal → Certificates**, and find **SQLMonitor SSL Cert**. Right-click it and choose **All Tasks → Export**. Choose **No, do not export the private key**, and save it as a `.cer` file, for example `C:\Temp\sqlmonitor.cer`.
+3. **Import it as trusted.** In `certlm.msc`, right-click **Trusted Root Certification Authorities → Certificates → All Tasks → Import**. Select the `.cer` file and finish the wizard.
+4. **Make the name resolve on the VM.** The certificate is issued to `sqlmonitor.lab.com`, so the gateway must connect using that name. Check it on `sqlmonitor`:
+   ```powershell
+   Resolve-DnsName sqlmonitor.lab.com
+   ```
+   If it doesn't resolve, add this line to `C:\Windows\System32\drivers\etc\hosts` (edit as administrator):
+   ```
+   127.0.0.1    sqlmonitor.lab.com
+   ```
+5. **Test without `-C`.** Without `-C`, sqlcmd validates the certificate, so this confirms the trust works:
+   ```powershell
+   sqlcmd -S sqlmonitor.lab.com,1433 -U grafana -P '<Secret>' -d DBA -Q "select @@version;"
+   ```
+6. **Use `sqlmonitor.lab.com,1433` in Fabric.** Set **Server** to `sqlmonitor.lab.com,1433`, then retry **Get data**. The certificate expires on `12/31/2034`. Before then, repeat steps 2–3 with the renewed certificate.
+
+If the test in step 5 still fails, check the certificate name in step 1 against the server name you used. If it doesn't match, the fallback is turning Force Encryption off, described in the troubleshooting table.
 
 ## 5. Query `dbo.instance_details` from Fabric
 
@@ -90,7 +119,7 @@ Use a **Dataflow Gen2**, which can run a native SQL query against an on-premises
 1. In your Fabric workspace, select **New item → Dataflow Gen2**.
 2. Select **Get data → SQL Server database**. The **Connect to data source** panel opens.
 3. Fill in **Connection settings** and **Connection credentials**:
-   - **Server:** `localhost,1433`
+   - **Server:** `sqlmonitor.lab.com,1433` (after completing the certificate trust steps above)
    - **Database:** `DBA`
    - **Connection:** select `sqlmonitor-fabric` if it exists. Otherwise keep **Create new connection**.
    - **Connection name:** `sqlmonitor-fabric`
@@ -119,7 +148,7 @@ Native queries are only available in some connection types and Power Query versi
 |---|---|
 | Gateway shows offline in Fabric | The `On-premises data gateway` Windows service must be running. Check outbound HTTPS 443 from `sqlmonitor`. |
 | Connection test fails with "could not connect" | Run step 3. Confirm TCP 1433 is listening and the `grafana` login works. |
-| "The certificate chain was issued by an authority that is not trusted" | SQL Server presents a self-signed certificate because Force Encryption is on, and the gateway doesn't trust it. The gateway and SQL Server share the VM, so set **Force Encryption** to **No** in SQL Server Configuration Manager (TCP/IP → Flags), restart SQL Server, then retry the connection. The alternative is to install a certificate that the VM trusts, with a name that matches the server name. |
+| "The certificate chain was issued by an authority that is not trusted" | SQL Server presents a self-signed certificate because Force Encryption is on, and the gateway doesn't trust it. The gateway and SQL Server share the VM, so set **Force Encryption** to **No** in SQL Server Configuration Manager (TCP/IP → Flags), restart SQL Server, then retry the connection. The preferred fix is to trust the certificate on the VM instead; see **Trust the SQL Server certificate on sqlmonitor** above. |
 | Login failed for `grafana` | Confirm the login is enabled and has read access on `DBA`. |
 | Gateway not listed in the connection dialog | You must be a gateway admin for that gateway. Check **Manage connections and gateways → Gateways**. |
 | Query returns "permission denied" | `grafana` needs `SELECT` on `dbo.instance_details`. Run the check in step 1. |
