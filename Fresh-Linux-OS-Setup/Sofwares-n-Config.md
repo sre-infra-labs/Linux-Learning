@@ -900,6 +900,8 @@ done
 
 
 # Cockpit - https://cockpit-project.org/applications
+  # IMPORTANT - Protect Cockpit using GAuth - Linux-Learning/Fresh-Linux-OS-Setup/cockpit-2-step-authentication.md
+  # IMPORRANT - Protect hostname cockpit.ajaydwivedi.com using Cloudflare Access - Linux-Learning/Miscellaneous/access-sqlserver-from-internet.md
 ```
   sudo apt-get install -y cockpit
   sudo systemctl enable --now cockpit.socket
@@ -907,6 +909,7 @@ done
   sudo systemctl status cockpit cockpit
 
   sudo ufw allow 9090/tcp
+  # sudo ufw allow from 192.168.0.0/16 to any port 9090 proto tcp
   sudo firewall-cmd --add-port=9090/tcp --permanent
   sudo firewall-cmd --permanent --add-service cockpit
 
@@ -1116,6 +1119,9 @@ sudo firewall-cmd --reload
   sudo apt-get -y install postgresql-16
   sudo pg_lsclusters
   sudo ufw allow 5432/tcp
+
+  # Allow access to PostgreSQL (Port 5432) from local networks only
+  sudo ufw allow from 192.168.0.0/16 to any port 5432 proto tcp
 
   # check udp 1434
   nc -vuz 192.168.1.6 1434
