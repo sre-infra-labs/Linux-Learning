@@ -901,7 +901,7 @@ done
 
 # Cockpit - https://cockpit-project.org/applications
   # IMPORTANT - Protect Cockpit using GAuth - Linux-Learning/Fresh-Linux-OS-Setup/cockpit-2-step-authentication.md
-  # IMPORRANT - Protect hostname cockpit.ajaydwivedi.com using Cloudflare Access - Linux-Learning/Miscellaneous/access-sqlserver-from-internet.md
+  # IMPORTANT - Protect hostname cockpit.ajaydwivedi.com using Cloudflare Access - Linux-Learning/Miscellaneous/access-sqlserver-using-cloudflare-tunnel-on-host.md
 ```
   sudo apt-get install -y cockpit
   sudo systemctl enable --now cockpit.socket
