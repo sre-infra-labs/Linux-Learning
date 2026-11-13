@@ -8,14 +8,13 @@
 yt-dlp https://www.youtube.com/watch?v=i6NzKvGUsBs
 
 # Check available formats
-yt-dlp --cookies-from-browser brave -F https://youtu.be/RHwglGf_z40?si=88MNEXadvvXsCdH9
+yt-dlp --cookies-from-browser brave -F https://youtu.be/c3Cn4xYfxJY
 yt-dlp -F https://www.youtube.com/watch?v=i6NzKvGUsBs
 
 # How to choose Video + Audio format
     # Choose VIDEO based on RESOLUTION + FPS + VBR
     # Choose AUDIO with ACODEC = 'opus' and highest VBR
-yt-dlp -f 248+251 https://www.youtube.com/watch?v=i6NzKvGUsBs # azure
-yt-dlp -f 248+251 https://www.youtube.com/watch?v=NhDYbskXRgc # aws
+yt-dlp -f 248+251 https://youtu.be/c3Cn4xYfxJY
 
 # Download a specific format (video+audio)
 yt-dlp --cookies-from-browser brave -P "~/Downloads" -f 219 \
