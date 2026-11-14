@@ -3,6 +3,32 @@
 - Ubuntu - Cinnamon - 
 - Fedora - Cinnamon - https://fedoraproject.org/spins/cinnamon
 
+# How to attach network to KVM VM
+
+```bash
+# If kvm vm is supposed to be used from hypervisor only
+  # attach inet1 (192.168.100.0/24) & NAT Adapter
+
+# If kvm vm is supposed to be used from other LAN devices
+  # attach inet1 (192.168.100.0/24) & Bridged Adapter
+
+# For connectivity b/w Inet1 & Inet2 machines, add route on each for other subnet
+
+# IMPORTANT: Default route should always be adapter with Internet access (NAT or Bridged)
+```
+
+# Enable EPEL Repos on RHEL 10 - https://docs.fedoraproject.org/en-US/epel/getting-started/
+
+```bash
+sudo subscription-manager repos --enable codeready-builder-for-rhel-10-$(arch)-rpms
+sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
+
+sudo dnf update -y
+sudo dnf upgrade -y
+
+```
+
+
 # Upgrade from Ubuntu 24 to Ubuntu 26
 
 ```bash
@@ -796,6 +822,20 @@ sudo update-desktop-database
   systemctl is-active virtnetworkd.socket virtstoraged.socket virtnodedevd.socket virtsecretd.socket
 
   sudo virt-host-validate qemu
+```
+
+# KVM VM Guest Packages. This allows copy/paste, dynamic screen resizing, seamless mouse integration
+
+```bash
+# RHEL
+  sudo dnf install -y qemu-guest-agent spice-vdagent
+  sudo systemctl enable --now qemu-guest-agent
+  sudo systemctl enable --now spice-vdagentd
+
+  # ensure display protocol is set to Spice server, has spice channel, qemu agent channel
+  sudo virsh dumpxml <vm-name> | grep -E "graphics|channel|spicevmc|qemu-ga" -A 4
+
+
 ```
 
 

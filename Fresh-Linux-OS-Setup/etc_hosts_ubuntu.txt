@@ -83,6 +83,12 @@
 # SqlRed
 192.168.100.55 sqlred
 
+# Kubernetes
+192.168.100.57 kubenode1
+192.168.100.58 kubenode2
+192.168.100.59 kubenode3
+192.168.100.60 kubemaster
+
 # SQLServer Lab
 192.168.100.100 sqlcluster
 192.168.100.101 sqlprod1

@@ -79,4 +79,30 @@ virsh autorestart sqlred
 
 ```
 
+# Create kvm VMs from existing vm
+
+```bash
+# Clone the VMs
+virt-clone --original KubeMaster --name KubeNode1 --file /vm-os/KubeNode1.qcow2
+virt-clone --original KubeMaster --name KubeNode2 --file /vm-os/KubeNode2.qcow2
+virt-clone --original KubeMaster --name KubeNode3 --file /vm-os/KubeNode3.qcow2
+
+# Reset OS Identities
+sudo hostnamectl set-hostname KubeNode1
+sudo truncate -s 0 /etc/machine-id
+sudo systemd-machine-id-setup
+sudo rm -f /etc/ssh/ssh_host_*
+sudo ssh-keygen -A
+sudo reboot
+
+
+# Start Your Cluster VMs
+virsh start KubeMaster
+virsh start KubeNode1
+virsh start KubeNode2
+virsh start KubeNode3
+
+```
+
+
 
