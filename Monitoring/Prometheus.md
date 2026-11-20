@@ -281,8 +281,10 @@ scrape_configs:
 
   - job_name: "node_exporter"
     static_configs:
+      - targets: ["localhost:9100"]
+        labels:
+          host: "ryzen9"
       - targets:
-        - "localhost:9100"
         - "pgpractice:9100"
         - "pgpoc:9100"
         - "officelaptop:9100"
@@ -293,10 +295,14 @@ scrape_configs:
         - 'sqlmonitor:9182'
         - 'sqlpractice:9182'
 
-  - job_name: postgres
+  - job_name: "postgres_exporter"
     static_configs:
+      - targets: ["localhost:9187"]
+        labels:
+          host: "ryzen9"
       - targets:
-        - "localhost:9187"
+        - "sqlred:9187"
+        #- "sqlbuntu:9187"
 
   - job_name: mssql_exporter_common
     scrape_interval: 30s
