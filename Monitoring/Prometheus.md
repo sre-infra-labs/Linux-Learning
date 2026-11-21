@@ -295,7 +295,7 @@ scrape_configs:
         - 'sqlmonitor:9182'
         - 'sqlpractice:9182'
 
-  - job_name: "postgres_exporter"
+  - job_name: "postgres"
     static_configs:
       - targets: ["localhost:9187"]
         labels:
