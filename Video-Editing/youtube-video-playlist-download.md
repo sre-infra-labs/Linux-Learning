@@ -8,13 +8,13 @@
 yt-dlp https://www.youtube.com/watch?v=i6NzKvGUsBs
 
 # Check available formats
-yt-dlp --cookies-from-browser brave -F https://youtu.be/c3Cn4xYfxJY
+yt-dlp --cookies-from-browser brave -F https://youtu.be/4JYtAf4M88Y
 yt-dlp -F https://www.youtube.com/watch?v=i6NzKvGUsBs
 
 # How to choose Video + Audio format
     # Choose VIDEO based on RESOLUTION + FPS + VBR
     # Choose AUDIO with ACODEC = 'opus' and highest VBR
-yt-dlp -f 248+251 https://youtu.be/c3Cn4xYfxJY
+yt-dlp -f 303+251 https://youtu.be/4JYtAf4M88Y
 
 # Download a specific format (video+audio)
 yt-dlp --cookies-from-browser brave -P "~/Downloads" -f 219 \
